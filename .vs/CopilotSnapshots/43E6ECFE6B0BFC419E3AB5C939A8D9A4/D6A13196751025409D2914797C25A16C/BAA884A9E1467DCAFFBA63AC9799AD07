@@ -1,0 +1,42 @@
+﻿using Miski.Shared.DTOs.Base;
+
+namespace Miski.Shared.DTOs;
+
+public class NegociacionDto : BaseDto
+{
+    public string Codigo { get; set; } = string.Empty;
+    public int PersonaId { get; set; }
+    public string PersonaNombre { get; set; } = string.Empty;
+    public DateTime FechaNegociacion { get; set; }
+    public DateTime? FechaLlegadaPlanta { get; set; }
+    public string Estado { get; set; } = string.Empty;
+    public string Tipo { get; set; } = string.Empty;
+    public decimal MontoTotal { get; set; }
+    public string Observaciones { get; set; } = string.Empty;
+    public List<DetalleNegociacionDto> Detalles { get; set; } = new();
+}
+
+public class DetalleNegociacionDto : BaseDto
+{
+    public int NegociacionId { get; set; }
+    public int ProductoId { get; set; }
+    public string ProductoNombre { get; set; } = string.Empty;
+    public int Cantidad { get; set; }
+    public decimal PrecioUnitario { get; set; }
+    public decimal Subtotal { get; set; }
+}
+
+public class CreateNegociacionDto
+{
+    public int PersonaId { get; set; }
+    public string Tipo { get; set; } = string.Empty;
+    public string Observaciones { get; set; } = string.Empty;
+    public List<CreateDetalleNegociacionDto> Detalles { get; set; } = new();
+}
+
+public class CreateDetalleNegociacionDto
+{
+    public int ProductoId { get; set; }
+    public int Cantidad { get; set; }
+    public decimal PrecioUnitario { get; set; }
+}

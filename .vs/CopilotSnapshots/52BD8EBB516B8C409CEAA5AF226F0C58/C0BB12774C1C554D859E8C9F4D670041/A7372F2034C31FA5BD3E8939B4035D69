@@ -1,0 +1,16 @@
+﻿using System.Reflection;
+
+// Información común del ensamblado para todos los proyectos de Miski
+[assembly: AssemblyProduct("Miski API")]
+[assembly: AssemblyCompany("Miski Corporation")]
+[assembly: AssemblyCopyright("Copyright © Miski Corporation 2024")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0")]
+
+// Configuración de metadatos específicos
+[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyDescription("Sistema de gestión de negociaciones Miski")]
+
+// Para compatibilidad con análisis de código
+[assembly: System.CLSCompliant(false)]

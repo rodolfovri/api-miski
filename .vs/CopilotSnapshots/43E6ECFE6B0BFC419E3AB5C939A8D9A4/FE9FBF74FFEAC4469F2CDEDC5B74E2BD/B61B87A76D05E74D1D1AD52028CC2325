@@ -1,0 +1,22 @@
+﻿{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    // Opción 1: SQL Server LocalDB (actual)
+    // "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=MiskiDb;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true",
+    
+    // Opción 2: SQL Server Express instalado localmente
+    "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=MiskiDb;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true",
+    
+    // Opción 3: SQL Server con instancia por defecto
+    // "DefaultConnection": "Server=localhost;Database=MiskiDb;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true",
+    
+    // Opción 4: SQL Server remoto con usuario y contraseña
+    // "DefaultConnection": "Server=TU_SERVIDOR;Database=MiskiDb;User Id=TU_USUARIO;Password=TU_PASSWORD;TrustServerCertificate=true;MultipleActiveResultSets=true"
+  }
+}

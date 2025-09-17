@@ -1,0 +1,46 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Miski.Domain.Contracts.Repositories;
+using Miski.Domain.Entities;
+using Miski.Infrastructure.Data;
+
+namespace Miski.Infrastructure.Repositories;
+
+public class ProductoRepository : Repository<Producto>, IProductoRepository
+{
+    public ProductoRepository(MiskiDbContext context) : base(context)
+    {
+    }
+
+    public async Task<IEnumerable<Producto>> GetBajoStockAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Where(p => p.StockActual <= p.StockMinimo && p.IsActive)
+            .OrderBy(p => p.Nombre)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Producto?> GetByCodigoAsync(string codigo, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .FirstOrDefaultAsync(p => p.Codigo == codigo && p.IsActive, cancellationToken);
+    }
+
+    public async Task ActualizarStockAsync(int productoId, int nuevoStock, CancellationToken cancellationToken = default)
+    {
+        var producto = await GetByIdAsync(productoId, cancellationToken);
+        if (producto != null)
+        {
+            producto.StockActual = nuevoStock;
+            producto.UpdatedAt = DateTime.UtcNow;
+            await UpdateAsync(producto, cancellationToken);
+        }
+    }
+
+    public override async Task<IEnumerable<Producto>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Where(p => p.IsActive)
+            .OrderBy(p => p.Nombre)
+            .ToListAsync(cancellationToken);
+    }
+}

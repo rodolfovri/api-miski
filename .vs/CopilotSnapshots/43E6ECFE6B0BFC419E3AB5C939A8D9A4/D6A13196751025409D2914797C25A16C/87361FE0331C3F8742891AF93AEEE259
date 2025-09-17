@@ -1,0 +1,50 @@
+﻿using Miski.Domain.Entities.Base;
+
+namespace Miski.Domain.Entities;
+
+public class Negociacion : BaseEntity
+{
+    public string Codigo { get; set; } = string.Empty;
+    public int PersonaId { get; set; }
+    public DateTime FechaNegociacion { get; set; }
+    public DateTime? FechaLlegadaPlanta { get; set; }
+    public EstadoNegociacion Estado { get; set; } = EstadoNegociacion.Pendiente;
+    public TipoNegociacion Tipo { get; set; }
+    public decimal MontoTotal { get; set; }
+    public string Observaciones { get; set; } = string.Empty;
+    
+    // Navegación
+    public virtual Persona Persona { get; set; } = null!;
+    public virtual ICollection<DetalleNegociacion> Detalles { get; set; } = new List<DetalleNegociacion>();
+    
+    // Métodos de negocio
+    public void AprobarLlegadaPlanta()
+    {
+        if (Estado != EstadoNegociacion.EnTransito)
+            throw new InvalidOperationException("Solo se puede aprobar llegada de negociaciones en tránsito");
+            
+        Estado = EstadoNegociacion.EnPlanta;
+        FechaLlegadaPlanta = DateTime.UtcNow;
+    }
+    
+    public void CalcularTotal()
+    {
+        MontoTotal = Detalles.Sum(d => d.Cantidad * d.PrecioUnitario);
+    }
+}
+
+public enum EstadoNegociacion
+{
+    Pendiente = 1,
+    Aprobada = 2,
+    EnTransito = 3,
+    EnPlanta = 4,
+    Completada = 5,
+    Cancelada = 6
+}
+
+public enum TipoNegociacion
+{
+    Compra = 1,
+    Venta = 2
+}

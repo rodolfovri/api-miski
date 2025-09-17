@@ -1,0 +1,69 @@
+using Microsoft.EntityFrameworkCore;
+using Miski.Domain.Contracts;
+using Miski.Domain.Contracts.Repositories;
+using Miski.Infrastructure.Data;
+using Miski.Infrastructure.Repositories;
+
+namespace Miski.Infrastructure.Persistence;
+
+public class UnitOfWork : IUnitOfWork
+{
+    private readonly MiskiDbContext _context;
+    private readonly Dictionary<Type, object> _repositories = new();
+    private bool _disposed = false;
+
+    public UnitOfWork(MiskiDbContext context)
+    {
+        _context = context;
+    }
+
+    public IRepository<T> Repository<T>() where T : class
+    {
+        if (_repositories.ContainsKey(typeof(T)))
+        {
+            return (IRepository<T>)_repositories[typeof(T)];
+        }
+
+        var repository = new Repository<T>(_context);
+        _repositories.Add(typeof(T), repository);
+        return repository;
+    }
+
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        await _context.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        await _context.Database.CommitTransactionAsync(cancellationToken);
+    }
+
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        await _context.Database.RollbackTransactionAsync(cancellationToken);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _context.Dispose();
+            }
+        }
+        _disposed = true;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+}

@@ -1,0 +1,39 @@
+﻿using FluentValidation;
+
+namespace Miski.Application.Features.Negociaciones.Commands.CreateNegociacion;
+
+public class CreateNegociacionValidator : AbstractValidator<CreateNegociacionCommand>
+{
+    public CreateNegociacionValidator()
+    {
+        RuleFor(x => x.Negociacion.PersonaId)
+            .GreaterThan(0)
+            .WithMessage("PersonaId debe ser mayor que 0");
+
+        RuleFor(x => x.Negociacion.Tipo)
+            .NotEmpty()
+            .WithMessage("Tipo de negociación es requerido")
+            .Must(tipo => tipo == "Compra" || tipo == "Venta")
+            .WithMessage("Tipo debe ser 'Compra' o 'Venta'");
+
+        RuleFor(x => x.Negociacion.Detalles)
+            .NotEmpty()
+            .WithMessage("Debe incluir al menos un detalle");
+
+        RuleForEach(x => x.Negociacion.Detalles)
+            .ChildRules(detalle =>
+            {
+                detalle.RuleFor(d => d.ProductoId)
+                    .GreaterThan(0)
+                    .WithMessage("ProductoId debe ser mayor que 0");
+
+                detalle.RuleFor(d => d.Cantidad)
+                    .GreaterThan(0)
+                    .WithMessage("Cantidad debe ser mayor que 0");
+
+                detalle.RuleFor(d => d.PrecioUnitario)
+                    .GreaterThan(0)
+                    .WithMessage("Precio unitario debe ser mayor que 0");
+            });
+    }
+}

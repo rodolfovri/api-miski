@@ -1,0 +1,113 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Miski.Domain.Entities;
+
+namespace Miski.Infrastructure.Data;
+
+public class MiskiDbContext : DbContext
+{
+    public MiskiDbContext(DbContextOptions<MiskiDbContext> options) : base(options)
+    {
+    }
+
+    public DbSet<Persona> Personas { get; set; }
+    public DbSet<Producto> Productos { get; set; }
+    public DbSet<Negociacion> Negociaciones { get; set; }
+    public DbSet<DetalleNegociacion> DetallesNegociacion { get; set; }
+    public DbSet<MovimientoStock> MovimientosStock { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // Configuraciones de Persona
+        modelBuilder.Entity<Persona>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Nombre).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Apellidos).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Email).IsRequired().HasMaxLength(150);
+            entity.Property(e => e.Telefono).HasMaxLength(20);
+            entity.Property(e => e.Documento).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.TipoDocumento).HasConversion<int>();
+            entity.Property(e => e.TipoPersona).HasConversion<int>();
+            
+            entity.HasIndex(e => e.Email).IsUnique();
+            entity.HasIndex(e => e.Documento).IsUnique();
+        });
+
+        // Configuraciones de Producto
+        modelBuilder.Entity<Producto>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Nombre).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Descripcion).HasMaxLength(500);
+            entity.Property(e => e.Codigo).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.PrecioUnitario).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.UnidadMedida).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.Categoria).HasConversion<int>();
+            
+            entity.HasIndex(e => e.Codigo).IsUnique();
+        });
+
+        // Configuraciones de Negociacion
+        modelBuilder.Entity<Negociacion>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Codigo).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.MontoTotal).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.Observaciones).HasMaxLength(1000);
+            entity.Property(e => e.Estado).HasConversion<int>();
+            entity.Property(e => e.Tipo).HasConversion<int>();
+            
+            entity.HasIndex(e => e.Codigo).IsUnique();
+            
+            entity.HasOne(e => e.Persona)
+                .WithMany(p => p.Negociaciones)
+                .HasForeignKey(e => e.PersonaId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Configuraciones de DetalleNegociacion
+        modelBuilder.Entity<DetalleNegociacion>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PrecioUnitario).HasColumnType("decimal(18,2)");
+            
+            entity.HasOne(e => e.Negociacion)
+                .WithMany(n => n.Detalles)
+                .HasForeignKey(e => e.NegociacionId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            entity.HasOne(e => e.Producto)
+                .WithMany(p => p.DetallesNegociacion)
+                .HasForeignKey(e => e.ProductoId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Configuraciones de MovimientoStock
+        modelBuilder.Entity<MovimientoStock>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Motivo).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Referencia).HasMaxLength(100);
+            entity.Property(e => e.Tipo).HasConversion<int>();
+            
+            entity.HasOne(e => e.Producto)
+                .WithMany(p => p.MovimientosStock)
+                .HasForeignKey(e => e.ProductoId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Configuraciones base para todas las entidades
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            var entity = modelBuilder.Entity(entityType.ClrType);
+            
+            entity.Property("CreatedAt").IsRequired();
+            entity.Property("CreatedBy").IsRequired().HasMaxLength(100);
+            entity.Property("UpdatedAt");
+            entity.Property("UpdatedBy").HasMaxLength(100);
+            entity.Property("IsActive").HasDefaultValue(true);
+        }
+    }
+}

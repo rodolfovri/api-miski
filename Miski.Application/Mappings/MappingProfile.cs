@@ -1,0 +1,58 @@
+using AutoMapper;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs;
+
+namespace Miski.Application.Mappings;
+
+public class MappingProfile : Profile
+{
+    public MappingProfile()
+    {
+        CreateMap<Negociacion, NegociacionDto>()
+            .ForMember(dest => dest.ProveedorNombre, opt => opt.MapFrom(src => 
+                src.Proveedor != null ? $"{src.Proveedor.Nombres} {src.Proveedor.Apellidos}" : null))
+            .ForMember(dest => dest.ComisionistaNombre, opt => opt.MapFrom(src => 
+                $"{src.Comisionista.Nombres} {src.Comisionista.Apellidos}"))
+            .ForMember(dest => dest.ProductoNombre, opt => opt.MapFrom(src => 
+                src.Producto != null ? src.Producto.Nombre : null))
+            .ForMember(dest => dest.AprobadaPorNombre, opt => opt.MapFrom(src => 
+                src.AprobadaPorPersona != null ? $"{src.AprobadaPorPersona.Nombres} {src.AprobadaPorPersona.Apellidos}" : null))
+            .ForMember(dest => dest.MontoTotal, opt => opt.MapFrom(src => src.PesoTotal * src.PrecioUnitario));
+
+        CreateMap<Producto, ProductoDto>()
+            .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.Estado ?? "Activo"));
+
+        CreateMap<Persona, PersonaDto>()
+            .ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => src.TipoDocumento.Nombre))
+            .ForMember(dest => dest.NombreCompleto, opt => opt.MapFrom(src => $"{src.Nombres} {src.Apellidos}"));
+    }
+}
+
+// DTOs adicionales que necesitamos
+public class ProductoDto
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string Descripcion { get; set; } = string.Empty;
+    public string Codigo { get; set; } = string.Empty;
+    public decimal PrecioUnitario { get; set; }
+    public string UnidadMedida { get; set; } = string.Empty;
+    public int StockMinimo { get; set; }
+    public int StockActual { get; set; }
+    public string Categoria { get; set; } = string.Empty;
+    public string Estado { get; set; } = string.Empty;
+}
+
+public class PersonaDto
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string Apellidos { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Telefono { get; set; } = string.Empty;
+    public string Documento { get; set; } = string.Empty;
+    public string TipoDocumento { get; set; } = string.Empty;
+    public string TipoPersona { get; set; } = string.Empty;
+    public string TipoDocumentoNombre { get; set; } = string.Empty;
+    public string NombreCompleto { get; set; } = string.Empty;
+}

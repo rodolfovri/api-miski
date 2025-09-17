@@ -1,0 +1,80 @@
+﻿using AutoMapper;
+using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Contracts.Repositories;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Negociaciones.Commands.CreateNegociacion;
+
+public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand, NegociacionDto>
+{
+    private readonly INegociacionRepository _negociacionRepository;
+    private readonly IProductoRepository _productoRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public CreateNegociacionHandler(
+        INegociacionRepository negociacionRepository,
+        IProductoRepository productoRepository,
+        IUnitOfWork unitOfWork,
+        IMapper mapper)
+    {
+        _negociacionRepository = negociacionRepository;
+        _productoRepository = productoRepository;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<NegociacionDto> Handle(CreateNegociacionCommand request, CancellationToken cancellationToken)
+    {
+        // Validar que existan los productos
+        foreach (var detalle in request.Negociacion.Detalles)
+        {
+            var producto = await _productoRepository.GetByIdAsync(detalle.ProductoId, cancellationToken);
+            if (producto == null)
+                throw new NotFoundException(nameof(Producto), detalle.ProductoId);
+        }
+
+        // Crear la negociación
+        var negociacion = new Negociacion
+        {
+            Codigo = GenerarCodigo(),
+            PersonaId = request.Negociacion.PersonaId,
+            FechaNegociacion = DateTime.UtcNow,
+            Tipo = Enum.Parse<TipoNegociacion>(request.Negociacion.Tipo),
+            Observaciones = request.Negociacion.Observaciones,
+            CreatedBy = "Sistema" // TODO: Obtener del usuario autenticado
+        };
+
+        // Agregar detalles
+        foreach (var detalleDto in request.Negociacion.Detalles)
+        {
+            var detalle = new DetalleNegociacion
+            {
+                ProductoId = detalleDto.ProductoId,
+                Cantidad = detalleDto.Cantidad,
+                PrecioUnitario = detalleDto.PrecioUnitario,
+                CreatedBy = "Sistema"
+            };
+            negociacion.Detalles.Add(detalle);
+        }
+
+        // Calcular total
+        negociacion.CalcularTotal();
+
+        // Guardar
+        await _negociacionRepository.AddAsync(negociacion, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Retornar DTO
+        var negociacionConDetalles = await _negociacionRepository.GetWithDetallesAsync(negociacion.Id, cancellationToken);
+        return _mapper.Map<NegociacionDto>(negociacionConDetalles);
+    }
+
+    private static string GenerarCodigo()
+    {
+        return $"NEG-{DateTime.Now:yyyyMMdd}-{Random.Shared.Next(1000, 9999)}";
+    }
+}

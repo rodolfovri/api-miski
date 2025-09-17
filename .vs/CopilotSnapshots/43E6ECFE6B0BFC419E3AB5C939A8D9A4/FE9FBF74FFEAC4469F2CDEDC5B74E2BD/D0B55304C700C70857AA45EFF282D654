@@ -1,0 +1,11 @@
+﻿using Miski.Domain.Entities;
+
+namespace Miski.Domain.Contracts.Repositories;
+
+public interface INegociacionRepository : IRepository<Negociacion>
+{
+    Task<IEnumerable<Negociacion>> GetByPersonaIdAsync(int personaId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Negociacion>> GetByEstadoAsync(EstadoNegociacion estado, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Negociacion>> GetPendientesLlegadaAsync(CancellationToken cancellationToken = default);
+    Task<Negociacion?> GetWithDetallesAsync(int id, CancellationToken cancellationToken = default);
+}
