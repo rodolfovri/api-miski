@@ -1,14 +1,12 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class Negociacion : BaseEntity
+public class Negociacion
 {
     public int IdNegociacion { get; set; }
     public int? IdProveedor { get; set; }
     public int IdComisionista { get; set; }
     public int? IdProducto { get; set; }
-    public DateTime Fecha { get; set; }
+    public DateTime FRegistro { get; set; }
     public decimal PesoTotal { get; set; }
     public int SacosTotales { get; set; }
     public decimal PrecioUnitario { get; set; }
@@ -18,7 +16,7 @@ public class Negociacion : BaseEntity
     public string FotoDniPosterior { get; set; } = string.Empty;
     public string? EstadoAprobado { get; set; }
     public int? AprobadaPor { get; set; }
-    public DateTime? FechaAprobacion { get; set; }
+    public DateTime? FAprobacion { get; set; }
     public string? Observacion { get; set; }
     public string? Estado { get; set; }
 

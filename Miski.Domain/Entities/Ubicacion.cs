@@ -1,8 +1,6 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class Ubicacion : BaseEntity
+public class Ubicacion
 {
     public int IdUbicacion { get; set; }
     public int IdPersona { get; set; }

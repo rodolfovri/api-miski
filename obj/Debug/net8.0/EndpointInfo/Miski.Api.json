@@ -41,26 +41,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NegociacionDto"
-                  }
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NegociacionDto"
-                  }
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NegociacionDto"
-                  }
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
                 }
               }
             }
@@ -96,17 +87,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/NegociacionDto"
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NegociacionDto"
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NegociacionDto"
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
                 }
               }
             }
@@ -136,17 +127,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/NegociacionDto"
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NegociacionDto"
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NegociacionDto"
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
                 }
               }
             }
@@ -165,26 +156,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NegociacionDto"
-                  }
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NegociacionDto"
-                  }
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NegociacionDto"
-                  }
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
                 }
               }
             }
@@ -210,7 +192,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -257,6 +256,25 @@
   },
   "components": {
     "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "nullable": true
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateNegociacionDto": {
         "type": "object",
         "properties": {
@@ -316,22 +334,6 @@
       "NegociacionDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "isActive": {
-            "type": "boolean"
-          },
           "idNegociacion": {
             "type": "integer",
             "format": "int32"
@@ -422,6 +424,48 @@
           },
           "estado": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NegociacionDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/NegociacionDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NegociacionDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NegociacionDto"
+            },
+            "nullable": true
+          },
+          "errors": {
             "nullable": true
           }
         },

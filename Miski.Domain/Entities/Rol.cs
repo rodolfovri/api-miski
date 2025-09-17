@@ -1,8 +1,6 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class Rol : BaseEntity
+public class Rol
 {
     public int IdRol { get; set; }
     public string Nombre { get; set; } = string.Empty;

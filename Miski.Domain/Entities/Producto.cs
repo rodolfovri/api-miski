@@ -1,8 +1,6 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class Producto : BaseEntity
+public class Producto
 {
     public int IdProducto { get; set; }
     public string Codigo { get; set; } = string.Empty;

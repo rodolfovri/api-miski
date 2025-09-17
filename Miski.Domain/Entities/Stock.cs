@@ -1,8 +1,6 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class Stock : BaseEntity
+public class Stock
 {
     public int IdStock { get; set; }
     public int IdProducto { get; set; }

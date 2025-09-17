@@ -1,8 +1,6 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class Vehiculo : BaseEntity
+public class Vehiculo
 {
     public int IdVehiculo { get; set; }
     public string Placa { get; set; } = string.Empty;

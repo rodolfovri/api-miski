@@ -1,8 +1,6 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class Lote : BaseEntity
+public class Lote
 {
     public int IdLote { get; set; }
     public int IdCompra { get; set; }

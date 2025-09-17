@@ -1,8 +1,6 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class Persona : BaseEntity
+public class Persona
 {
     public int IdPersona { get; set; }
     public int IdTipoDocumento { get; set; }

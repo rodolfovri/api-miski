@@ -9,6 +9,7 @@ using Miski.Infrastructure.Repositories;
 using Miski.Application.Features.Negociaciones.Commands.CreateNegociacion;
 using FluentValidation;
 using Swashbuckle.AspNetCore.Annotations;
+using Miski.Shared.DTOs.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,7 @@ builder.Services.AddDbContext<MiskiDbContext>(options =>
 builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(CreateNegociacionHandler).Assembly);
 });
+
 // AutoMapper Configuration
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -108,17 +110,40 @@ public class GlobalExceptionMiddleware
     {
         context.Response.ContentType = "application/json";
 
-        var (message, statusCode, errors) = exception switch
+        var response = exception switch
         {
-            Miski.Shared.Exceptions.NotFoundException => (exception.Message, 404, (object?)null),
-            Miski.Shared.Exceptions.ValidationException validationEx => ("Validation failed", 400, (object?)validationEx.Errors),
-            Miski.Shared.Exceptions.DomainException => (exception.Message, 400, (object?)null),
-            _ => ("An error occurred while processing your request", 500, (object?)null)
+            Miski.Shared.Exceptions.NotFoundException => ApiResponse.ErrorResult(
+                exception.Message, 
+                "Recurso no encontrado"
+            ),
+            Miski.Shared.Exceptions.ValidationException validationEx => ApiResponse.ValidationErrorResult(
+                validationEx.Errors
+            ),
+            Miski.Shared.Exceptions.DomainException => ApiResponse.ErrorResult(
+                exception.Message, 
+                "Error de regla de negocio"
+            ),
+            FluentValidation.ValidationException fluentEx => ApiResponse.ValidationErrorResult(
+                fluentEx.Errors.Select(e => new { 
+                    Field = e.PropertyName, 
+                    Error = e.ErrorMessage 
+                })
+            ),
+            _ => ApiResponse.ErrorResult(
+                "Ocurrió un error interno en el servidor", 
+                exception.Message
+            )
         };
 
-        var response = new { message, statusCode, errors };
+        context.Response.StatusCode = exception switch
+        {
+            Miski.Shared.Exceptions.NotFoundException => 404,
+            Miski.Shared.Exceptions.ValidationException => 400,
+            Miski.Shared.Exceptions.DomainException => 400,
+            FluentValidation.ValidationException => 400,
+            _ => 500
+        };
 
-        context.Response.StatusCode = statusCode;
         await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(response));
     }
 }

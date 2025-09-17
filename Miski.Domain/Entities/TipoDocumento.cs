@@ -1,8 +1,6 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class TipoDocumento : BaseEntity
+public class TipoDocumento
 {
     public int IdTipoDocumento { get; set; }
     public string Nombre { get; set; } = string.Empty;

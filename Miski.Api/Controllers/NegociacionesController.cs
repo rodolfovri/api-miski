@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Negociaciones.Commands.CreateNegociacion;
 using Miski.Application.Features.Negociaciones.Queries.GetNegociaciones;
 using Miski.Shared.DTOs;
+using Miski.Shared.DTOs.Base;
 
 namespace Miski.Api.Controllers;
 
@@ -21,63 +22,139 @@ public class NegociacionesController : ControllerBase
     /// Obtiene todas las negociaciones con filtros opcionales
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<NegociacionDto>>> GetNegociaciones(
+    public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetNegociaciones(
         [FromQuery] int? proveedorId = null,
         [FromQuery] int? comisionistaId = null,
         [FromQuery] string? estado = null,
         CancellationToken cancellationToken = default)
     {
-        var query = new GetNegociacionesQuery(proveedorId, comisionistaId, estado);
-        var result = await _mediator.Send(query, cancellationToken);
-        return Ok(result);
+        try
+        {
+            var query = new GetNegociacionesQuery(proveedorId, comisionistaId, estado);
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
+                result, 
+                "Negociaciones obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ApiResponse<IEnumerable<NegociacionDto>>.ErrorResult(
+                "Error al obtener las negociaciones", 
+                ex.Message
+            ));
+        }
     }
 
     /// <summary>
     /// Crea una nueva negociación
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<NegociacionDto>> CreateNegociacion(
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> CreateNegociacion(
         [FromBody] CreateNegociacionDto request,
         CancellationToken cancellationToken = default)
     {
-        var command = new CreateNegociacionCommand(request);
-        var result = await _mediator.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(GetNegociacionById), new { id = result.IdNegociacion }, result);
+        try
+        {
+            var command = new CreateNegociacionCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+            
+            return CreatedAtAction(
+                nameof(GetNegociacionById), 
+                new { id = result.IdNegociacion }, 
+                ApiResponse<NegociacionDto>.SuccessResult(
+                    result, 
+                    "Negociación creada exitosamente"
+                )
+            );
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ErrorResult(
+                "Datos inválidos", 
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error interno del servidor", 
+                ex.Message
+            ));
+        }
     }
 
     /// <summary>
     /// Obtiene una negociación por ID
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ActionResult<NegociacionDto>> GetNegociacionById(
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> GetNegociacionById(
         int id,
         CancellationToken cancellationToken = default)
     {
-        // TODO: Implementar GetNegociacionByIdQuery
-        return NotFound("Endpoint en desarrollo");
+        try
+        {
+            // TODO: Implementar GetNegociacionByIdQuery
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada", 
+                $"No se encontró una negociación con ID {id}"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error interno del servidor", 
+                ex.Message
+            ));
+        }
     }
 
     /// <summary>
     /// Obtiene negociaciones pendientes de aprobación
     /// </summary>
     [HttpGet("pendientes-aprobacion")]
-    public async Task<ActionResult<IEnumerable<NegociacionDto>>> GetPendientesAprobacion(
+    public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetPendientesAprobacion(
         CancellationToken cancellationToken = default)
     {
-        var query = new GetNegociacionesQuery(Estado: "Pendiente");
-        var result = await _mediator.Send(query, cancellationToken);
-        return Ok(result);
+        try
+        {
+            var query = new GetNegociacionesQuery(Estado: "Pendiente");
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
+                result, 
+                "Negociaciones pendientes obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ApiResponse<IEnumerable<NegociacionDto>>.ErrorResult(
+                "Error al obtener negociaciones pendientes", 
+                ex.Message
+            ));
+        }
     }
 
     /// <summary>
     /// Aprueba una negociación
     /// </summary>
     [HttpPut("{id}/aprobar")]
-    public async Task<ActionResult> AprobarNegociacion(
+    public async Task<ActionResult<ApiResponse>> AprobarNegociacion(
         int id,
         CancellationToken cancellationToken = default)
     {
-        // TODO: Implementar AprobarNegociacionCommand
-        return NoContent();
+        try
+        {
+            // TODO: Implementar AprobarNegociacionCommand
+            return Ok(ApiResponse.SuccessResult("Negociación aprobada exitosamente"));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error al aprobar la negociación", 
+                ex.Message
+            ));
+        }
     }
 }

@@ -1,14 +1,12 @@
-using Miski.Domain.Entities.Base;
-
 namespace Miski.Domain.Entities;
 
-public class Compra : BaseEntity
+public class Compra
 {
     public int IdCompra { get; set; }
     public int IdNegociacion { get; set; }
     public string? Serie { get; set; }
-    public DateTime? FechaRegistro { get; set; }
-    public DateTime? FechaEmision { get; set; }
+    public DateTime? FRegistro { get; set; }
+    public DateTime? FEmision { get; set; }
     public string? GuiaRemision { get; set; }
     public int? IdVehiculo { get; set; }
     public string? Estado { get; set; }

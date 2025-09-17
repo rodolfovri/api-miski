@@ -1,8 +1,6 @@
-using Miski.Shared.DTOs.Base;
-
 namespace Miski.Shared.DTOs;
 
-public class NegociacionDto : BaseDto
+public class NegociacionDto
 {
     public int IdNegociacion { get; set; }
     public int? IdProveedor { get; set; }

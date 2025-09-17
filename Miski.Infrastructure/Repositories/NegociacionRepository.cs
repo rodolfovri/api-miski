@@ -18,7 +18,7 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
             .Include(n => n.Comisionista)
             .Include(n => n.Producto)
             .Where(n => n.IdProveedor == proveedorId)
-            .OrderByDescending(n => n.Fecha)
+            .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
     }
 
@@ -29,7 +29,7 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
             .Include(n => n.Comisionista)
             .Include(n => n.Producto)
             .Where(n => n.IdComisionista == comisionistaId)
-            .OrderByDescending(n => n.Fecha)
+            .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
     }
 
@@ -40,7 +40,7 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
             .Include(n => n.Comisionista)
             .Include(n => n.Producto)
             .Where(n => n.Estado == estado)
-            .OrderByDescending(n => n.Fecha)
+            .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
     }
 
@@ -51,7 +51,7 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
             .Include(n => n.Comisionista)
             .Include(n => n.Producto)
             .Where(n => n.EstadoAprobado == null || n.EstadoAprobado == "Pendiente")
-            .OrderBy(n => n.Fecha)
+            .OrderBy(n => n.FRegistro)
             .ToListAsync(cancellationToken);
     }
 
@@ -71,7 +71,7 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
             .Include(n => n.Producto)
-            .OrderByDescending(n => n.Fecha)
+            .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
     }
 }

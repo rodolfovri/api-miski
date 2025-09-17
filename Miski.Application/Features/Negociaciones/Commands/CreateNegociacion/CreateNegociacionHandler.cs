@@ -52,7 +52,7 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
             IdProveedor = request.Negociacion.IdProveedor,
             IdComisionista = request.Negociacion.IdComisionista,
             IdProducto = request.Negociacion.IdProducto,
-            Fecha = request.Negociacion.Fecha,
+            FRegistro = request.Negociacion.Fecha,
             PesoTotal = request.Negociacion.PesoTotal,
             SacosTotales = request.Negociacion.SacosTotales,
             PrecioUnitario = request.Negociacion.PrecioUnitario,
@@ -61,7 +61,7 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
             FotoDniFrontal = request.Negociacion.FotoDniFrontal,
             FotoDniPosterior = request.Negociacion.FotoDniPosterior,
             Observacion = request.Negociacion.Observacion,
-            Estado = "Pendiente"
+            Estado = "PENDIENTE"
         };
 
         await _unitOfWork.Repository<Negociacion>().AddAsync(negociacion, cancellationToken);
