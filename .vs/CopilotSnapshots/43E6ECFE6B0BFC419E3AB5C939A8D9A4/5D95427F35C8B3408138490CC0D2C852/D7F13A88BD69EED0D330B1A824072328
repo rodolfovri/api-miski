@@ -1,0 +1,12 @@
+﻿{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "Microsoft.EntityFrameworkCore.Database.Command": "Information"
+    }
+  },
+    "ConnectionStrings": {
+        "DefaultConnection": "Server=DESKTOP-18GKGL3;Database=BD_MISKI;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true"
+    }
+}

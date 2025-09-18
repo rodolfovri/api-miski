@@ -8,20 +8,28 @@ public class DomainException : Exception
 
 public class NotFoundException : Exception
 {
-    public NotFoundException(string name, object key) 
+    public NotFoundException(string name, object key)
         : base($"Entidad \"{name}\" ({key}) no fue encontrada.") { }
 }
 
 public class ValidationException : Exception
 {
-    public IDictionary<string, string[]> Errors { get; }
+    public object Errors { get; }
 
-    public ValidationException() : base("Uno o más errores de validación ocurrieron.")
+    public ValidationException()
+        : base("Uno o más errores de validación ocurrieron.")
     {
-        Errors = new Dictionary<string, string[]>();
+        Errors = "Uno o más errores de validación ocurrieron.";
     }
 
-    public ValidationException(IDictionary<string, string[]> errors) : this()
+    // Para mensaje simple
+    public ValidationException(string message) : base(message)
+    {
+        Errors = message;
+    }
+
+    // Para múltiples errores (formularios grandes, etc.)
+    public ValidationException(IDictionary<string, string[]> errors) : base("Uno o más errores de validación ocurrieron.")
     {
         Errors = errors;
     }

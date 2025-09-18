@@ -14,7 +14,7 @@ public class ProductoRepository : Repository<Producto>, IProductoRepository
     public async Task<IEnumerable<Producto>> GetActivosAsync(CancellationToken cancellationToken = default)
     {
         return await _dbSet
-            .Where(p => p.Estado == "Activo")
+            .Where(p => p.Estado == "ACTIVO")
             .OrderBy(p => p.Nombre)
             .ToListAsync(cancellationToken);
     }

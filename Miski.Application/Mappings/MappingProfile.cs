@@ -1,6 +1,7 @@
 using AutoMapper;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs;
+using Miski.Shared.DTOs.Auth;
 
 namespace Miski.Application.Mappings;
 
@@ -20,11 +21,23 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.MontoTotal, opt => opt.MapFrom(src => src.PesoTotal * src.PrecioUnitario));
 
         CreateMap<Producto, ProductoDto>()
-            .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.Estado ?? "Activo"));
+            .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.Estado ?? "ACTIVO"));
 
         CreateMap<Persona, PersonaDto>()
             .ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => src.TipoDocumento.Nombre))
             .ForMember(dest => dest.NombreCompleto, opt => opt.MapFrom(src => $"{src.Nombres} {src.Apellidos}"));
+
+        // Mapeos para Auth
+        CreateMap<Persona, Miski.Shared.DTOs.Auth.PersonaDto>()
+            .ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => 
+                src.TipoDocumento != null ? src.TipoDocumento.Nombre : string.Empty))
+            .ForMember(dest => dest.NombreCompleto, opt => opt.MapFrom(src => $"{src.Nombres} {src.Apellidos}"));
+
+        CreateMap<Rol, RolDto>();
+
+        CreateMap<Usuario, AuthResponseDto>()
+            .ForMember(dest => dest.Token, opt => opt.Ignore())
+            .ForMember(dest => dest.Expiration, opt => opt.Ignore());
     }
 }
 

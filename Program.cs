@@ -1,36 +1,94 @@
+using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Miski.Api.Controllers.NewFolder;
+using Miski.Application.Features.Auth.Commands.Login;
+using Miski.Application.Features.Negociaciones.Commands.CreateNegociacion;
 using Miski.Application.Mappings;
 using Miski.Domain.Contracts;
 using Miski.Domain.Contracts.Repositories;
 using Miski.Infrastructure.Data;
 using Miski.Infrastructure.Persistence;
 using Miski.Infrastructure.Repositories;
-using Miski.Application.Features.Negociaciones.Commands.CreateNegociacion;
-using FluentValidation;
-using Swashbuckle.AspNetCore.Annotations;
 using Miski.Shared.DTOs.Base;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Miski API", Version = "v1" });
     c.EnableAnnotations();
+    
+    // JWT Configuration for Swagger
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header usando el esquema Bearer. Ejemplo: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    // Apllicar el filtro de operación personalizado
+    c.OperationFilter<AuthorizeOperationFilter>();
+
+    //c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement()
+    //{
+    //    {
+    //        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    //        {
+    //            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+    //            {
+    //                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+    //                Id = "Bearer"
+    //            },
+    //            Scheme = "oauth2",
+    //            Name = "Bearer",
+    //            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+    //        },
+    //        new List<string>()
+    //    }
+    //});
 });
 
 // Database Configuration
 builder.Services.AddDbContext<MiskiDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// JWT Configuration
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "MiskiSecretKey2024!@#$%";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "MiskiApi";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "MiskiClient";
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 // MediatR Configuration
 builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(CreateNegociacionHandler).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(LoginHandler).Assembly);
 });
 
 // AutoMapper Configuration
@@ -41,6 +99,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 // FluentValidation Configuration
 builder.Services.AddValidatorsFromAssemblyContaining<CreateNegociacionValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginValidator>();
 
 // Repository Pattern
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -75,6 +134,7 @@ app.UseCors("AllowAll");
 // Global Exception Handler
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+app.UseAuthentication(); // Agregar antes de UseAuthorization
 app.UseAuthorization();
 
 app.MapControllers();

@@ -95,7 +95,6 @@ public class NegociacionesController : ControllerBase
     {
         try
         {
-            // TODO: Implementar GetNegociacionByIdQuery
             return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
                 "Negociación no encontrada", 
                 $"No se encontró una negociación con ID {id}"
@@ -146,7 +145,6 @@ public class NegociacionesController : ControllerBase
     {
         try
         {
-            // TODO: Implementar AprobarNegociacionCommand
             return Ok(ApiResponse.SuccessResult("Negociación aprobada exitosamente"));
         }
         catch (Exception ex)
