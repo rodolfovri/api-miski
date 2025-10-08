@@ -8,12 +8,11 @@ public class Compra
     public DateTime? FRegistro { get; set; }
     public DateTime? FEmision { get; set; }
     public string? GuiaRemision { get; set; }
-    public int? IdVehiculo { get; set; }
     public string? Estado { get; set; }
 
     // Navigation properties
     public virtual Negociacion Negociacion { get; set; } = null!;
-    public virtual Vehiculo? Vehiculo { get; set; }
     public virtual ICollection<Lote> Lotes { get; set; } = new List<Lote>();
     public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
+    public virtual ICollection<CompraVehiculo> CompraVehiculos { get; set; } = new List<CompraVehiculo>();
 }

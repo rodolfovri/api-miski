@@ -169,10 +169,11 @@ C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\staticwebassets.build.j
 C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\Miski.Api.csproj.Up2Date
 C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\Miski.Api.dll
 C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\refint\Miski.Api.dll
 C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\Miski.Api.pdb
 C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\Miski.Api.genruntimeconfig.cache
 C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\ref\Miski.Api.dll
+C:\Users\Rodolfo\source\repos\Miski.Api\bin\Debug\net8.0\Miski.Api.staticwebassets.runtime.json
+C:\Users\Rodolfo\source\repos\Miski.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

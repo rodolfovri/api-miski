@@ -17,6 +17,7 @@ public class MiskiDbContext : DbContext
     public DbSet<PersonaCategoria> PersonaCategorias { get; set; }
     public DbSet<Rol> Roles { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<UsuarioRol> UsuarioRoles { get; set; }
     public DbSet<Ubicacion> Ubicaciones { get; set; }
     public DbSet<PersonaUbicacion> PersonaUbicaciones { get; set; }
     public DbSet<Producto> Productos { get; set; }
@@ -114,6 +115,7 @@ public class MiskiDbContext : DbContext
             entity.HasKey(e => e.IdRol);
             entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
             entity.Property(e => e.Descripcion).HasMaxLength(100);
+            entity.Property(e => e.TipoPlataforma).HasMaxLength(20);
             entity.ToTable("Rol");
         });
 
@@ -133,13 +135,28 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Usuario_Persona");
 
+            entity.ToTable("Usuario");
+        });
+
+        // UsuarioRol configuration
+        modelBuilder.Entity<UsuarioRol>(entity =>
+        {
+            entity.HasKey(e => e.IdUsuarioRol);
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.Usuario)
+                .WithMany(p => p.UsuarioRoles)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_UsuarioRol_Usuario");
+
             entity.HasOne(d => d.Rol)
-                .WithMany(p => p.Usuarios)
+                .WithMany(p => p.UsuarioRoles)
                 .HasForeignKey(d => d.IdRol)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Usuario_Rol");
+                .HasConstraintName("FK_UsuarioRol_Rol");
 
-            entity.ToTable("Usuario");
+            entity.ToTable("UsuarioRol");
         });
 
         // Ubicacion configuration
@@ -275,13 +292,26 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Compra_Negociacion");
 
+            entity.ToTable("Compra");
+        });
+
+        // CompraVehiculo configuration
+        modelBuilder.Entity<CompraVehiculo>(entity =>
+        {
+            entity.HasKey(e => e.IdCompraVehiculo);
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.Compra)
+                .WithMany(p => p.CompraVehiculos)
+                .HasForeignKey(d => d.IdCompra)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_CompraVehiculo_Compra");
             entity.HasOne(d => d.Vehiculo)
-                .WithMany(p => p.Compras)
+                .WithMany(p => p.CompraVehiculos)
                 .HasForeignKey(d => d.IdVehiculo)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Compra_Vehiculo");
-
-            entity.ToTable("Compra");
+                .HasConstraintName("FK_CompraVehiculo_Vehiculo");
+            entity.ToTable("CompraVehiculo");
         });
 
         // Lote configuration
@@ -289,7 +319,9 @@ public class MiskiDbContext : DbContext
         {
             entity.HasKey(e => e.IdLote);
             entity.Property(e => e.Peso).HasPrecision(18, 2).IsRequired();
+            entity.Property(e => e.Sacos).IsRequired();
             entity.Property(e => e.Codigo).HasMaxLength(50);
+            entity.Property(e => e.Grado).HasMaxLength(20);
 
             entity.HasOne(d => d.Compra)
                 .WithMany(p => p.Lotes)
@@ -348,6 +380,22 @@ public class MiskiDbContext : DbContext
                 .HasConstraintName("FK_LlegadaDetalle_Producto");
 
             entity.ToTable("LlegadaPlantaDetalle");
+        });
+
+        // TrackingPersona configuration
+        modelBuilder.Entity<TrackingPersona>(entity =>
+        {
+            entity.HasKey(e => e.IdTracking);
+            entity.Property(e => e.Latitud).HasPrecision(10, 7).IsRequired();
+            entity.Property(e => e.Longitud).HasPrecision(10, 7).IsRequired();
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.Persona)
+                .WithMany(p => p.TrackingPersonas)
+                .HasForeignKey(d => d.IdPersona)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_TrackingPersona_Persona");
+            entity.ToTable("TrackingPersona");
         });
     }
 }

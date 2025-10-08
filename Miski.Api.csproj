@@ -22,4 +22,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Miski.Application\Features\Negociaciones\Commands\CreateNegociacion\" />
+    <Folder Include="Miski.Application\Features\Negociaciones\Queries\GetNegociaciones\" />
+  </ItemGroup>
+
 </Project>

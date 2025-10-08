@@ -70,12 +70,22 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, AuthResponseDto>
             IdPersona = request.RegisterData.IdPersona,
             Username = request.RegisterData.Username,
             PasswordHash = passwordHash,
-            IdRol = request.RegisterData.IdRol,
             Estado = request.RegisterData.Estado ?? "ACTIVO",
             FRegistro = DateTime.Now
         };
 
         await _unitOfWork.Repository<Usuario>().AddAsync(nuevoUsuario, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Crear la relación Usuario-Rol en la tabla UsuarioRol
+        var usuarioRol = new UsuarioRol
+        {
+            IdUsuario = nuevoUsuario.IdUsuario,
+            IdRol = request.RegisterData.IdRol,
+            FRegistro = DateTime.Now
+        };
+
+        await _unitOfWork.Repository<UsuarioRol>().AddAsync(usuarioRol, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // Hacer login automático después del registro

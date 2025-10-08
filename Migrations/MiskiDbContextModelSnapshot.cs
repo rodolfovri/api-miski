@@ -65,20 +65,52 @@ namespace Miski.Api.Migrations
                     b.Property<int>("IdNegociacion")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdVehiculo")
-                        .HasColumnType("int");
-
                     b.Property<string>("Serie")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("VehiculoIdVehiculo")
+                        .HasColumnType("int");
 
                     b.HasKey("IdCompra");
 
                     b.HasIndex("IdNegociacion");
 
-                    b.HasIndex("IdVehiculo");
+                    b.HasIndex("VehiculoIdVehiculo");
 
                     b.ToTable("Compra", (string)null);
+                });
+
+            modelBuilder.Entity("Miski.Domain.Entities.CompraVehiculo", b =>
+                {
+                    b.Property<int>("IdCompraVehiculo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCompraVehiculo"));
+
+                    b.Property<DateTime>("FRegistro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("GuiaRemision")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdCompra")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdVehiculo")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCompraVehiculo");
+
+                    b.HasIndex("IdCompra");
+
+                    b.HasIndex("IdVehiculo");
+
+                    b.ToTable("CompraVehiculo", (string)null);
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.LlegadaPlanta", b =>
@@ -165,6 +197,10 @@ namespace Miski.Api.Migrations
                     b.Property<string>("Codigo")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Grado")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("IdCompra")
                         .HasColumnType("int");
@@ -438,6 +474,10 @@ namespace Miski.Api.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("TipoPlataforma")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.HasKey("IdRol");
 
                     b.ToTable("Rol", (string)null);
@@ -495,6 +535,39 @@ namespace Miski.Api.Migrations
                     b.HasKey("IdTipoDocumento");
 
                     b.ToTable("TipoDocumento", (string)null);
+                });
+
+            modelBuilder.Entity("Miski.Domain.Entities.TrackingPersona", b =>
+                {
+                    b.Property<int>("IdTracking")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTracking"));
+
+                    b.Property<DateTime>("FRegistro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("IdPersona")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Latitud")
+                        .IsRequired()
+                        .HasPrecision(10, 7)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Longitud")
+                        .IsRequired()
+                        .HasPrecision(10, 7)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdTracking");
+
+                    b.HasIndex("IdPersona");
+
+                    b.ToTable("TrackingPersona", (string)null);
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Ubicacion", b =>
@@ -565,9 +638,6 @@ namespace Miski.Api.Migrations
                     b.Property<int?>("IdPersona")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdRol")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -584,12 +654,38 @@ namespace Miski.Api.Migrations
                         .IsUnique()
                         .HasFilter("[IdPersona] IS NOT NULL");
 
-                    b.HasIndex("IdRol");
-
                     b.HasIndex("Username")
                         .IsUnique();
 
                     b.ToTable("Usuario", (string)null);
+                });
+
+            modelBuilder.Entity("Miski.Domain.Entities.UsuarioRol", b =>
+                {
+                    b.Property<int>("IdUsuarioRol")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuarioRol"));
+
+                    b.Property<DateTime>("FRegistro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("IdRol")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdUsuarioRol");
+
+                    b.HasIndex("IdRol");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("UsuarioRol", (string)null);
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Vehiculo", b =>
@@ -635,13 +731,31 @@ namespace Miski.Api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Compra_Negociacion");
 
-                    b.HasOne("Miski.Domain.Entities.Vehiculo", "Vehiculo")
+                    b.HasOne("Miski.Domain.Entities.Vehiculo", null)
                         .WithMany("Compras")
-                        .HasForeignKey("IdVehiculo")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_Compra_Vehiculo");
+                        .HasForeignKey("VehiculoIdVehiculo")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Negociacion");
+                });
+
+            modelBuilder.Entity("Miski.Domain.Entities.CompraVehiculo", b =>
+                {
+                    b.HasOne("Miski.Domain.Entities.Compra", "Compra")
+                        .WithMany("CompraVehiculos")
+                        .HasForeignKey("IdCompra")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_CompraVehiculo_Compra");
+
+                    b.HasOne("Miski.Domain.Entities.Vehiculo", "Vehiculo")
+                        .WithMany("CompraVehiculos")
+                        .HasForeignKey("IdVehiculo")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_CompraVehiculo_Vehiculo");
+
+                    b.Navigation("Compra");
 
                     b.Navigation("Vehiculo");
                 });
@@ -820,6 +934,18 @@ namespace Miski.Api.Migrations
                     b.Navigation("Producto");
                 });
 
+            modelBuilder.Entity("Miski.Domain.Entities.TrackingPersona", b =>
+                {
+                    b.HasOne("Miski.Domain.Entities.Persona", "Persona")
+                        .WithMany("TrackingPersonas")
+                        .HasForeignKey("IdPersona")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_TrackingPersona_Persona");
+
+                    b.Navigation("Persona");
+                });
+
             modelBuilder.Entity("Miski.Domain.Entities.Ubicacion", b =>
                 {
                     b.HasOne("Miski.Domain.Entities.Persona", "Persona")
@@ -840,16 +966,28 @@ namespace Miski.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_Usuario_Persona");
 
+                    b.Navigation("Persona");
+                });
+
+            modelBuilder.Entity("Miski.Domain.Entities.UsuarioRol", b =>
+                {
                     b.HasOne("Miski.Domain.Entities.Rol", "Rol")
-                        .WithMany("Usuarios")
+                        .WithMany("UsuarioRoles")
                         .HasForeignKey("IdRol")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("FK_Usuario_Rol");
+                        .HasConstraintName("FK_UsuarioRol_Rol");
 
-                    b.Navigation("Persona");
+                    b.HasOne("Miski.Domain.Entities.Usuario", "Usuario")
+                        .WithMany("UsuarioRoles")
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_UsuarioRol_Usuario");
 
                     b.Navigation("Rol");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.CategoriaPersona", b =>
@@ -859,6 +997,8 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Compra", b =>
                 {
+                    b.Navigation("CompraVehiculos");
+
                     b.Navigation("LlegadasPlanta");
 
                     b.Navigation("Lotes");
@@ -893,6 +1033,8 @@ namespace Miski.Api.Migrations
 
                     b.Navigation("PersonaUbicaciones");
 
+                    b.Navigation("TrackingPersonas");
+
                     b.Navigation("Ubicaciones");
 
                     b.Navigation("Usuario");
@@ -909,7 +1051,7 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Rol", b =>
                 {
-                    b.Navigation("Usuarios");
+                    b.Navigation("UsuarioRoles");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.TipoDocumento", b =>
@@ -924,8 +1066,15 @@ namespace Miski.Api.Migrations
                     b.Navigation("Stocks");
                 });
 
+            modelBuilder.Entity("Miski.Domain.Entities.Usuario", b =>
+                {
+                    b.Navigation("UsuarioRoles");
+                });
+
             modelBuilder.Entity("Miski.Domain.Entities.Vehiculo", b =>
                 {
+                    b.Navigation("CompraVehiculos");
+
                     b.Navigation("Compras");
                 });
 #pragma warning restore 612, 618

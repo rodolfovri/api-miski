@@ -1,0 +1,128 @@
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Miski.Shared.DTOs.Base;
+
+namespace Miski.Api.Controllers.Compras;
+
+[ApiController]
+[Route("api/compras/lotes")]
+[Tags("Compras")]
+[Authorize]
+public class LotesController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public LotesController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    /// <summary>
+    /// Obtiene todos los lotes
+    /// </summary>
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetLotes(
+        [FromQuery] int? compraId = null,
+        [FromQuery] string? grado = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar query handler
+            var result = new List<object>();
+            
+            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+                result,
+                "Lotes obtenidos exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene un lote por ID
+    /// </summary>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApiResponse<object>>> GetLoteById(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar query handler
+            return NotFound(ApiResponse<object>.ErrorResult(
+                "Lote no encontrado",
+                $"No se encontró un lote con ID {id}"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<object>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Crea un nuevo lote
+    /// </summary>
+    [HttpPost]
+    public async Task<ActionResult<ApiResponse<object>>> CreateLote(
+        [FromBody] object request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar command handler
+            return CreatedAtAction(
+                nameof(GetLoteById),
+                new { id = 1 },
+                ApiResponse<object>.SuccessResult(
+                    request,
+                    "Lote creado exitosamente"
+                )
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<object>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Actualiza un lote
+    /// </summary>
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdateLote(
+        int id,
+        [FromBody] object request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar command handler
+            return Ok(ApiResponse<object>.SuccessResult(
+                request,
+                "Lote actualizado exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<object>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+}

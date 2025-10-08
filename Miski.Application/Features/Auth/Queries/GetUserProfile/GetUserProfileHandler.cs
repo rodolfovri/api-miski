@@ -29,7 +29,7 @@ public class GetUserProfileHandler : IRequestHandler<GetUserProfileQuery, AuthRe
             Token = string.Empty, // No devolvemos token en el perfil
             Expiration = DateTime.MinValue,
             Persona = usuarioCompleto.Persona != null ? _mapper.Map<PersonaDto>(usuarioCompleto.Persona) : null,
-            Rol = _mapper.Map<RolDto>(usuarioCompleto.Rol)
+            Roles = usuarioCompleto.UsuarioRoles.Select(ur => _mapper.Map<RolDto>(ur.Rol)).ToList()
         };
     }
 
@@ -37,6 +37,7 @@ public class GetUserProfileHandler : IRequestHandler<GetUserProfileQuery, AuthRe
     {
         var usuarios = await _unitOfWork.Repository<Usuario>().GetAllAsync(cancellationToken);
         var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+        var usuarioRoles = await _unitOfWork.Repository<UsuarioRol>().GetAllAsync(cancellationToken);
         var roles = await _unitOfWork.Repository<Rol>().GetAllAsync(cancellationToken);
         var tiposDocumento = await _unitOfWork.Repository<TipoDocumento>().GetAllAsync(cancellationToken);
 
@@ -54,7 +55,13 @@ public class GetUserProfileHandler : IRequestHandler<GetUserProfileQuery, AuthRe
             }
         }
 
-        usuario.Rol = roles.FirstOrDefault(r => r.IdRol == usuario.IdRol);
+        // Cargar roles del usuario a través de UsuarioRol
+        var rolesUsuario = usuarioRoles.Where(ur => ur.IdUsuario == usuarioId).ToList();
+        foreach (var ur in rolesUsuario)
+        {
+            ur.Rol = roles.FirstOrDefault(r => r.IdRol == ur.IdRol) ?? new Rol();
+            usuario.UsuarioRoles.Add(ur);
+        }
 
         return usuario;
     }

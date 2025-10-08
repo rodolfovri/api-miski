@@ -11,4 +11,5 @@ public class Vehiculo
 
     // Navigation properties
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
+    public virtual ICollection<CompraVehiculo> CompraVehiculos { get; set; } = new List<CompraVehiculo>();
 }

@@ -23,4 +23,5 @@ public class Persona
     public virtual ICollection<Negociacion> NegociacionesComisionista { get; set; } = new List<Negociacion>();
     public virtual ICollection<Negociacion> NegociacionesAprobadas { get; set; } = new List<Negociacion>();
     public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
+    public virtual ICollection<TrackingPersona> TrackingPersonas { get; set; } = new List<TrackingPersona>();
 }

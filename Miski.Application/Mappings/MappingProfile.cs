@@ -33,11 +33,13 @@ public class MappingProfile : Profile
                 src.TipoDocumento != null ? src.TipoDocumento.Nombre : string.Empty))
             .ForMember(dest => dest.NombreCompleto, opt => opt.MapFrom(src => $"{src.Nombres} {src.Apellidos}"));
 
-        CreateMap<Rol, RolDto>();
+        CreateMap<Rol, RolDto>()
+            .ForMember(dest => dest.TipoPlataforma, opt => opt.MapFrom(src => src.TipoPlataforma));
 
         CreateMap<Usuario, AuthResponseDto>()
             .ForMember(dest => dest.Token, opt => opt.Ignore())
-            .ForMember(dest => dest.Expiration, opt => opt.Ignore());
+            .ForMember(dest => dest.Expiration, opt => opt.Ignore())
+            .ForMember(dest => dest.Roles, opt => opt.Ignore()); // Se manejará manualmente
     }
 }
 

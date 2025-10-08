@@ -7,7 +7,7 @@ public class AuthResponseDto
     public string Token { get; set; } = string.Empty;
     public DateTime Expiration { get; set; }
     public PersonaDto? Persona { get; set; }
-    public RolDto Rol { get; set; } = null!;
+    public List<RolDto> Roles { get; set; } = new List<RolDto>();
 }
 
 public class RolDto
@@ -15,6 +15,7 @@ public class RolDto
     public int IdRol { get; set; }
     public string Nombre { get; set; } = string.Empty;
     public string? Descripcion { get; set; }
+    public string? TipoPlataforma { get; set; }
 }
 
 public class PersonaDto

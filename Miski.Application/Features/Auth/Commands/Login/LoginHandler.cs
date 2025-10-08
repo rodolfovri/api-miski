@@ -54,8 +54,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             throw new ValidationException("Contraseña incorrecta");
         }
 
-
-        // Cargar datos relacionados
+        // Cargar datos relacionados incluyendo roles
         var usuarioCompleto = await GetUsuarioCompletoAsync(usuario.IdUsuario, cancellationToken);
 
         // Generar token JWT
@@ -68,7 +67,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             Token = token,
             Expiration = DateTime.UtcNow.AddHours(8),
             Persona = usuarioCompleto.Persona != null ? _mapper.Map<PersonaDto>(usuarioCompleto.Persona) : null,
-            Rol = _mapper.Map<RolDto>(usuarioCompleto.Rol)
+            Roles = usuarioCompleto.UsuarioRoles.Select(ur => _mapper.Map<RolDto>(ur.Rol)).ToList()
         };
     }
 
@@ -76,6 +75,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
     {
         var usuarios = await _unitOfWork.Repository<Usuario>().GetAllAsync(cancellationToken);
         var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+        var usuarioRoles = await _unitOfWork.Repository<UsuarioRol>().GetAllAsync(cancellationToken);
         var roles = await _unitOfWork.Repository<Rol>().GetAllAsync(cancellationToken);
         var tiposDocumento = await _unitOfWork.Repository<TipoDocumento>().GetAllAsync(cancellationToken);
 
@@ -93,7 +93,13 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             }
         }
 
-        usuario.Rol = roles.FirstOrDefault(r => r.IdRol == usuario.IdRol);
+        // Cargar roles del usuario a través de UsuarioRol
+        var rolesUsuario = usuarioRoles.Where(ur => ur.IdUsuario == usuarioId).ToList();
+        foreach (var ur in rolesUsuario)
+        {
+            ur.Rol = roles.FirstOrDefault(r => r.IdRol == ur.IdRol) ?? new Rol();
+            usuario.UsuarioRoles.Add(ur);
+        }
 
         return usuario;
     }
@@ -117,9 +123,14 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
-            new(ClaimTypes.Name, usuario.Username),
-            new(ClaimTypes.Role, usuario.Rol.Nombre)
+            new(ClaimTypes.Name, usuario.Username)
         };
+
+        // Agregar múltiples roles como claims
+        foreach (var usuarioRol in usuario.UsuarioRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, usuarioRol.Rol.Nombre));
+        }
 
         if (usuario.Persona != null)
         {

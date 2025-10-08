@@ -3,9 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Miski.Api.Controllers.NewFolder;
+using Miski.Api.Controllers.Filters;
 using Miski.Application.Features.Auth.Commands.Login;
-using Miski.Application.Features.Negociaciones.Commands.CreateNegociacion;
+using Miski.Application.Features.Compras.Negociaciones.Commands.CreateNegociacion;
 using Miski.Application.Mappings;
 using Miski.Domain.Contracts;
 using Miski.Domain.Contracts.Repositories;
@@ -13,7 +13,7 @@ using Miski.Infrastructure.Data;
 using Miski.Infrastructure.Persistence;
 using Miski.Infrastructure.Repositories;
 using Miski.Shared.DTOs.Base;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,39 +23,65 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Miski API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "Miski API", 
+        Version = "v1",
+        Description = "API para el sistema de gestión agrícola Miski",
+        Contact = new OpenApiContact
+        {
+            Name = "Equipo Miski",
+            Email = "soporte@miski.com"
+        }
+    });
+    
     c.EnableAnnotations();
     
+    // Configuración para agrupar por Tags (módulos)
+    c.TagActionsBy(api => new[] { api.GroupName ?? api.ActionDescriptor.RouteValues["controller"] });
+    c.DocInclusionPredicate((name, api) => true);
+
     // JWT Configuration for Swagger
-    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header usando el esquema Bearer. Ejemplo: \"Authorization: Bearer {token}\"",
+        Description = "JWT Authorization header usando el esquema Bearer. \r\n\r\n " +
+                      "Ingresa 'Bearer' [espacio] y luego tu token en el campo de texto abajo.\r\n\r\n" +
+                      "Ejemplo: \"Bearer 12345abcdef\"",
         Name = "Authorization",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
     });
 
-    // Apllicar el filtro de operación personalizado
-    c.OperationFilter<AuthorizeOperationFilter>();
-
-    //c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement()
+    //c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     //{
     //    {
-    //        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    //        new OpenApiSecurityScheme
     //        {
-    //            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+    //            Reference = new OpenApiReference
     //            {
-    //                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+    //                Type = ReferenceType.SecurityScheme,
     //                Id = "Bearer"
     //            },
     //            Scheme = "oauth2",
     //            Name = "Bearer",
-    //            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+    //            In = ParameterLocation.Header,
     //        },
     //        new List<string>()
     //    }
     //});
+
+    //// Incluir comentarios XML si existen
+    //var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    //if (File.Exists(xmlPath))
+    //{
+    //    c.IncludeXmlComments(xmlPath);
+    //}
+
+    // Filtro personalizado para autorización
+    c.OperationFilter<AuthorizeOperationFilter>();
 });
 
 // Database Configuration
@@ -124,17 +150,31 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Miski API v1");
+        c.RoutePrefix = "swagger";
+        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+        c.DefaultModelsExpandDepth(-1);
+        c.DisplayRequestDuration();
+        
+        // Personalización de la interfaz
+        c.DocumentTitle = "Miski API - Documentación";
+        c.InjectStylesheet("/swagger/custom.css");
+    });
 }
 
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+// Servir archivos estáticos para personalización de Swagger
+app.UseStaticFiles();
+
 // Global Exception Handler
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-app.UseAuthentication(); // Agregar antes de UseAuthorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -8,6 +8,7 @@ public class Lote
     public decimal Peso { get; set; }
     public int Sacos { get; set; }
     public string? Codigo { get; set; }
+    public string? Grado { get; set; }
 
     // Navigation properties
     public virtual Compra Compra { get; set; } = null!;
