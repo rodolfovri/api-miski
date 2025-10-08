@@ -1,4 +1,4 @@
-using MediatR;
+ï»¿using MediatR;
 using AutoMapper;
 using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
@@ -58,10 +58,10 @@ public class GetUserProfileHandler : IRequestHandler<GetUserProfileQuery, AuthRe
             }
         }
 
-        // Limpiar la colección existente para evitar duplicados
+        // Limpiar la colecciÃ³n existente para evitar duplicados
         usuario.UsuarioRoles.Clear();
 
-        // Cargar roles del usuario a través de UsuarioRol
+        // Cargar roles del usuario a travÃ©s de UsuarioRol
         var rolesUsuario = usuarioRoles.Where(ur => ur.IdUsuario == usuarioId).ToList();
         foreach (var ur in rolesUsuario)
         {

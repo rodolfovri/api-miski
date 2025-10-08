@@ -3,8 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\auth\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.shared\\dtos\\auth\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\modulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\modulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\submodulodetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\submodulodetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\permisorol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\permisorol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\submodulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\submodulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\rol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\rol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\base\\apiresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.shared\\dtos\\base\\apiresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\auth\\commands\\login\\loginhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\auth\\commands\\login\\loginhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\auth\\authresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -15,132 +43,12 @@
       "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\auth\\queries\\getuserprofile\\getuserprofilehandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\auth\\commands\\register\\registerhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\auth\\commands\\register\\registerhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\negociacion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\negociacion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\auth\\commands\\login\\loginhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\auth\\commands\\login\\loginhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\auth\\commands\\register\\registervalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\auth\\commands\\register\\registervalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\auth\\commands\\register\\registercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\auth\\commands\\register\\registercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\auth\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\auth\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\rol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\rol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\usuariorol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\usuariorol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\lote.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\lote.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\auth\\commands\\login\\logincommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\auth\\commands\\login\\logincommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\auth\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\auth\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\negociacionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\negociacionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\wwwroot\\swagger\\custom.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:wwwroot\\swagger\\custom.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\compravehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\compravehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\trackingpersona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\trackingpersona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\compra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\compra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\vehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\vehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\maestros\\tipodocumentocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\maestros\\tipodocumentocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\maestros\\productoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\maestros\\productoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\maestros\\vehiculoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\maestros\\vehiculoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\personas\\personascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\personas\\personascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\personas\\categoriapersonacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\personas\\categoriapersonacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\ubicaciones\\ubicacionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\ubicaciones\\ubicacionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\ubicaciones\\trackingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\ubicaciones\\trackingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\comprascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\comprascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\lotescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\lotescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\ubicaciones\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\ubicaciones\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\architecture.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:architecture.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\createnegociacion\\createnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\createnegociacion\\createnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\mappings\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\mappings\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\categoriapersona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\categoriapersona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -149,35 +57,9 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedHeight": 294,
-          "SelectedChildIndex": 5,
+          "DockedHeight": 326,
+          "SelectedChildIndex": 7,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Lote.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Lote.cs",
-              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Lote.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Lote.cs",
-              "RelativeToolTip": "Miski.Domain\\Entities\\Lote.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAA1wAoAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T19:46:08.835Z",
-              "IsPinned": true
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MiskiDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
-              "RelativeDocumentMoniker": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
-              "RelativeToolTip": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
-              "ViewState": "AgIAACUBAAAAAAAAAAAQwJ0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T19:09:22.211Z",
-              "IsPinned": true
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
@@ -192,407 +74,164 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "LoginDto.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Auth\\LoginDto.cs",
-              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Auth\\LoginDto.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Auth\\LoginDto.cs",
-              "RelativeToolTip": "Miski.Shared\\DTOs\\Auth\\LoginDto.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAzwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T18:48:22.614Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 34,
-              "Title": "MappingProfile.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Mappings\\MappingProfile.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Mappings\\MappingProfile.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Mappings\\MappingProfile.cs",
-              "RelativeToolTip": "Miski.Application\\Mappings\\MappingProfile.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAEBcwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:39:21.151Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "GetUserProfileHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Queries\\GetUserProfile\\GetUserProfileHandler.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Auth\\Queries\\GetUserProfile\\GetUserProfileHandler.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Queries\\GetUserProfile\\GetUserProfileHandler.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Auth\\Queries\\GetUserProfile\\GetUserProfileHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:39:00.461Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AuthResponseDto.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Auth\\AuthResponseDto.cs",
-              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Auth\\AuthResponseDto.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Auth\\AuthResponseDto.cs",
-              "RelativeToolTip": "Miski.Shared\\DTOs\\Auth\\AuthResponseDto.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:37:57.526Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "RegisterValidator.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterValidator.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterValidator.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterValidator.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterValidator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:30:45.736Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "RegisterHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterHandler.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterHandler.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterHandler.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterHandler.cs",
-              "ViewState": "AgIAAFwAAAAAAAAAAAAQwDkAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:28:57.874Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "RegisterCommand.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterCommand.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterCommand.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterCommand.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Auth\\Commands\\Register\\RegisterCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:28:56.685Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "LoginHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
-              "ViewState": "AgIAAIMAAAAAAAAAAAAQwE4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:27:18.601Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "UsuarioRol.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\UsuarioRol.cs",
-              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\UsuarioRol.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\UsuarioRol.cs",
-              "RelativeToolTip": "Miski.Domain\\Entities\\UsuarioRol.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAoAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:09:28.137Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Usuario.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Usuario.cs",
-              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Usuario.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Usuario.cs",
-              "RelativeToolTip": "Miski.Domain\\Entities\\Usuario.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA8AAABkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:13:38.428Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 5,
               "Title": "Rol.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Rol.cs",
               "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Rol.cs",
               "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Rol.cs",
               "RelativeToolTip": "Miski.Domain\\Entities\\Rol.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAYAAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAzwAsAAABbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T16:29:48.169Z"
+              "WhenOpened": "2025-10-08T02:23:27.7Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "LoginCommand.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Login\\LoginCommand.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Auth\\Commands\\Login\\LoginCommand.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Login\\LoginCommand.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Auth\\Commands\\Login\\LoginCommand.cs",
+              "DocumentIndex": 3,
+              "Title": "PermisoRol.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\PermisoRol.cs",
+              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\PermisoRol.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\PermisoRol.cs",
+              "RelativeToolTip": "Miski.Domain\\Entities\\PermisoRol.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAIA0wA4AAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-08T02:19:27.562Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ApiResponse.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Base\\ApiResponse.cs",
+              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Base\\ApiResponse.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Base\\ApiResponse.cs",
+              "RelativeToolTip": "Miski.Shared\\DTOs\\Base\\ApiResponse.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-07T17:15:07.092Z"
+              "WhenOpened": "2025-10-08T02:13:01.98Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Auth\\AuthController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Auth\\AuthController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Auth\\AuthController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Auth\\AuthController.cs",
-              "ViewState": "AgIAAFkAAAAAAAAAAAAgwO8AAAABAAAAAAAAAA==",
+              "Title": "AuthResponseDto.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Auth\\AuthResponseDto.cs",
+              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Auth\\AuthResponseDto.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Auth\\AuthResponseDto.cs",
+              "RelativeToolTip": "Miski.Shared\\DTOs\\Auth\\AuthResponseDto.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAABEAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:53:01.511Z"
+              "WhenOpened": "2025-10-08T01:57:24.526Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "README.md",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Auth\\README.md",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Auth\\README.md",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Auth\\README.md",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Auth\\README.md",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAABoAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2025-09-26T18:57:07.464Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAEYAAAAAAAAAAAAAAFMAAAAuAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "MiskiDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "RelativeDocumentMoniker": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "RelativeToolTip": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "ViewState": "AgIAAMgBAAAAAAAAAAAUwNMBAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:58:20.589Z"
+              "WhenOpened": "2025-10-08T01:41:14.587Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "custom.css",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\wwwroot\\swagger\\custom.css",
-              "RelativeDocumentMoniker": "wwwroot\\swagger\\custom.css",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\wwwroot\\swagger\\custom.css",
-              "RelativeToolTip": "wwwroot\\swagger\\custom.css",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAAEsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-26T18:58:44.252Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 33,
-              "Title": "CreateNegociacionHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionHandler.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionHandler.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionHandler.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionHandler.cs",
-              "ViewState": "AgIAAEIAAAAAAAAAAABRwAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 9,
+              "Title": "GetUserProfileHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Queries\\GetUserProfile\\GetUserProfileHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Auth\\Queries\\GetUserProfile\\GetUserProfileHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Queries\\GetUserProfile\\GetUserProfileHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Auth\\Queries\\GetUserProfile\\GetUserProfileHandler.cs",
+              "ViewState": "AgIAAEkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T19:02:00.331Z"
+              "WhenOpened": "2025-10-08T01:57:09.235Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "NegociacionesController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\NegociacionesController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\NegociacionesController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\NegociacionesController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\NegociacionesController.cs",
-              "ViewState": "AgIAAGgAAAAAAAAAAAAAAJwAAAABAAAAAAAAAA==",
+              "DocumentIndex": 7,
+              "Title": "LoginHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAYwIcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:53:16.424Z"
+              "WhenOpened": "2025-10-08T01:56:51.574Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
-              "Title": "ARCHITECTURE.md",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\ARCHITECTURE.md",
-              "RelativeDocumentMoniker": "ARCHITECTURE.md",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\ARCHITECTURE.md",
-              "RelativeToolTip": "ARCHITECTURE.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIYAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2025-09-26T18:59:59.225Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "TipoDocumentoController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Maestros\\TipoDocumentoController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Maestros\\TipoDocumentoController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Maestros\\TipoDocumentoController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Maestros\\TipoDocumentoController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJMAAAABAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "SubModuloDetalle.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\SubModuloDetalle.cs",
+              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\SubModuloDetalle.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\SubModuloDetalle.cs",
+              "RelativeToolTip": "Miski.Domain\\Entities\\SubModuloDetalle.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAsAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:53:29.322Z"
+              "WhenOpened": "2025-10-08T01:40:30.811Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
-              "Title": "README.md",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Ubicaciones\\README.md",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Ubicaciones\\README.md",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Ubicaciones\\README.md",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Ubicaciones\\README.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2025-09-26T18:57:41.44Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 30,
-              "Title": "LotesController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\LotesController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\LotesController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\LotesController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\LotesController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAH8AAAABAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "SubModulo.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\SubModulo.cs",
+              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\SubModulo.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\SubModulo.cs",
+              "RelativeToolTip": "Miski.Domain\\Entities\\SubModulo.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAA1wAwAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:55:15.476Z"
+              "WhenOpened": "2025-10-08T01:39:00.706Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
-              "Title": "ComprasController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\ComprasController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\ComprasController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\ComprasController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\ComprasController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAALcAAAABAAAAAAAAAA==",
+              "DocumentIndex": 10,
+              "Title": "Negociacion.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Negociacion.cs",
+              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Negociacion.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Negociacion.cs",
+              "RelativeToolTip": "Miski.Domain\\Entities\\Negociacion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:55:04.311Z"
+              "WhenOpened": "2025-10-08T01:38:41.658Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
-              "Title": "TrackingController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Ubicaciones\\TrackingController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Ubicaciones\\TrackingController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Ubicaciones\\TrackingController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Ubicaciones\\TrackingController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHwAAAABAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "Modulo.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Modulo.cs",
+              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Modulo.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Modulo.cs",
+              "RelativeToolTip": "Miski.Domain\\Entities\\Modulo.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAwAsAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:54:49.027Z"
+              "WhenOpened": "2025-10-08T01:28:31.66Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
-              "Title": "UbicacionesController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Ubicaciones\\UbicacionesController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Ubicaciones\\UbicacionesController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Ubicaciones\\UbicacionesController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Ubicaciones\\UbicacionesController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJUAAAABAAAAAAAAAA==",
+              "DocumentIndex": 11,
+              "Title": "CategoriaPersona.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\CategoriaPersona.cs",
+              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\CategoriaPersona.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\CategoriaPersona.cs",
+              "RelativeToolTip": "Miski.Domain\\Entities\\CategoriaPersona.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:54:36.596Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
-              "Title": "CategoriaPersonaController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Personas\\CategoriaPersonaController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Personas\\CategoriaPersonaController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Personas\\CategoriaPersonaController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Personas\\CategoriaPersonaController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:54:23.933Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "PersonasController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Personas\\PersonasController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Personas\\PersonasController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Personas\\PersonasController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Personas\\PersonasController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAN8AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:54:12.461Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "VehiculosController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Maestros\\VehiculosController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Maestros\\VehiculosController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Maestros\\VehiculosController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Maestros\\VehiculosController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJUAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:53:55.717Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "ProductosController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Maestros\\ProductosController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Maestros\\ProductosController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Maestros\\ProductosController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Maestros\\ProductosController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAALAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T18:53:43.325Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "TrackingPersona.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\TrackingPersona.cs",
-              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\TrackingPersona.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\TrackingPersona.cs",
-              "RelativeToolTip": "Miski.Domain\\Entities\\TrackingPersona.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAxwAsAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T19:33:47.843Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "Vehiculo.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Vehiculo.cs",
-              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Vehiculo.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Vehiculo.cs",
-              "RelativeToolTip": "Miski.Domain\\Entities\\Vehiculo.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAxwA0AAABqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T19:32:20.43Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "CompraVehiculo.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\CompraVehiculo.cs",
-              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\CompraVehiculo.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\CompraVehiculo.cs",
-              "RelativeToolTip": "Miski.Domain\\Entities\\CompraVehiculo.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAxwAwAAAA7AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T19:13:03.724Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "Compra.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Compra.cs",
-              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Compra.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Compra.cs",
-              "RelativeToolTip": "Miski.Domain\\Entities\\Compra.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T19:09:18.411Z"
+              "WhenOpened": "2025-10-08T01:28:17.309Z",
+              "EditorCaption": ""
             }
           ]
         },
         {
-          "DockedHeight": 106,
+          "DockedHeight": 74,
           "SelectedChildIndex": -1,
           "Children": [
             {

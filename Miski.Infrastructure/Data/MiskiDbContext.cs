@@ -27,6 +27,12 @@ public class MiskiDbContext : DbContext
     public DbSet<Lote> Lotes { get; set; }
     public DbSet<LlegadaPlanta> LlegadasPlanta { get; set; }
     public DbSet<LlegadaPlantaDetalle> LlegadaPlantaDetalles { get; set; }
+    public DbSet<TrackingPersona> TrackingPersonas { get; set; }
+    public DbSet<CompraVehiculo> CompraVehiculos { get; set; }
+    public DbSet<Modulo> Modulos { get; set; }
+    public DbSet<SubModulo> SubModulos { get; set; }
+    public DbSet<SubModuloDetalle> SubModuloDetalles { get; set; }
+    public DbSet<PermisoRol> PermisoRoles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -396,6 +402,75 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_TrackingPersona_Persona");
             entity.ToTable("TrackingPersona");
+        });
+
+        // Modulo configuration
+        modelBuilder.Entity<Modulo>(entity =>
+        {
+            entity.HasKey(e => e.IdModulo);
+            entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Orden).IsRequired();
+            entity.Property(e => e.Estado).HasMaxLength(20).IsRequired();
+            entity.Property(e => e.TipoPlataforma).HasMaxLength(10).IsRequired();
+            entity.ToTable("Modulo");
+        });
+
+        // SubModulo configuration
+        modelBuilder.Entity<SubModulo>(entity =>
+        {
+            entity.HasKey(e => e.IdSubModulo);
+            entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Orden).IsRequired();
+            entity.Property(e => e.Estado).HasMaxLength(20).IsRequired();
+            entity.HasOne(d => d.Modulo)
+                .WithMany(p => p.SubModulos)
+                .HasForeignKey(d => d.IdModulo)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_SubModulo_Modulo");
+            entity.ToTable("SubModulo");
+        });
+
+        // SubModuloDetalle configuration
+        modelBuilder.Entity<SubModuloDetalle>(entity =>
+        {
+            entity.HasKey(e => e.IdSubModuloDetalle);
+            entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Orden).IsRequired();
+            entity.Property(e => e.Estado).HasMaxLength(20).IsRequired();
+            entity.HasOne(d => d.SubModulo)
+                .WithMany(p => p.SubModuloDetalles)
+                .HasForeignKey(d => d.IdSubModulo)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_SubModuloDetalle_SubModulo");
+            entity.ToTable("SubModuloDetalle");
+        });
+
+        // PermisoRol configuration
+        modelBuilder.Entity<PermisoRol>(entity =>
+        {
+            entity.HasKey(e => e.IdPermisoRol);
+            entity.Property(e => e.TieneAcceso);
+            entity.HasOne(d => d.Rol)
+                .WithMany(p => p.PermisoRoles)
+                .HasForeignKey(d => d.IdRol)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PermisoRol_Rol");
+            entity.HasOne(d => d.Modulo)
+                .WithMany(p => p.PermisoRoles)
+                .HasForeignKey(d => d.IdModulo)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PermisoRol_Modulo");
+            entity.HasOne(d => d.SubModulo)
+                .WithMany(p => p.PermisoRoles)
+                .HasForeignKey(d => d.IdSubModulo)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PermisoRol_SubModulo");
+            entity.HasOne(d => d.SubModuloDetalle)
+                .WithMany(p => p.PermisoRoles)
+                .HasForeignKey(d => d.IdSubModuloDetalle)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PermisoRol_SubModuloDetalle");
+            entity.ToTable("PermisoRol");
         });
     }
 }

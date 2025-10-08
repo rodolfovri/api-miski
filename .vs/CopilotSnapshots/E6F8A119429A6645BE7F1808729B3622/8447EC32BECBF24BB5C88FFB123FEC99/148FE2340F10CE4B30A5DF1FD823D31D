@@ -1,4 +1,4 @@
-using MediatR;
+ï»¿using MediatR;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -28,7 +28,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
 
     public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        // Buscar usuario por número de documento de la persona relacionada
+        // Buscar usuario por nÃºmero de documento de la persona relacionada
         var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
         var persona = personas.FirstOrDefault(p => p.NumeroDocumento == request.LoginData.NumeroDocumento);
 
@@ -48,10 +48,10 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             throw new NotFoundException("Usuario", request.LoginData.NumeroDocumento);
         }
 
-        // Verificar contraseña
+        // Verificar contraseÃ±a
         if (!VerifyPassword(request.LoginData.Password, usuario.PasswordHash))
         {
-            throw new ValidationException("Contraseña incorrecta");
+            throw new ValidationException("ContraseÃ±a incorrecta");
         }
 
         // Cargar datos relacionados incluyendo roles
@@ -93,10 +93,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             }
         }
 
-        // Limpiar la colección existente para evitar duplicados
-        usuario.UsuarioRoles.Clear();
-
-        // Cargar roles del usuario a través de UsuarioRol
+        // Cargar roles del usuario a travÃ©s de UsuarioRol
         var rolesUsuario = usuarioRoles.Where(ur => ur.IdUsuario == usuarioId).ToList();
         foreach (var ur in rolesUsuario)
         {
@@ -129,7 +126,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             new(ClaimTypes.Name, usuario.Username)
         };
 
-        // Agregar múltiples roles como claims
+        // Agregar mÃºltiples roles como claims
         foreach (var usuarioRol in usuario.UsuarioRoles)
         {
             claims.Add(new Claim(ClaimTypes.Role, usuarioRol.Rol.Nombre));

@@ -9,4 +9,5 @@ public class Rol
 
     // Navigation properties
     public virtual ICollection<UsuarioRol> UsuarioRoles { get; set; } = new List<UsuarioRol>();
+    public virtual ICollection<PermisoRol> PermisoRoles { get; set; } = new List<PermisoRol>();
 }
