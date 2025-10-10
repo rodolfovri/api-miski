@@ -25,7 +25,6 @@
   <ItemGroup>
     <Folder Include="Miski.Application\Features\Negociaciones\Commands\CreateNegociacion\" />
     <Folder Include="Miski.Application\Features\Negociaciones\Queries\GetNegociaciones\" />
-    <Folder Include="Scripts\" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@ using AutoMapper;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs;
 using Miski.Shared.DTOs.Auth;
+using Miski.Shared.DTOs.Permisos;
 
 namespace Miski.Application.Mappings;
 
@@ -40,6 +41,19 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Token, opt => opt.Ignore())
             .ForMember(dest => dest.Expiration, opt => opt.Ignore())
             .ForMember(dest => dest.Roles, opt => opt.Ignore()); // Se manejará manualmente
+
+        // Mapeos para Permisos
+        CreateMap<Modulo, ModuloDto>();
+        CreateMap<SubModulo, SubModuloDto>()
+            .ForMember(dest => dest.ModuloNombre, opt => opt.MapFrom(src => src.Modulo.Nombre));
+        CreateMap<SubModuloDetalle, SubModuloDetalleDto>()
+            .ForMember(dest => dest.SubModuloNombre, opt => opt.MapFrom(src => src.SubModulo.Nombre));
+        
+        CreateMap<PermisoRol, PermisoRolDto>()
+            .ForMember(dest => dest.RolNombre, opt => opt.MapFrom(src => src.Rol != null ? src.Rol.Nombre : null))
+            .ForMember(dest => dest.ModuloNombre, opt => opt.MapFrom(src => src.Modulo != null ? src.Modulo.Nombre : null))
+            .ForMember(dest => dest.SubModuloNombre, opt => opt.MapFrom(src => src.SubModulo != null ? src.SubModulo.Nombre : null))
+            .ForMember(dest => dest.SubModuloDetalleNombre, opt => opt.MapFrom(src => src.SubModuloDetalle != null ? src.SubModuloDetalle.Nombre : null));
     }
 }
 
