@@ -1,0 +1,25 @@
+﻿using AutoMapper;
+using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Shared.DTOs.Maestros;
+
+namespace Miski.Application.Features.Maestros.TipoDocumento.Queries.GetTipoDocumento;
+
+public class GetTipoDocumentoHandler : IRequestHandler<GetTipoDocumentoQuery, List<TipoDocumentoDto>>
+{
+
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public GetTipoDocumentoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+    public async Task<List<TipoDocumentoDto>> Handle(GetTipoDocumentoQuery request, CancellationToken cancellationToken)
+    {
+        var tiposDocumento = await _unitOfWork.Repository<TipoDocumento>().GetAllAsync(cancellationToken);
+
+        return tiposDocumento.Select(td => _mapper.Map<TipoDocumentoDto>(td)).ToList();
+    }
+}

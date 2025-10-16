@@ -1,5 +1,5 @@
 using FluentValidation;
-using Miski.Shared.DTOs;
+using Miski.Shared.DTOs.Compras;
 
 namespace Miski.Application.Features.Compras.Negociaciones.Commands.CreateNegociacion;
 
@@ -10,14 +10,6 @@ public class CreateNegociacionValidator : AbstractValidator<CreateNegociacionCom
         RuleFor(x => x.Negociacion.IdComisionista)
             .GreaterThan(0)
             .WithMessage("Debe seleccionar un comisionista válido");
-
-        RuleFor(x => x.Negociacion.Fecha)
-            .NotEmpty()
-            .WithMessage("La fecha es requerida")
-            .LessThanOrEqualTo(DateTime.Now.AddDays(1))
-            .WithMessage("La fecha no puede ser futura")
-            .GreaterThanOrEqualTo(DateTime.Now.AddDays(-30))
-            .WithMessage("La fecha no puede ser mayor a 30 días en el pasado");
 
         RuleFor(x => x.Negociacion.PesoTotal)
             .GreaterThan(0)
@@ -46,25 +38,26 @@ public class CreateNegociacionValidator : AbstractValidator<CreateNegociacionCom
             .WithMessage("El número de cuenta/RUC es demasiado corto");
 
         RuleFor(x => x.Negociacion.FotoCalidadProducto)
-            .NotEmpty()
+            .NotNull()
             .WithMessage("La foto de calidad del producto es requerida");
 
         RuleFor(x => x.Negociacion.FotoDniFrontal)
-            .NotEmpty()
+            .NotNull()
             .WithMessage("La foto frontal del DNI es requerida");
 
         RuleFor(x => x.Negociacion.FotoDniPosterior)
-            .NotEmpty()
+            .NotNull()
             .WithMessage("La foto posterior del DNI es requerida");
 
         RuleFor(x => x.Negociacion.Observacion)
             .MaximumLength(500)
-            .WithMessage("Las observaciones son demasiado largas");
+            .WithMessage("Las observaciones son demasiado largas")
+            .When(x => !string.IsNullOrEmpty(x.Negociacion.Observacion));
 
         // Validación condicional para proveedor
         When(x => x.Negociacion.IdProveedor.HasValue, () =>
         {
-            RuleFor(x => x.Negociacion.IdProveedor.Value)
+            RuleFor(x => x.Negociacion.IdProveedor!.Value)
                 .GreaterThan(0)
                 .WithMessage("Debe seleccionar un proveedor válido");
         });
@@ -72,15 +65,15 @@ public class CreateNegociacionValidator : AbstractValidator<CreateNegociacionCom
         // Validación condicional para producto
         When(x => x.Negociacion.IdProducto.HasValue, () =>
         {
-            RuleFor(x => x.Negociacion.IdProducto.Value)
+            RuleFor(x => x.Negociacion.IdProducto!.Value)
                 .GreaterThan(0)
                 .WithMessage("Debe seleccionar un producto válido");
         });
 
         // Validación de lógica de negocio: coherencia entre peso y sacos
         RuleFor(x => x.Negociacion)
-            .Must(HaveConsistentWeightAndBags)
-            .WithMessage("La relación entre peso y número de sacos no es coherente");
+            .Must(dto => HaveConsistentWeightAndBags(dto))
+            .WithMessage("La relación entre peso y número de sacos no es coherente (peso promedio por saco debe estar entre 20-30 kg)");
     }
 
     private static bool HaveConsistentWeightAndBags(CreateNegociacionDto negociacion)

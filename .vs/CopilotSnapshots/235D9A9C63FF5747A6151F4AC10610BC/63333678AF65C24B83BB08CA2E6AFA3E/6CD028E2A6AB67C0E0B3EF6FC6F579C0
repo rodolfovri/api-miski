@@ -1,0 +1,15 @@
+﻿using MediatR;
+using Miski.Shared.DTOs.Almacen;
+
+namespace Miski.Application.Features.Almacen.Productos.Commands.UpdateProducto;
+
+public class UpdateProductoCommand : IRequest<ProductoDto>
+{
+    public int IdProducto { get; set; }
+    public int IdCategoriaProducto { get; set; }
+    public int IdUnidadMedida { get; set; }
+    public string Codigo { get; set; } = string.Empty;
+    public string Nombre { get; set; } = string.Empty;
+    public string? Descripcion { get; set; }
+    public string? Estado { get; set; }
+}

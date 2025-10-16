@@ -133,6 +133,11 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<INegociacionRepository, NegociacionRepository>();
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 
+// File Storage Service
+builder.Services.AddScoped<Miski.Application.Services.IFileStorageService, Miski.Application.Services.LocalFileStorageService>();
+// TODO: Para producción, cambiar a:
+// builder.Services.AddScoped<Miski.Application.Services.IFileStorageService, Miski.Application.Services.CloudFileStorageService>();
+
 // CORS Configuration
 builder.Services.AddCors(options =>
 {

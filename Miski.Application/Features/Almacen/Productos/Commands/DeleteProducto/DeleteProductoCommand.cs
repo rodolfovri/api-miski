@@ -1,0 +1,5 @@
+using MediatR;
+
+namespace Miski.Application.Features.Almacen.Productos.Commands.DeleteProducto;
+
+public record DeleteProductoCommand(int Id) : IRequest<Unit>;

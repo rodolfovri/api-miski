@@ -40,6 +40,37 @@ namespace Miski.Api.Migrations
                     b.ToTable("CategoriaPersona", (string)null);
                 });
 
+            modelBuilder.Entity("Miski.Domain.Entities.CategoriaProducto", b =>
+                {
+                    b.Property<int>("IdCategoriaProducto")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCategoriaProducto"));
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Estado")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("FRegistro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("IdCategoriaProducto");
+
+                    b.ToTable("CategoriaProducto", (string)null);
+                });
+
             modelBuilder.Entity("Miski.Domain.Entities.Compra", b =>
                 {
                     b.Property<int>("IdCompra")
@@ -506,20 +537,22 @@ namespace Miski.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<int>("IdCategoriaProducto")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUnidadMedida")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<decimal?>("PesoPorSaco")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("UnidadMedida")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.HasKey("IdProducto");
+
+                    b.HasIndex("IdCategoriaProducto");
+
+                    b.HasIndex("IdUnidadMedida");
 
                     b.ToTable("Producto", (string)null);
                 });
@@ -709,7 +742,8 @@ namespace Miski.Api.Migrations
 
                     b.Property<string>("Direccion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Estado")
                         .HasMaxLength(20)
@@ -720,16 +754,8 @@ namespace Miski.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("IdPersona")
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("int");
-
-                    b.Property<decimal?>("Latitud")
-                        .HasPrecision(10, 7)
-                        .HasColumnType("decimal(10,7)");
-
-                    b.Property<decimal?>("Longitud")
-                        .HasPrecision(10, 7)
-                        .HasColumnType("decimal(10,7)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -742,9 +768,32 @@ namespace Miski.Api.Migrations
 
                     b.HasKey("IdUbicacion");
 
-                    b.HasIndex("IdPersona");
+                    b.HasIndex("IdUsuario");
 
                     b.ToTable("Ubicacion", (string)null);
+                });
+
+            modelBuilder.Entity("Miski.Domain.Entities.UnidadMedida", b =>
+                {
+                    b.Property<int>("IdUnidadMedida")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUnidadMedida"));
+
+                    b.Property<string>("Abreviatura")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("IdUnidadMedida");
+
+                    b.ToTable("UnidadMedida", (string)null);
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Usuario", b =>
@@ -1078,6 +1127,27 @@ namespace Miski.Api.Migrations
                     b.Navigation("Ubicacion");
                 });
 
+            modelBuilder.Entity("Miski.Domain.Entities.Producto", b =>
+                {
+                    b.HasOne("Miski.Domain.Entities.CategoriaProducto", "CategoriaProducto")
+                        .WithMany("Productos")
+                        .HasForeignKey("IdCategoriaProducto")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Producto_CategoriaProducto");
+
+                    b.HasOne("Miski.Domain.Entities.UnidadMedida", "UnidadMedida")
+                        .WithMany("Productos")
+                        .HasForeignKey("IdUnidadMedida")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Producto_UnidadMedida");
+
+                    b.Navigation("CategoriaProducto");
+
+                    b.Navigation("UnidadMedida");
+                });
+
             modelBuilder.Entity("Miski.Domain.Entities.Stock", b =>
                 {
                     b.HasOne("Miski.Domain.Entities.Ubicacion", "Planta")
@@ -1137,14 +1207,14 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Ubicacion", b =>
                 {
-                    b.HasOne("Miski.Domain.Entities.Persona", "Persona")
-                        .WithMany("Ubicaciones")
-                        .HasForeignKey("IdPersona")
+                    b.HasOne("Miski.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("FK_Ubicacion_Persona");
+                        .HasConstraintName("FK_Ubicacion_Usuario");
 
-                    b.Navigation("Persona");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Usuario", b =>
@@ -1182,6 +1252,11 @@ namespace Miski.Api.Migrations
             modelBuilder.Entity("Miski.Domain.Entities.CategoriaPersona", b =>
                 {
                     b.Navigation("PersonaCategorias");
+                });
+
+            modelBuilder.Entity("Miski.Domain.Entities.CategoriaProducto", b =>
+                {
+                    b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Compra", b =>
@@ -1231,8 +1306,6 @@ namespace Miski.Api.Migrations
 
                     b.Navigation("TrackingPersonas");
 
-                    b.Navigation("Ubicaciones");
-
                     b.Navigation("Usuario");
                 });
 
@@ -1274,6 +1347,11 @@ namespace Miski.Api.Migrations
                     b.Navigation("PersonaUbicaciones");
 
                     b.Navigation("Stocks");
+                });
+
+            modelBuilder.Entity("Miski.Domain.Entities.UnidadMedida", b =>
+                {
+                    b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Usuario", b =>

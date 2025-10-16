@@ -1,0 +1,49 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Ubicaciones;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Ubicaciones.Commands.CreateUbicacion;
+
+public class CreateUbicacionHandler : IRequestHandler<CreateUbicacionCommand, UbicacionDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public CreateUbicacionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<UbicacionDto> Handle(CreateUbicacionCommand request, CancellationToken cancellationToken)
+    {
+        // Verificar que la persona existe
+        var persona = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(request.Ubicacion.IdPersona, cancellationToken);
+
+        if (persona == null)
+            throw new NotFoundException("Persona", request.Ubicacion.IdPersona);
+
+        // Crear la nueva ubicación
+        var nuevaUbicacion = new Ubicacion
+        {
+            IdPersona = request.Ubicacion.IdPersona,
+            Nombre = request.Ubicacion.Nombre,
+            Direccion = request.Ubicacion.Direccion,
+            Tipo = request.Ubicacion.Tipo,
+            Estado = request.Ubicacion.Estado,
+            FRegistro = DateTime.Now
+        };
+
+        await _unitOfWork.Repository<Ubicacion>().AddAsync(nuevaUbicacion, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar la persona para el DTO
+        nuevaUbicacion.Persona = persona;
+
+        return _mapper.Map<UbicacionDto>(nuevaUbicacion);
+    }
+}

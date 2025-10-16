@@ -1,0 +1,75 @@
+using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+
+namespace Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociaciones;
+
+public class GetNegociacionesHandler : IRequestHandler<GetNegociacionesQuery, List<NegociacionDto>>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public GetNegociacionesHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<List<NegociacionDto>> Handle(GetNegociacionesQuery request, CancellationToken cancellationToken)
+    {
+        var negociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
+        var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+        var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
+
+        // Aplicar filtros
+        if (request.IdProveedor.HasValue)
+        {
+            negociaciones = negociaciones.Where(n => n.IdProveedor == request.IdProveedor.Value).ToList();
+        }
+
+        if (request.IdComisionista.HasValue)
+        {
+            negociaciones = negociaciones.Where(n => n.IdComisionista == request.IdComisionista.Value).ToList();
+        }
+
+        if (request.IdProducto.HasValue)
+        {
+            negociaciones = negociaciones.Where(n => n.IdProducto == request.IdProducto.Value).ToList();
+        }
+
+        if (!string.IsNullOrEmpty(request.EstadoAprobado))
+        {
+            negociaciones = negociaciones.Where(n => n.EstadoAprobado == request.EstadoAprobado).ToList();
+        }
+
+        if (!string.IsNullOrEmpty(request.Estado))
+        {
+            negociaciones = negociaciones.Where(n => n.Estado == request.Estado).ToList();
+        }
+
+        // Cargar relaciones
+        foreach (var negociacion in negociaciones)
+        {
+            if (negociacion.IdProveedor.HasValue)
+            {
+                negociacion.Proveedor = personas.FirstOrDefault(p => p.IdPersona == negociacion.IdProveedor.Value);
+            }
+
+            negociacion.Comisionista = personas.FirstOrDefault(p => p.IdPersona == negociacion.IdComisionista) ?? new Persona();
+
+            if (negociacion.IdProducto.HasValue)
+            {
+                negociacion.Producto = productos.FirstOrDefault(p => p.IdProducto == negociacion.IdProducto.Value);
+            }
+
+            if (negociacion.AprobadaPor.HasValue)
+            {
+                negociacion.AprobadaPorPersona = personas.FirstOrDefault(p => p.IdPersona == negociacion.AprobadaPor.Value);
+            }
+        }
+
+        return negociaciones.Select(n => _mapper.Map<NegociacionDto>(n)).ToList();
+    }
+}

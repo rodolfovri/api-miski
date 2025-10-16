@@ -17,7 +17,6 @@ public class Persona
     public virtual TipoDocumento TipoDocumento { get; set; } = null!;
     public virtual Usuario? Usuario { get; set; }
     public virtual ICollection<PersonaCategoria> PersonaCategorias { get; set; } = new List<PersonaCategoria>();
-    public virtual ICollection<Ubicacion> Ubicaciones { get; set; } = new List<Ubicacion>();
     public virtual ICollection<PersonaUbicacion> PersonaUbicaciones { get; set; } = new List<PersonaUbicacion>();
     public virtual ICollection<Negociacion> NegociacionesProveedor { get; set; } = new List<Negociacion>();
     public virtual ICollection<Negociacion> NegociacionesComisionista { get; set; } = new List<Negociacion>();

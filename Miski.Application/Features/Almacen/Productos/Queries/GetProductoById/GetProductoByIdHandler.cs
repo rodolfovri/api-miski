@@ -1,0 +1,41 @@
+using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Almacen;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Almacen.Productos.Queries.GetProductoById;
+
+public class GetProductoByIdHandler : IRequestHandler<GetProductoByIdQuery, ProductoDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public GetProductoByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<ProductoDto> Handle(GetProductoByIdQuery request, CancellationToken cancellationToken)
+    {
+        var producto = await _unitOfWork.Repository<Producto>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (producto == null)
+            throw new NotFoundException("Producto", request.Id);
+
+        // Cargar categoría y unidad de medida
+        var categoria = await _unitOfWork.Repository<CategoriaProducto>()
+            .GetByIdAsync(producto.IdCategoriaProducto, cancellationToken);
+        
+        var unidadMedida = await _unitOfWork.Repository<UnidadMedida>()
+            .GetByIdAsync(producto.IdUnidadMedida, cancellationToken);
+
+        producto.CategoriaProducto = categoria ?? new CategoriaProducto();
+        producto.UnidadMedida = unidadMedida ?? new UnidadMedida();
+
+        return _mapper.Map<ProductoDto>(producto);
+    }
+}

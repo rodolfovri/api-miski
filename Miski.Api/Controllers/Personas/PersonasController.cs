@@ -1,7 +1,16 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Miski.Application.Features.Personas.Commands.CreatePersona;
+using Miski.Application.Features.Personas.Commands.UpdatePersona;
+using Miski.Application.Features.Personas.Commands.DeletePersona;
+using Miski.Application.Features.Personas.Commands.AsignarCategoria;
+using Miski.Application.Features.Personas.Commands.RemoverCategoria;
+using Miski.Application.Features.Personas.Queries.GetPersonas;
+using Miski.Application.Features.Personas.Queries.GetPersonaById;
+using Miski.Application.Features.Personas.Queries.GetCategoriasByPersona;
 using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Personas;
 
 namespace Miski.Api.Controllers.Personas;
 
@@ -21,8 +30,14 @@ public class PersonasController : ControllerBase
     /// <summary>
     /// Obtiene todas las personas
     /// </summary>
+    /// <remarks>
+    /// Permite filtrar por:
+    /// - numeroDocumento: Búsqueda parcial por número de documento
+    /// - nombres: Búsqueda parcial por nombres o apellidos
+    /// - estado: Filtrar por estado (ACTIVO, INACTIVO)
+    /// </remarks>
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetPersonas(
+    public async Task<ActionResult<ApiResponse<IEnumerable<PersonaDto>>>> GetPersonas(
         [FromQuery] string? numeroDocumento = null,
         [FromQuery] string? nombres = null,
         [FromQuery] string? estado = null,
@@ -30,17 +45,17 @@ public class PersonasController : ControllerBase
     {
         try
         {
-            // TODO: Implementar query handler
-            var result = new List<object>();
+            var query = new GetPersonasQuery(numeroDocumento, nombres, estado);
+            var result = await _mediator.Send(query, cancellationToken);
             
-            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+            return Ok(ApiResponse<IEnumerable<PersonaDto>>.SuccessResult(
                 result,
                 "Personas obtenidas exitosamente"
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
+            return StatusCode(500, ApiResponse<IEnumerable<PersonaDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -51,21 +66,30 @@ public class PersonasController : ControllerBase
     /// Obtiene una persona por ID
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> GetPersonaById(
+    public async Task<ActionResult<ApiResponse<PersonaDto>>> GetPersonaById(
         int id,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            return NotFound(ApiResponse<object>.ErrorResult(
+            var query = new GetPersonaByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<PersonaDto>.SuccessResult(
+                result,
+                "Persona obtenida exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<PersonaDto>.ErrorResult(
                 "Persona no encontrada",
-                $"No se encontró una persona con ID {id}"
+                ex.Message
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<PersonaDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -76,25 +100,38 @@ public class PersonasController : ControllerBase
     /// Crea una nueva persona
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<object>>> CreatePersona(
-        [FromBody] object request,
+    public async Task<ActionResult<ApiResponse<PersonaDto>>> CreatePersona(
+        [FromBody] CreatePersonaDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new CreatePersonaCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
             return CreatedAtAction(
                 nameof(GetPersonaById),
-                new { id = 1 },
-                ApiResponse<object>.SuccessResult(
-                    request,
+                new { id = result.IdPersona },
+                ApiResponse<PersonaDto>.SuccessResult(
+                    result,
                     "Persona creada exitosamente"
                 )
             );
         }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return BadRequest(ApiResponse<PersonaDto>.ErrorResult(
+                "Datos no encontrados",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<PersonaDto>.ValidationErrorResult(ex.Errors));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<PersonaDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -105,22 +142,43 @@ public class PersonasController : ControllerBase
     /// Actualiza una persona
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> UpdatePersona(
+    public async Task<ActionResult<ApiResponse<PersonaDto>>> UpdatePersona(
         int id,
-        [FromBody] object request,
+        [FromBody] UpdatePersonaDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
-            return Ok(ApiResponse<object>.SuccessResult(
-                request,
+            if (id != request.IdPersona)
+            {
+                return BadRequest(ApiResponse<PersonaDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new UpdatePersonaCommand(id, request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<PersonaDto>.SuccessResult(
+                result,
                 "Persona actualizada exitosamente"
             ));
         }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<PersonaDto>.ErrorResult(
+                "Persona no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<PersonaDto>.ValidationErrorResult(ex.Errors));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<PersonaDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -128,7 +186,7 @@ public class PersonasController : ControllerBase
     }
 
     /// <summary>
-    /// Elimina una persona
+    /// Elimina una persona (cambio de estado a INACTIVO)
     /// </summary>
     [HttpDelete("{id}")]
     public async Task<ActionResult<ApiResponse>> DeletePersona(
@@ -137,8 +195,21 @@ public class PersonasController : ControllerBase
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new DeletePersonaCommand(id);
+            await _mediator.Send(command, cancellationToken);
+
             return Ok(ApiResponse.SuccessResult("Persona eliminada exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Persona no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
         }
         catch (Exception ex)
         {
@@ -153,23 +224,30 @@ public class PersonasController : ControllerBase
     /// Obtiene las categorías de una persona
     /// </summary>
     [HttpGet("{id}/categorias")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetCategoriasByPersona(
+    public async Task<ActionResult<ApiResponse<IEnumerable<CategoriaPersonaDto>>>> GetCategoriasByPersona(
         int id,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            var result = new List<object>();
+            var query = new GetCategoriasByPersonaQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
             
-            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+            return Ok(ApiResponse<IEnumerable<CategoriaPersonaDto>>.SuccessResult(
                 result,
                 "Categorías de la persona obtenidas exitosamente"
             ));
         }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<IEnumerable<CategoriaPersonaDto>>.ErrorResult(
+                "Persona no encontrada",
+                ex.Message
+            ));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
+            return StatusCode(500, ApiResponse<IEnumerable<CategoriaPersonaDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -187,8 +265,21 @@ public class PersonasController : ControllerBase
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new AsignarCategoriaCommand(personaId, categoriaId);
+            await _mediator.Send(command, cancellationToken);
+
             return Ok(ApiResponse.SuccessResult("Categoría asignada exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Recurso no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
         }
         catch (Exception ex)
         {
@@ -210,8 +301,17 @@ public class PersonasController : ControllerBase
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new RemoverCategoriaCommand(personaId, categoriaId);
+            await _mediator.Send(command, cancellationToken);
+
             return Ok(ApiResponse.SuccessResult("Categoría removida exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Relación no encontrada",
+                ex.Message
+            ));
         }
         catch (Exception ex)
         {

@@ -22,17 +22,17 @@ public class GetUserProfileHandler : IRequestHandler<GetUserProfileQuery, AuthRe
     {
         var usuarioCompleto = await GetUsuarioCompletoAsync(request.UserId, cancellationToken);
 
+        // Construir roles con permisos
+        var rolesConPermisos = await BuildRolesConPermisosAsync(usuarioCompleto.UsuarioRoles, cancellationToken);
+
         return new AuthResponseDto
         {
             IdUsuario = usuarioCompleto.IdUsuario,
             Username = usuarioCompleto.Username,
             Token = string.Empty, // No devolvemos token en el perfil
             Expiration = DateTime.MinValue,
-            Persona = usuarioCompleto.Persona != null ? _mapper.Map<PersonaDto>(usuarioCompleto.Persona) : null,
-            Roles = usuarioCompleto.UsuarioRoles
-                .Select(ur => _mapper.Map<RolDto>(ur.Rol))
-                .Distinct()
-                .ToList()
+            Persona = usuarioCompleto.Persona != null ? _mapper.Map<AuthPersonaDto>(usuarioCompleto.Persona) : null,
+            Roles = rolesConPermisos
         };
     }
 
@@ -70,5 +70,59 @@ public class GetUserProfileHandler : IRequestHandler<GetUserProfileQuery, AuthRe
         }
 
         return usuario;
+    }
+
+    private async Task<List<RolDto>> BuildRolesConPermisosAsync(
+        ICollection<UsuarioRol> usuarioRoles, 
+        CancellationToken cancellationToken)
+    {
+        var resultado = new List<RolDto>();
+
+        // Obtener todas las entidades necesarias para permisos
+        var permisos = await _unitOfWork.Repository<PermisoRol>().GetAllAsync(cancellationToken);
+        var modulos = await _unitOfWork.Repository<Modulo>().GetAllAsync(cancellationToken);
+        var subModulos = await _unitOfWork.Repository<SubModulo>().GetAllAsync(cancellationToken);
+        var subModuloDetalles = await _unitOfWork.Repository<SubModuloDetalle>().GetAllAsync(cancellationToken);
+
+        foreach (var ur in usuarioRoles.Distinct())
+        {
+            var rolDto = new RolDto
+            {
+                IdRol = ur.Rol.IdRol,
+                Nombre = ur.Rol.Nombre,
+                Descripcion = ur.Rol.Descripcion,
+                TipoPlataforma = ur.Rol.TipoPlataforma,
+                Permisos = new List<RolPermisoDto>()
+            };
+
+            // Obtener permisos del rol
+            var permisosRol = permisos.Where(p => p.IdRol == ur.Rol.IdRol && p.TieneAcceso).ToList();
+
+            foreach (var permiso in permisosRol)
+            {
+                var permisoDto = new RolPermisoDto
+                {
+                    IdModulo = permiso.IdModulo,
+                    ModuloNombre = permiso.IdModulo.HasValue 
+                        ? modulos.FirstOrDefault(m => m.IdModulo == permiso.IdModulo.Value)?.Nombre 
+                        : null,
+                    IdSubModulo = permiso.IdSubModulo,
+                    SubModuloNombre = permiso.IdSubModulo.HasValue 
+                        ? subModulos.FirstOrDefault(sm => sm.IdSubModulo == permiso.IdSubModulo.Value)?.Nombre 
+                        : null,
+                    IdSubModuloDetalle = permiso.IdSubModuloDetalle,
+                    SubModuloDetalleNombre = permiso.IdSubModuloDetalle.HasValue 
+                        ? subModuloDetalles.FirstOrDefault(smd => smd.IdSubModuloDetalle == permiso.IdSubModuloDetalle.Value)?.Nombre 
+                        : null,
+                    TieneAcceso = permiso.TieneAcceso
+                };
+
+                rolDto.Permisos.Add(permisoDto);
+            }
+
+            resultado.Add(rolDto);
+        }
+
+        return resultado.Distinct().ToList();
     }
 }

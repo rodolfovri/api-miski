@@ -20,5 +20,11 @@ public class LoginValidator : AbstractValidator<LoginCommand>
             .WithMessage("La contraseña es requerida")
             .MinimumLength(6)
             .WithMessage("La contraseña debe tener al menos 6 caracteres");
+
+        RuleFor(x => x.LoginData.TipoPlataforma)
+            .NotEmpty()
+            .WithMessage("El tipo de plataforma es requerido")
+            .Must(tipo => tipo == "Web" || tipo == "Mobile")
+            .WithMessage("El tipo de plataforma debe ser 'Web' o 'Mobile'");
     }
 }

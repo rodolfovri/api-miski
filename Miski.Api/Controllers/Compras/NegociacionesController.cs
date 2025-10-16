@@ -1,13 +1,21 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Compras.Negociaciones.Commands.CreateNegociacion;
+using Miski.Application.Features.Compras.Negociaciones.Commands.UpdateNegociacion;
+using Miski.Application.Features.Compras.Negociaciones.Commands.DeleteNegociacion;
+using Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociacion;
+using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociaciones;
+using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociacionById;
 using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Compras;
 
 namespace Miski.Api.Controllers.Compras;
 
 [ApiController]
 [Route("api/compras/negociaciones")]
 [Tags("Compras")]
+[Authorize]
 public class NegociacionesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -20,63 +28,37 @@ public class NegociacionesController : ControllerBase
     /// <summary>
     /// Obtiene todas las negociaciones con filtros opcionales
     /// </summary>
+    /// <remarks>
+    /// Permite filtrar por:
+    /// - idProveedor: Filtrar por proveedor
+    /// - idComisionista: Filtrar por comisionista
+    /// - idProducto: Filtrar por producto
+    /// - estadoAprobado: Filtrar por estado de aprobación (PENDIENTE/APROBADO/RECHAZADO)
+    /// - estado: Filtrar por estado general (ACTIVO/INACTIVO)
+    /// </remarks>
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetNegociaciones(
-        [FromQuery] int? proveedorId = null,
-        [FromQuery] int? comisionistaId = null,
+    public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetNegociaciones(
+        [FromQuery] int? idProveedor = null,
+        [FromQuery] int? idComisionista = null,
+        [FromQuery] int? idProducto = null,
+        [FromQuery] string? estadoAprobado = null,
         [FromQuery] string? estado = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler en la nueva estructura
-            var result = new List<object>();
+            var query = new GetNegociacionesQuery(idProveedor, idComisionista, idProducto, estadoAprobado, estado);
+            var result = await _mediator.Send(query, cancellationToken);
             
-            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+            return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
                 result, 
                 "Negociaciones obtenidas exitosamente"
             ));
         }
         catch (Exception ex)
         {
-            return BadRequest(ApiResponse<IEnumerable<object>>.ErrorResult(
-                "Error al obtener las negociaciones", 
-                ex.Message
-            ));
-        }
-    }
-
-    /// <summary>
-    /// Crea una nueva negociación
-    /// </summary>
-    [HttpPost]
-    public async Task<ActionResult<ApiResponse<object>>> CreateNegociacion(
-        [FromBody] object request,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            // TODO: Implementar command handler
-            return CreatedAtAction(
-                nameof(GetNegociacionById), 
-                new { id = 1 }, 
-                ApiResponse<object>.SuccessResult(
-                    request, 
-                    "Negociación creada exitosamente"
-                )
-            );
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ApiResponse<object>.ErrorResult(
-                "Datos inválidos", 
-                ex.Message
-            ));
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
-                "Error interno del servidor", 
+            return StatusCode(500, ApiResponse<IEnumerable<NegociacionDto>>.ErrorResult(
+                "Error interno del servidor",
                 ex.Message
             ));
         }
@@ -86,22 +68,173 @@ public class NegociacionesController : ControllerBase
     /// Obtiene una negociación por ID
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> GetNegociacionById(
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> GetNegociacionById(
         int id,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            return NotFound(ApiResponse<object>.ErrorResult(
-                "Negociación no encontrada", 
-                $"No se encontró una negociación con ID {id}"
+            var query = new GetNegociacionByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionDto>.SuccessResult(
+                result,
+                "Negociación obtenida exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Crea una nueva negociación
+    /// </summary>
+    /// <remarks>
+    /// NOTA: Este endpoint acepta multipart/form-data para subir las fotos.
+    /// Las fotos son obligatorias:
+    /// - FotoCalidadProducto
+    /// - FotoDniFrontal
+    /// - FotoDniPosterior
+    /// </remarks>
+    [HttpPost]
+    [Consumes("multipart/form-data")]
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> CreateNegociacion(
+        [FromForm] CreateNegociacionDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new CreateNegociacionCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return CreatedAtAction(
+                nameof(GetNegociacionById), 
+                new { id = result.IdNegociacion }, 
+                ApiResponse<NegociacionDto>.SuccessResult(
+                    result, 
+                    "Negociación creada exitosamente"
+                )
+            );
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Entidad relacionada no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
                 "Error interno del servidor", 
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Actualiza una negociación
+    /// </summary>
+    /// <remarks>
+    /// NOTA: Este endpoint acepta multipart/form-data.
+    /// Las fotos son opcionales, solo se actualizan si se envían.
+    /// No se puede actualizar una negociación ya aprobada.
+    /// </remarks>
+    [HttpPut("{id}")]
+    [Consumes("multipart/form-data")]
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> UpdateNegociacion(
+        int id,
+        [FromForm] UpdateNegociacionDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (id != request.IdNegociacion)
+            {
+                return BadRequest(ApiResponse<NegociacionDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new UpdateNegociacionCommand(id, request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionDto>.SuccessResult(
+                result,
+                "Negociación actualizada exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Elimina (inactiva) una negociación
+    /// </summary>
+    /// <remarks>
+    /// NOTA: No se puede eliminar una negociación que tiene compras asociadas.
+    /// El registro no se elimina físicamente, solo se marca como INACTIVO.
+    /// </remarks>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse>> DeleteNegociacion(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new DeleteNegociacionCommand(id);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Negociación eliminada exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
                 ex.Message
             ));
         }
@@ -111,22 +244,22 @@ public class NegociacionesController : ControllerBase
     /// Obtiene negociaciones pendientes de aprobación
     /// </summary>
     [HttpGet("pendientes-aprobacion")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetPendientesAprobacion(
+    public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetPendientesAprobacion(
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            var result = new List<object>();
+            var query = new GetNegociacionesQuery(EstadoAprobado: "PENDIENTE");
+            var result = await _mediator.Send(query, cancellationToken);
             
-            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+            return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
                 result, 
                 "Negociaciones pendientes obtenidas exitosamente"
             ));
         }
         catch (Exception ex)
         {
-            return BadRequest(ApiResponse<IEnumerable<object>>.ErrorResult(
+            return StatusCode(500, ApiResponse<IEnumerable<NegociacionDto>>.ErrorResult(
                 "Error al obtener negociaciones pendientes", 
                 ex.Message
             ));
@@ -137,18 +270,43 @@ public class NegociacionesController : ControllerBase
     /// Aprueba una negociación
     /// </summary>
     [HttpPut("{id}/aprobar")]
-    public async Task<ActionResult<ApiResponse>> AprobarNegociacion(
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> AprobarNegociacion(
         int id,
+        [FromBody] AprobarNegociacionDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
-            return Ok(ApiResponse.SuccessResult("Negociación aprobada exitosamente"));
+            if (id != request.IdNegociacion)
+            {
+                return BadRequest(ApiResponse<NegociacionDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new AprobarNegociacionCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionDto>.SuccessResult(
+                result,
+                "Negociación aprobada exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ValidationErrorResult(ex.Errors));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse.ErrorResult(
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
                 "Error al aprobar la negociación", 
                 ex.Message
             ));

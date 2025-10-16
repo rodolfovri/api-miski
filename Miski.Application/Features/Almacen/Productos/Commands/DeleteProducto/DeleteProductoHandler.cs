@@ -1,0 +1,39 @@
+using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Almacen.Productos.Commands.DeleteProducto;
+
+public class DeleteProductoHandler : IRequestHandler<DeleteProductoCommand, Unit>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public DeleteProductoHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<Unit> Handle(DeleteProductoCommand request, CancellationToken cancellationToken)
+    {
+        var producto = await _unitOfWork.Repository<Producto>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (producto == null)
+            throw new NotFoundException("Producto", request.Id);
+
+        // Validar que el producto no tenga relaciones activas
+        var stocks = await _unitOfWork.Repository<Stock>().GetAllAsync(cancellationToken);
+        if (stocks.Any(s => s.IdProducto == request.Id))
+            throw new ValidationException("No se puede eliminar el producto porque tiene stock asociado");
+
+        var negociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
+        if (negociaciones.Any(n => n.IdProducto == request.Id))
+            throw new ValidationException("No se puede eliminar el producto porque tiene negociaciones asociadas");
+
+        await _unitOfWork.Repository<Producto>().DeleteAsync(producto, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
+    }
+}

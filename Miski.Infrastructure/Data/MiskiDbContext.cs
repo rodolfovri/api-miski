@@ -33,6 +33,8 @@ public class MiskiDbContext : DbContext
     public DbSet<SubModulo> SubModulos { get; set; }
     public DbSet<SubModuloDetalle> SubModuloDetalles { get; set; }
     public DbSet<PermisoRol> PermisoRoles { get; set; }
+    public DbSet<UnidadMedida> UnidadMedidas { get; set; }
+    public DbSet<CategoriaProducto> CategoriaProductos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -170,18 +172,16 @@ public class MiskiDbContext : DbContext
         {
             entity.HasKey(e => e.IdUbicacion);
             entity.Property(e => e.Nombre).HasMaxLength(100).IsRequired();
-            entity.Property(e => e.Direccion).IsRequired();
-            entity.Property(e => e.Latitud).HasPrecision(10, 7);
-            entity.Property(e => e.Longitud).HasPrecision(10, 7);
+            entity.Property(e => e.Direccion).HasMaxLength(100).IsRequired();
             entity.Property(e => e.Tipo).HasMaxLength(50);
             entity.Property(e => e.Estado).HasMaxLength(20);
             entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
 
-            entity.HasOne(d => d.Persona)
-                .WithMany(p => p.Ubicaciones)
-                .HasForeignKey(d => d.IdPersona)
+            entity.HasOne(d => d.Usuario)
+                .WithMany()
+                .HasForeignKey(d => d.IdUsuario)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Ubicacion_Persona");
+                .HasConstraintName("FK_Ubicacion_Usuario");
 
             entity.ToTable("Ubicacion");
         });
@@ -208,6 +208,26 @@ public class MiskiDbContext : DbContext
             entity.ToTable("PersonaUbicacion");
         });
 
+        // UnidadMedida configuration
+        modelBuilder.Entity<UnidadMedida>(entity =>
+        {
+            entity.HasKey(e => e.IdUnidadMedida);
+            entity.Property(e => e.Nombre).HasMaxLength(20).IsRequired();
+            entity.Property(e => e.Abreviatura).HasMaxLength(10).IsRequired();
+            entity.ToTable("UnidadMedida");
+        });
+
+        //CategoriaProducto configuration
+        modelBuilder.Entity<CategoriaProducto>(entity =>
+        {
+            entity.HasKey(e => e.IdCategoriaProducto);
+            entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Descripcion).HasMaxLength(255);
+            entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.ToTable("CategoriaProducto");
+        });
+
         // Producto configuration
         modelBuilder.Entity<Producto>(entity =>
         {
@@ -215,10 +235,20 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Codigo).HasMaxLength(20).IsRequired();
             entity.Property(e => e.Nombre).HasMaxLength(100).IsRequired();
             entity.Property(e => e.Descripcion).HasMaxLength(255);
-            entity.Property(e => e.UnidadMedida).HasMaxLength(20);
-            entity.Property(e => e.PesoPorSaco).HasPrecision(10, 2);
             entity.Property(e => e.Estado).HasMaxLength(20);
             entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(d => d.CategoriaProducto)
+                .WithMany(p => p.Productos)
+                .HasForeignKey(d => d.IdCategoriaProducto)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Producto_CategoriaProducto");
+
+            entity.HasOne(d => d.UnidadMedida)
+                .WithMany(p => p.Productos)
+                .HasForeignKey(d => d.IdUnidadMedida)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Producto_UnidadMedida");
             entity.ToTable("Producto");
         });
 

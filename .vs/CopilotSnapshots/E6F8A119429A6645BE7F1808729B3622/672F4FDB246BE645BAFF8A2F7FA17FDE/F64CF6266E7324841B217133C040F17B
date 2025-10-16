@@ -1,0 +1,44 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Personas;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Personas.Queries.GetCategoriasByPersona;
+
+public class GetCategoriasByPersonaHandler : IRequestHandler<GetCategoriasByPersonaQuery, List<CategoriaPersonaDto>>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public GetCategoriasByPersonaHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<List<CategoriaPersonaDto>> Handle(GetCategoriasByPersonaQuery request, CancellationToken cancellationToken)
+    {
+        // Verificar que la persona existe
+        var persona = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(request.PersonaId, cancellationToken);
+
+        if (persona == null)
+            throw new NotFoundException("Persona", request.PersonaId);
+
+        // Obtener las categorías de la persona
+        var personaCategorias = await _unitOfWork.Repository<PersonaCategoria>().GetAllAsync(cancellationToken);
+        var categorias = await _unitOfWork.Repository<CategoriaPersona>().GetAllAsync(cancellationToken);
+
+        var categoriasPersona = personaCategorias
+            .Where(pc => pc.IdPersona == request.PersonaId)
+            .Join(categorias,
+                pc => pc.IdCategoria,
+                c => c.IdCategoriaPersona,
+                (pc, c) => c)
+            .ToList();
+
+        return categoriasPersona.Select(c => _mapper.Map<CategoriaPersonaDto>(c)).ToList();
+    }
+}

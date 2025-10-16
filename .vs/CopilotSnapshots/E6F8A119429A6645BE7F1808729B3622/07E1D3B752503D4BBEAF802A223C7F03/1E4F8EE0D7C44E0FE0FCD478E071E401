@@ -1,0 +1,62 @@
+﻿namespace Miski.Shared.DTOs.Personas;
+
+public class PersonaDto
+{
+    public int IdPersona { get; set; }
+    public int IdTipoDocumento { get; set; }
+    public string NumeroDocumento { get; set; } = string.Empty;
+    public string Nombres { get; set; } = string.Empty;
+    public string Apellidos { get; set; } = string.Empty;
+    public string NombreCompleto { get; set; } = string.Empty;
+    public string? Telefono { get; set; }
+    public string? Email { get; set; }
+    public string? Direccion { get; set; }
+    public string? Estado { get; set; }
+    public DateTime FRegistro { get; set; }
+    
+    // Información adicional
+    public string? TipoDocumentoNombre { get; set; }
+    public List<CategoriaPersonaDto>? Categorias { get; set; }
+}
+
+public class CreatePersonaDto
+{
+    public int IdTipoDocumento { get; set; }
+    public string NumeroDocumento { get; set; } = string.Empty;
+    public string Nombres { get; set; } = string.Empty;
+    public string Apellidos { get; set; } = string.Empty;
+    public string? Telefono { get; set; }
+    public string? Email { get; set; }
+    public string? Direccion { get; set; }
+    public string Estado { get; set; } = "ACTIVO";
+}
+
+public class UpdatePersonaDto
+{
+    public int IdPersona { get; set; }
+    public int IdTipoDocumento { get; set; }
+    public string NumeroDocumento { get; set; } = string.Empty;
+    public string Nombres { get; set; } = string.Empty;
+    public string Apellidos { get; set; } = string.Empty;
+    public string? Telefono { get; set; }
+    public string? Email { get; set; }
+    public string? Direccion { get; set; }
+    public string? Estado { get; set; }
+}
+
+public class CategoriaPersonaDto
+{
+    public int IdCategoriaPersona { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+}
+
+public class CreateCategoriaPersonaDto
+{
+    public string Nombre { get; set; } = string.Empty;
+}
+
+public class UpdateCategoriaPersonaDto
+{
+    public int IdCategoriaPersona { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+}

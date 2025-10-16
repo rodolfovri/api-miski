@@ -26,6 +26,13 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Iniciar sesión
     /// </summary>
+    /// <remarks>
+    /// El parámetro TipoPlataforma permite filtrar los roles según la plataforma:
+    /// - "Web": Retorna solo roles configurados para Web
+    /// - "Mobile": Retorna solo roles configurados para Mobile
+    /// 
+    /// Además, incluye los permisos de cada rol en el response.
+    /// </remarks>
     [HttpPost("login")]
     public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login(
         [FromBody] LoginDto loginDto,

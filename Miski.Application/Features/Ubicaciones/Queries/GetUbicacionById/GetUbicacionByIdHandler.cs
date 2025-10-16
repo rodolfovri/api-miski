@@ -1,0 +1,31 @@
+using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Ubicaciones;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Ubicaciones.Queries.GetUbicacionById;
+
+public class GetUbicacionByIdHandler : IRequestHandler<GetUbicacionByIdQuery, UbicacionDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public GetUbicacionByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<UbicacionDto> Handle(GetUbicacionByIdQuery request, CancellationToken cancellationToken)
+    {
+        var ubicacion = await _unitOfWork.Repository<Ubicacion>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (ubicacion == null)
+            throw new NotFoundException("Ubicacion", request.Id);
+
+        return _mapper.Map<UbicacionDto>(ubicacion);
+    }
+}

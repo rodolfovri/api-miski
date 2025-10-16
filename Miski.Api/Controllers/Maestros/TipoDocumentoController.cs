@@ -1,7 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Miski.Application.Features.Maestros.TipoDocumento.Commands.CreateTipoDocumento;
+using Miski.Application.Features.Maestros.TipoDocumento.Commands.UpdateTipoDocumento;
+using Miski.Application.Features.Maestros.TipoDocumento.Commands.DeleteTipoDocumento;
+using Miski.Application.Features.Maestros.TipoDocumento.Queries.GetTipoDocumento;
+using Miski.Application.Features.Maestros.TipoDocumento.Queries.GetTipoDocumentoById;
 using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Maestros;
 
 namespace Miski.Api.Controllers.Maestros;
 
@@ -21,23 +27,28 @@ public class TipoDocumentoController : ControllerBase
     /// <summary>
     /// Obtiene todos los tipos de documento
     /// </summary>
+    /// <remarks>
+    /// Permite filtrar por:
+    /// - nombre: Búsqueda parcial por nombre del tipo de documento
+    /// </remarks>
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetTipoDocumentos(
+    public async Task<ActionResult<ApiResponse<IEnumerable<TipoDocumentoDto>>>> GetTipoDocumentos(
+        [FromQuery] string? nombre = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            var result = new List<object>();
+            var query = new GetTipoDocumentoQuery(nombre);
+            var result = await _mediator.Send(query, cancellationToken);
             
-            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+            return Ok(ApiResponse<IEnumerable<TipoDocumentoDto>>.SuccessResult(
                 result,
                 "Tipos de documento obtenidos exitosamente"
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
+            return StatusCode(500, ApiResponse<IEnumerable<TipoDocumentoDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -48,21 +59,30 @@ public class TipoDocumentoController : ControllerBase
     /// Obtiene un tipo de documento por ID
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> GetTipoDocumentoById(
+    public async Task<ActionResult<ApiResponse<TipoDocumentoDto>>> GetTipoDocumentoById(
         int id,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            return NotFound(ApiResponse<object>.ErrorResult(
+            var query = new GetTipoDocumentoByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<TipoDocumentoDto>.SuccessResult(
+                result,
+                "Tipo de documento obtenido exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<TipoDocumentoDto>.ErrorResult(
                 "Tipo de documento no encontrado",
-                $"No se encontró un tipo de documento con ID {id}"
+                ex.Message
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<TipoDocumentoDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -73,25 +93,31 @@ public class TipoDocumentoController : ControllerBase
     /// Crea un nuevo tipo de documento
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<object>>> CreateTipoDocumento(
-        [FromBody] object request,
+    public async Task<ActionResult<ApiResponse<TipoDocumentoDto>>> CreateTipoDocumento(
+        [FromBody] CreateTipoDocumentoDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new CreateTipoDocumentoCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
             return CreatedAtAction(
                 nameof(GetTipoDocumentoById),
-                new { id = 1 },
-                ApiResponse<object>.SuccessResult(
-                    request,
+                new { id = result.IdTipoDocumento },
+                ApiResponse<TipoDocumentoDto>.SuccessResult(
+                    result,
                     "Tipo de documento creado exitosamente"
                 )
             );
         }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<TipoDocumentoDto>.ValidationErrorResult(ex.Errors));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<TipoDocumentoDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -102,22 +128,35 @@ public class TipoDocumentoController : ControllerBase
     /// Actualiza un tipo de documento
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> UpdateTipoDocumento(
+    public async Task<ActionResult<ApiResponse<TipoDocumentoDto>>> UpdateTipoDocumento(
         int id,
-        [FromBody] object request,
+        [FromBody] UpdateTipoDocumentoDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
-            return Ok(ApiResponse<object>.SuccessResult(
-                request,
+            var command = new UpdateTipoDocumentoCommand(id, request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<TipoDocumentoDto>.SuccessResult(
+                result,
                 "Tipo de documento actualizado exitosamente"
             ));
         }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<TipoDocumentoDto>.ErrorResult(
+                "Tipo de documento no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<TipoDocumentoDto>.ValidationErrorResult(ex.Errors));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<TipoDocumentoDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -127,6 +166,9 @@ public class TipoDocumentoController : ControllerBase
     /// <summary>
     /// Elimina un tipo de documento
     /// </summary>
+    /// <remarks>
+    /// NOTA: No se puede eliminar un tipo de documento que está siendo utilizado por personas.
+    /// </remarks>
     [HttpDelete("{id}")]
     public async Task<ActionResult<ApiResponse>> DeleteTipoDocumento(
         int id,
@@ -134,8 +176,21 @@ public class TipoDocumentoController : ControllerBase
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new DeleteTipoDocumentoCommand(id);
+            await _mediator.Send(command, cancellationToken);
+
             return Ok(ApiResponse.SuccessResult("Tipo de documento eliminado exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Tipo de documento no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
         }
         catch (Exception ex)
         {

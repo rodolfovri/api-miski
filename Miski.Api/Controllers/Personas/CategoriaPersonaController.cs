@@ -1,7 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Miski.Application.Features.Personas.CategoriaPersona.Commands.CreateCategoria;
+using Miski.Application.Features.Personas.CategoriaPersona.Commands.DeleteCategoria;
+using Miski.Application.Features.Personas.CategoriaPersona.Commands.UpdateCategoria;
+using Miski.Application.Features.Personas.CategoriaPersona.Queries.GetCategorias;
+using Miski.Application.Features.Personas.CategoriaPersona.Queries.GetCategoriaById;
 using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Personas;
 
 namespace Miski.Api.Controllers.Personas;
 
@@ -21,23 +27,28 @@ public class CategoriaPersonaController : ControllerBase
     /// <summary>
     /// Obtiene todas las categorías de personas
     /// </summary>
+    /// <remarks>
+    /// Permite filtrar por:
+    /// - nombre: Búsqueda parcial por nombre de la categoría
+    /// </remarks>
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetCategorias(
+    public async Task<ActionResult<ApiResponse<IEnumerable<CategoriaPersonaDto>>>> GetCategorias(
+        [FromQuery] string? nombre = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            var result = new List<object>();
+            var query = new GetCategoriasQuery(nombre);
+            var result = await _mediator.Send(query, cancellationToken);
             
-            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+            return Ok(ApiResponse<IEnumerable<CategoriaPersonaDto>>.SuccessResult(
                 result,
                 "Categorías obtenidas exitosamente"
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
+            return StatusCode(500, ApiResponse<IEnumerable<CategoriaPersonaDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -48,21 +59,30 @@ public class CategoriaPersonaController : ControllerBase
     /// Obtiene una categoría por ID
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> GetCategoriaById(
+    public async Task<ActionResult<ApiResponse<CategoriaPersonaDto>>> GetCategoriaById(
         int id,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            return NotFound(ApiResponse<object>.ErrorResult(
+            var query = new GetCategoriaByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<CategoriaPersonaDto>.SuccessResult(
+                result,
+                "Categoría obtenida exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<CategoriaPersonaDto>.ErrorResult(
                 "Categoría no encontrada",
-                $"No se encontró una categoría con ID {id}"
+                ex.Message
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<CategoriaPersonaDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -73,25 +93,31 @@ public class CategoriaPersonaController : ControllerBase
     /// Crea una nueva categoría
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<object>>> CreateCategoria(
-        [FromBody] object request,
+    public async Task<ActionResult<ApiResponse<CategoriaPersonaDto>>> CreateCategoria(
+        [FromBody] CreateCategoriaPersonaDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new CreateCategoriaPersonaCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
             return CreatedAtAction(
                 nameof(GetCategoriaById),
-                new { id = 1 },
-                ApiResponse<object>.SuccessResult(
-                    request,
+                new { id = result.IdCategoriaPersona },
+                ApiResponse<CategoriaPersonaDto>.SuccessResult(
+                    result,
                     "Categoría creada exitosamente"
                 )
             );
         }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<CategoriaPersonaDto>.ValidationErrorResult(ex.Errors));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<CategoriaPersonaDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -102,22 +128,43 @@ public class CategoriaPersonaController : ControllerBase
     /// Actualiza una categoría
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> UpdateCategoria(
+    public async Task<ActionResult<ApiResponse<CategoriaPersonaDto>>> UpdateCategoria(
         int id,
-        [FromBody] object request,
+        [FromBody] UpdateCategoriaPersonaDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
-            return Ok(ApiResponse<object>.SuccessResult(
-                request,
+            if (id != request.IdCategoriaPersona)
+            {
+                return BadRequest(ApiResponse<CategoriaPersonaDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new UpdateCategoriaPersonaCommand(id, request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<CategoriaPersonaDto>.SuccessResult(
+                result,
                 "Categoría actualizada exitosamente"
             ));
         }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<CategoriaPersonaDto>.ErrorResult(
+                "Categoría no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<CategoriaPersonaDto>.ValidationErrorResult(ex.Errors));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<CategoriaPersonaDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -127,6 +174,9 @@ public class CategoriaPersonaController : ControllerBase
     /// <summary>
     /// Elimina una categoría
     /// </summary>
+    /// <remarks>
+    /// NOTA: No se puede eliminar una categoría que tiene personas asociadas.
+    /// </remarks>
     [HttpDelete("{id}")]
     public async Task<ActionResult<ApiResponse>> DeleteCategoria(
         int id,
@@ -134,8 +184,21 @@ public class CategoriaPersonaController : ControllerBase
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new DeleteCategoriaPersonaCommand(id);
+            await _mediator.Send(command, cancellationToken);
+
             return Ok(ApiResponse.SuccessResult("Categoría eliminada exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Categoría no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
         }
         catch (Exception ex)
         {

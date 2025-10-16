@@ -1,0 +1,18 @@
+﻿namespace Miski.Shared.DTOs.Personas;
+
+public class CategoriaPersonaDto
+{
+    public int IdCategoriaPersona { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+}
+
+public class CreateCategoriaPersonaDto
+{
+    public string Nombre { get; set; } = string.Empty;
+}
+
+public class UpdateCategoriaPersonaDto
+{
+    public int IdCategoriaPersona { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+}

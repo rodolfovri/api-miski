@@ -1,0 +1,14 @@
+﻿using MediatR;
+using Miski.Shared.DTOs.Almacen;
+
+namespace Miski.Application.Features.Almacen.Productos.Queries.GetProductoById;
+
+public class GetProductoByIdQuery : IRequest<ProductoDto>
+{
+    public int Id { get; set; }
+
+    public GetProductoByIdQuery(int id)
+    {
+        Id = id;
+    }
+}

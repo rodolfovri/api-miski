@@ -1,0 +1,120 @@
+using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+using Miski.Shared.Exceptions;
+using Miski.Application.Services;
+
+namespace Miski.Application.Features.Compras.Negociaciones.Commands.UpdateNegociacion;
+
+public class UpdateNegociacionHandler : IRequestHandler<UpdateNegociacionCommand, NegociacionDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+    private readonly IFileStorageService _fileStorageService;
+
+    public UpdateNegociacionHandler(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+        _fileStorageService = fileStorageService;
+    }
+
+    public async Task<NegociacionDto> Handle(UpdateNegociacionCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.Negociacion;
+
+        var negociacion = await _unitOfWork.Repository<Negociacion>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (negociacion == null)
+            throw new NotFoundException("Negociacion", request.Id);
+
+        // No se puede actualizar una negociación ya aprobada
+        if (negociacion.EstadoAprobado == "APROBADO")
+        {
+            throw new ValidationException("No se puede actualizar una negociación que ya ha sido aprobada");
+        }
+
+        // Validar que el proveedor existe si se proporciona
+        if (dto.IdProveedor.HasValue)
+        {
+            var proveedor = await _unitOfWork.Repository<Persona>()
+                .GetByIdAsync(dto.IdProveedor.Value, cancellationToken);
+            
+            if (proveedor == null)
+                throw new NotFoundException("Proveedor", dto.IdProveedor.Value);
+        }
+
+        // Validar que el comisionista exists
+        var comisionista = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(dto.IdComisionista, cancellationToken);
+        
+        if (comisionista == null)
+            throw new NotFoundException("Comisionista", dto.IdComisionista);
+
+        // Validar que el producto existe si se proporciona
+        if (dto.IdProducto.HasValue)
+        {
+            var producto = await _unitOfWork.Repository<Producto>()
+                .GetByIdAsync(dto.IdProducto.Value, cancellationToken);
+            
+            if (producto == null)
+                throw new NotFoundException("Producto", dto.IdProducto.Value);
+        }
+
+        // Actualizar fotos si se proporcionan nuevas
+        if (dto.FotoCalidadProducto != null)
+        {
+            // Eliminar foto anterior
+            await _fileStorageService.DeleteFileAsync(negociacion.FotoCalidadProducto, cancellationToken);
+            // Guardar nueva foto
+            negociacion.FotoCalidadProducto = await _fileStorageService.SaveFileAsync(
+                dto.FotoCalidadProducto, "negociaciones/calidad", cancellationToken);
+        }
+
+        if (dto.FotoDniFrontal != null)
+        {
+            await _fileStorageService.DeleteFileAsync(negociacion.FotoDniFrontal, cancellationToken);
+            negociacion.FotoDniFrontal = await _fileStorageService.SaveFileAsync(
+                dto.FotoDniFrontal, "negociaciones/dni", cancellationToken);
+        }
+
+        if (dto.FotoDniPosterior != null)
+        {
+            await _fileStorageService.DeleteFileAsync(negociacion.FotoDniPosterior, cancellationToken);
+            negociacion.FotoDniPosterior = await _fileStorageService.SaveFileAsync(
+                dto.FotoDniPosterior, "negociaciones/dni", cancellationToken);
+        }
+
+        // Actualizar negociación
+        negociacion.IdProveedor = dto.IdProveedor;
+        negociacion.IdComisionista = dto.IdComisionista;
+        negociacion.IdProducto = dto.IdProducto;
+        negociacion.PesoTotal = dto.PesoTotal;
+        negociacion.SacosTotales = dto.SacosTotales;
+        negociacion.PrecioUnitario = dto.PrecioUnitario;
+        negociacion.NroCuentaRuc = dto.NroCuentaRuc;
+        negociacion.Observacion = dto.Observacion;
+        negociacion.EstadoAprobado = "PENDIENTE";  // Siempre PENDIENTE al actualizar
+
+        await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones para el DTO
+        negociacion.Comisionista = comisionista;
+        if (dto.IdProveedor.HasValue)
+        {
+            negociacion.Proveedor = await _unitOfWork.Repository<Persona>()
+                .GetByIdAsync(dto.IdProveedor.Value, cancellationToken);
+        }
+        if (dto.IdProducto.HasValue)
+        {
+            negociacion.Producto = await _unitOfWork.Repository<Producto>()
+                .GetByIdAsync(dto.IdProducto.Value, cancellationToken);
+        }
+
+        return _mapper.Map<NegociacionDto>(negociacion);
+    }
+}

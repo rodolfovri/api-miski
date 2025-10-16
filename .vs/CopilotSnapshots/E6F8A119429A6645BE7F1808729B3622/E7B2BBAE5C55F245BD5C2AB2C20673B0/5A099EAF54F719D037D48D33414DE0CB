@@ -1,0 +1,224 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Miski.Shared.DTOs.Base;
+
+namespace Miski.Api.Controllers.Personas;
+
+[ApiController]
+[Route("api/personas")]
+[Tags("Personas")]
+[Authorize]
+public class PersonasController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public PersonasController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    /// <summary>
+    /// Obtiene todas las personas
+    /// </summary>
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetPersonas(
+        [FromQuery] string? numeroDocumento = null,
+        [FromQuery] string? nombres = null,
+        [FromQuery] string? estado = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar query handler
+            var result = new List<object>();
+            
+            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+                result,
+                "Personas obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene una persona por ID
+    /// </summary>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApiResponse<object>>> GetPersonaById(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar query handler
+            return NotFound(ApiResponse<object>.ErrorResult(
+                "Persona no encontrada",
+                $"No se encontró una persona con ID {id}"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<object>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Crea una nueva persona
+    /// </summary>
+    [HttpPost]
+    public async Task<ActionResult<ApiResponse<object>>> CreatePersona(
+        [FromBody] object request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar command handler
+            return CreatedAtAction(
+                nameof(GetPersonaById),
+                new { id = 1 },
+                ApiResponse<object>.SuccessResult(
+                    request,
+                    "Persona creada exitosamente"
+                )
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<object>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Actualiza una persona
+    /// </summary>
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdatePersona(
+        int id,
+        [FromBody] object request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar command handler
+            return Ok(ApiResponse<object>.SuccessResult(
+                request,
+                "Persona actualizada exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<object>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Elimina una persona
+    /// </summary>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse>> DeletePersona(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar command handler
+            return Ok(ApiResponse.SuccessResult("Persona eliminada exitosamente"));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene las categorías de una persona
+    /// </summary>
+    [HttpGet("{id}/categorias")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetCategoriasByPersona(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar query handler
+            var result = new List<object>();
+            
+            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+                result,
+                "Categorías de la persona obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Asigna una categoría a una persona
+    /// </summary>
+    [HttpPost("{personaId}/categorias/{categoriaId}")]
+    public async Task<ActionResult<ApiResponse>> AsignarCategoria(
+        int personaId,
+        int categoriaId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar command handler
+            return Ok(ApiResponse.SuccessResult("Categoría asignada exitosamente"));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Remueve una categoría de una persona
+    /// </summary>
+    [HttpDelete("{personaId}/categorias/{categoriaId}")]
+    public async Task<ActionResult<ApiResponse>> RemoverCategoria(
+        int personaId,
+        int categoriaId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // TODO: Implementar command handler
+            return Ok(ApiResponse.SuccessResult("Categoría removida exitosamente"));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+}

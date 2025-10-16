@@ -1,0 +1,62 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Almacen;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Almacen.Productos.Commands.CreateProducto;
+
+public class CreateProductoHandler : IRequestHandler<CreateProductoCommand, ProductoDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public CreateProductoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<ProductoDto> Handle(CreateProductoCommand request, CancellationToken cancellationToken)
+    {
+        // Validar que la categoría existe
+        var categoria = await _unitOfWork.Repository<CategoriaProducto>()
+            .GetByIdAsync(request.IdCategoriaProducto, cancellationToken);
+        
+        if (categoria == null)
+            throw new NotFoundException("CategoriaProducto", request.IdCategoriaProducto);
+
+        // Validar que la unidad de medida existe
+        var unidadMedida = await _unitOfWork.Repository<UnidadMedida>()
+            .GetByIdAsync(request.IdUnidadMedida, cancellationToken);
+        
+        if (unidadMedida == null)
+            throw new NotFoundException("UnidadMedida", request.IdUnidadMedida);
+
+        // Validar que el código no exista
+        var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
+        if (productos.Any(p => p.Codigo == request.Codigo))
+            throw new ValidationException($"Ya existe un producto con el código {request.Codigo}");
+
+        var producto = new Producto
+        {
+            IdCategoriaProducto = request.IdCategoriaProducto,
+            IdUnidadMedida = request.IdUnidadMedida,
+            Codigo = request.Codigo,
+            Nombre = request.Nombre,
+            Descripcion = request.Descripcion,
+            Estado = request.Estado,
+            FRegistro = DateTime.Now
+        };
+
+        await _unitOfWork.Repository<Producto>().AddAsync(producto, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones para el DTO
+        producto.CategoriaProducto = categoria;
+        producto.UnidadMedida = unidadMedida;
+
+        return _mapper.Map<ProductoDto>(producto);
+    }
+}

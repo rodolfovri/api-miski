@@ -1,0 +1,59 @@
+﻿using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Personas.Commands.AsignarCategoria;
+
+public class AsignarCategoriaHandler : IRequestHandler<AsignarCategoriaCommand, bool>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public AsignarCategoriaHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<bool> Handle(AsignarCategoriaCommand request, CancellationToken cancellationToken)
+    {
+        // Verificar que la persona existe
+        var persona = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(request.PersonaId, cancellationToken);
+
+        if (persona == null)
+            throw new NotFoundException("Persona", request.PersonaId);
+
+        // Verificar que la categoría existe
+        var categoria = await _unitOfWork.Repository<CategoriaPersona>()
+            .GetByIdAsync(request.CategoriaId, cancellationToken);
+
+        if (categoria == null)
+            throw new NotFoundException("CategoriaPersona", request.CategoriaId);
+
+        // Verificar si ya tiene la categoría asignada
+        var personaCategorias = await _unitOfWork.Repository<PersonaCategoria>().GetAllAsync(cancellationToken);
+        var yaAsignada = personaCategorias.Any(pc => 
+            pc.IdPersona == request.PersonaId && 
+            pc.IdCategoria == request.CategoriaId);
+
+        if (yaAsignada)
+        {
+            throw new ValidationException(new Dictionary<string, string[]>
+            {
+                { "Categoria", new[] { "Esta categoría ya está asignada a la persona" } }
+            });
+        }
+
+        // Asignar la categoría
+        var personaCategoria = new PersonaCategoria
+        {
+            IdPersona = request.PersonaId,
+            IdCategoria = request.CategoriaId
+        };
+
+        await _unitOfWork.Repository<PersonaCategoria>().AddAsync(personaCategoria, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
+}}

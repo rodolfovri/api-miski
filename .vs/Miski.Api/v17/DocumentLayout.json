@@ -3,76 +3,92 @@
   "WorkspaceRootPath": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\maestros\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\maestros\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\services\\filestorageservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\services\\filestorageservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\permisos\\queries\\getpermisosporrol\\getpermisosporrolhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\permisos\\queries\\getpermisosporrol\\getpermisosporrolhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\compras\\negociaciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.shared\\dtos\\compras\\negociaciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\permisos\\queries\\getpermisosporrol\\getpermisosporrolquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\permisos\\queries\\getpermisosporrol\\getpermisosporrolquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\updatenegociacion\\updatenegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\updatenegociacion\\updatenegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\permisos\\permisoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\permisos\\permisoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\createnegociacion\\createnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\createnegociacion\\createnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\permisos\\permisodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.shared\\dtos\\permisos\\permisodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\negociacionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\negociacionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\permisos\\queries\\getmodulos\\getmoduloshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\permisos\\queries\\getmodulos\\getmoduloshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\guia_configuracion_negociaciones.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:guia_configuracion_negociaciones.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\modulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\modulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\compras_negociaciones_implementacion.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:compras_negociaciones_implementacion.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\comprascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\comprascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\readme_negociaciones.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\readme_negociaciones.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\permisos\\queries\\getmodulos\\getmodulosquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\permisos\\queries\\getmodulos\\getmodulosquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\queries\\getnegociaciones\\getnegociacioneshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\queries\\getnegociaciones\\getnegociacioneshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\permisos\\commands\\asignarpermiso\\asignarpermisohandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\permisos\\commands\\asignarpermiso\\asignarpermisohandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\queries\\getnegociaciones\\getnegociacionesquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\queries\\getnegociaciones\\getnegociacionesquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\permisos\\commands\\asignarpermiso\\asignarpermisovalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\permisos\\commands\\asignarpermiso\\asignarpermisovalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\permisos\\commands\\asignarpermiso\\asignarpermisocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\permisos\\commands\\asignarpermiso\\asignarpermisocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\ubicacion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\ubicacion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\auth\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.shared\\dtos\\auth\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\queries\\getnegociacionbyid\\getnegociacionbyidquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\queries\\getnegociacionbyid\\getnegociacionbyidquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\maestros\\tipodocumento\\commands\\createtipodocumento\\createtipodocumentohandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\maestros\\tipodocumento\\commands\\createtipodocumento\\createtipodocumentohandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\queries\\getnegociacionbyid\\getnegociacionbyidhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\queries\\getnegociacionbyid\\getnegociacionbyidhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\maestros\\tipodocumento\\commands\\createtipodocumento\\createtipodocumentocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\maestros\\tipodocumento\\commands\\createtipodocumento\\createtipodocumentocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\createnegociacion\\createnegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\createnegociacion\\createnegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\maestros\\tipodocumentodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.shared\\dtos\\maestros\\tipodocumentodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\deletenegociacion\\deletenegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\deletenegociacion\\deletenegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\permisos\\permisocommanddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.shared\\dtos\\permisos\\permisocommanddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\deletenegociacion\\deletenegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\deletenegociacion\\deletenegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\aprobarnegociacion\\aprobarnegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\aprobarnegociacion\\aprobarnegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\aprobarnegociacion\\aprobarnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\aprobarnegociacion\\aprobarnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\mappings\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\mappings\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\createnegociacion\\createnegociacionvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\createnegociacion\\createnegociacionvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -81,8 +97,8 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedHeight": 317,
-          "SelectedChildIndex": 3,
+          "DockedHeight": 322,
+          "SelectedChildIndex": 21,
           "Children": [
             {
               "$type": "Bookmark",
@@ -98,228 +114,293 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "README.md",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Maestros\\README.md",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Maestros\\README.md",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Maestros\\README.md",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Maestros\\README.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAyAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "GUIA_CONFIGURACION_NEGOCIACIONES.md",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\GUIA_CONFIGURACION_NEGOCIACIONES.md",
+              "RelativeDocumentMoniker": "GUIA_CONFIGURACION_NEGOCIACIONES.md",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\GUIA_CONFIGURACION_NEGOCIACIONES.md",
+              "RelativeToolTip": "GUIA_CONFIGURACION_NEGOCIACIONES.md",
+              "ViewState": "AgIAAFYBAAAAAAAAAAAAAGIBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2025-10-10T15:18:55.792Z",
+              "WhenOpened": "2025-10-16T16:29:52.331Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAPoAAAAAAAAAAEBVwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:28:48.363Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "COMPRAS_NEGOCIACIONES_IMPLEMENTACION.md",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\COMPRAS_NEGOCIACIONES_IMPLEMENTACION.md",
+              "RelativeDocumentMoniker": "COMPRAS_NEGOCIACIONES_IMPLEMENTACION.md",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\COMPRAS_NEGOCIACIONES_IMPLEMENTACION.md",
+              "RelativeToolTip": "COMPRAS_NEGOCIACIONES_IMPLEMENTACION.md",
+              "ViewState": "AgIAAIcAAAAAAAAAAAAAAGsBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-10-16T16:28:27.108Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
-              "Title": "ComprasController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\ComprasController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\ComprasController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\ComprasController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\ComprasController.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAvwBgAAABGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T07:14:55.336Z"
+              "Title": "README_NEGOCIACIONES.md",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\README_NEGOCIACIONES.md",
+              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\README_NEGOCIACIONES.md",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\README_NEGOCIACIONES.md",
+              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\README_NEGOCIACIONES.md",
+              "ViewState": "AgIAAMMAAAAAAAAAAAAAAAQAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-10-16T16:27:32Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Modulo.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Modulo.cs",
-              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Modulo.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Modulo.cs",
-              "RelativeToolTip": "Miski.Domain\\Entities\\Modulo.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAxwAcAAAAlAAAAAAAAAA==",
+              "DocumentIndex": 20,
+              "Title": "CreateNegociacionValidator.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionValidator.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionValidator.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionValidator.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionValidator.cs",
+              "ViewState": "AgIAAFIAAAAAAAAAAIBZwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T07:11:33.663Z"
+              "WhenOpened": "2025-10-16T16:25:35.859Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 4,
+              "Title": "NegociacionesController.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\NegociacionesController.cs",
+              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\NegociacionesController.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\NegociacionesController.cs",
+              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\NegociacionesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:23:48.153Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
               "Title": "MappingProfile.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Mappings\\MappingProfile.cs",
               "RelativeDocumentMoniker": "Miski.Application\\Mappings\\MappingProfile.cs",
               "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Mappings\\MappingProfile.cs",
               "RelativeToolTip": "Miski.Application\\Mappings\\MappingProfile.cs",
-              "ViewState": "AgIAAFEAAAAAAAAAACBmwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHgAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:33:35.147Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PermisosController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Permisos\\PermisosController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Permisos\\PermisosController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Permisos\\PermisosController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Permisos\\PermisosController.cs",
-              "ViewState": "AgIAADsAAAAAAAAAAAA3wEEAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:33:18.545Z",
+              "WhenOpened": "2025-10-16T16:22:52.843Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "GetModulosHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Queries\\GetModulos\\GetModulosHandler.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Permisos\\Queries\\GetModulos\\GetModulosHandler.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Queries\\GetModulos\\GetModulosHandler.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Permisos\\Queries\\GetModulos\\GetModulosHandler.cs",
-              "ViewState": "AgIAACAAAAAAAAAAAAAAACIAAAArAAAAAAAAAA==",
+              "DocumentIndex": 18,
+              "Title": "AprobarNegociacionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacion\\AprobarNegociacionHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacion\\AprobarNegociacionHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacion\\AprobarNegociacionHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacion\\AprobarNegociacionHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:32:54.845Z"
+              "WhenOpened": "2025-10-16T16:22:40.762Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "GetModulosQuery.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Queries\\GetModulos\\GetModulosQuery.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Permisos\\Queries\\GetModulos\\GetModulosQuery.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Queries\\GetModulos\\GetModulosQuery.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Permisos\\Queries\\GetModulos\\GetModulosQuery.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAUAAAAOAAAAAAAAAA==",
+              "DocumentIndex": 17,
+              "Title": "AprobarNegociacionCommand.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacion\\AprobarNegociacionCommand.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacion\\AprobarNegociacionCommand.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacion\\AprobarNegociacionCommand.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacion\\AprobarNegociacionCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:32:41.67Z"
+              "WhenOpened": "2025-10-16T16:22:27.436Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "GetPermisosPorRolHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Queries\\GetPermisosPorRol\\GetPermisosPorRolHandler.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Permisos\\Queries\\GetPermisosPorRol\\GetPermisosPorRolHandler.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Queries\\GetPermisosPorRol\\GetPermisosPorRolHandler.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Permisos\\Queries\\GetPermisosPorRol\\GetPermisosPorRolHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA4AAAAAAAAAA==",
+              "DocumentIndex": 16,
+              "Title": "DeleteNegociacionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\DeleteNegociacion\\DeleteNegociacionHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\DeleteNegociacion\\DeleteNegociacionHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\DeleteNegociacion\\DeleteNegociacionHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\DeleteNegociacion\\DeleteNegociacionHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:32:31.13Z",
+              "WhenOpened": "2025-10-16T16:22:20.844Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "DeleteNegociacionCommand.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\DeleteNegociacion\\DeleteNegociacionCommand.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\DeleteNegociacion\\DeleteNegociacionCommand.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\DeleteNegociacion\\DeleteNegociacionCommand.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\DeleteNegociacion\\DeleteNegociacionCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:22:09.523Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "GetPermisosPorRolQuery.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Queries\\GetPermisosPorRol\\GetPermisosPorRolQuery.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Permisos\\Queries\\GetPermisosPorRol\\GetPermisosPorRolQuery.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Queries\\GetPermisosPorRol\\GetPermisosPorRolQuery.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Permisos\\Queries\\GetPermisosPorRol\\GetPermisosPorRolQuery.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAOAAAAAAAAAA==",
+              "Title": "UpdateNegociacionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\UpdateNegociacion\\UpdateNegociacionHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\UpdateNegociacion\\UpdateNegociacionHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\UpdateNegociacion\\UpdateNegociacionHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\UpdateNegociacion\\UpdateNegociacionHandler.cs",
+              "ViewState": "AgIAAFcAAAAAAAAAAAAwwGMAAABVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:32:11.313Z",
+              "WhenOpened": "2025-10-16T16:22:03.641Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CreateNegociacionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionHandler.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:21:23.372Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "CreateNegociacionCommand.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionCommand.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionCommand.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionCommand.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CreateNegociacion\\CreateNegociacionCommand.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAIBQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:20:42.98Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "GetNegociacionByIdHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociacionById\\GetNegociacionByIdHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociacionById\\GetNegociacionByIdHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociacionById\\GetNegociacionByIdHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociacionById\\GetNegociacionByIdHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:20:35.786Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "GetNegociacionByIdQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociacionById\\GetNegociacionByIdQuery.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociacionById\\GetNegociacionByIdQuery.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociacionById\\GetNegociacionByIdQuery.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociacionById\\GetNegociacionByIdQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:20:25.241Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "GetNegociacionesHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociaciones\\GetNegociacionesHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociaciones\\GetNegociacionesHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociaciones\\GetNegociacionesHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociaciones\\GetNegociacionesHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:20:18.745Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 9,
-              "Title": "AsignarPermisoHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoHandler.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoHandler.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoHandler.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoHandler.cs",
-              "ViewState": "AgIAADYAAAAAAAAAAAAAAFIAAAABAAAAAAAAAA==",
+              "Title": "GetNegociacionesQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociaciones\\GetNegociacionesQuery.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociaciones\\GetNegociacionesQuery.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociaciones\\GetNegociacionesQuery.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Queries\\GetNegociaciones\\GetNegociacionesQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:32:05.03Z"
+              "WhenOpened": "2025-10-16T16:20:05.091Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FileStorageService.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Services\\FileStorageService.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Services\\FileStorageService.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Services\\FileStorageService.cs",
+              "RelativeToolTip": "Miski.Application\\Services\\FileStorageService.cs",
+              "ViewState": "AgIAAF4AAAAAAAAAAAAmwGsAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:19:58.206Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "NegociacionDto.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
+              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
+              "RelativeToolTip": "Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAswAQAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-16T16:19:40.038Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 10,
-              "Title": "AsignarPermisoValidator.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoValidator.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoValidator.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoValidator.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoValidator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
+              "Title": "MiskiDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "RelativeDocumentMoniker": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "RelativeToolTip": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "ViewState": "AgIAAKAAAAAAAAAAAADgv6oAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:31:51.353Z"
+              "WhenOpened": "2025-10-15T23:32:00.765Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 11,
-              "Title": "AsignarPermisoCommand.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoCommand.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoCommand.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoCommand.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Permisos\\Commands\\AsignarPermiso\\AsignarPermisoCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAABZAAAAAAAAAA==",
+              "Title": "Ubicacion.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Ubicacion.cs",
+              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Ubicacion.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Ubicacion.cs",
+              "RelativeToolTip": "Miski.Domain\\Entities\\Ubicacion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:31:43.938Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "PermisoCommandDto.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Permisos\\PermisoCommandDto.cs",
-              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Permisos\\PermisoCommandDto.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Permisos\\PermisoCommandDto.cs",
-              "RelativeToolTip": "Miski.Shared\\DTOs\\Permisos\\PermisoCommandDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEoAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:31:37.194Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "PermisoDto.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Permisos\\PermisoDto.cs",
-              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Permisos\\PermisoDto.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Permisos\\PermisoDto.cs",
-              "RelativeToolTip": "Miski.Shared\\DTOs\\Permisos\\PermisoDto.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAA8wAYAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:31:23.34Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "RegisterDto.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Auth\\RegisterDto.cs",
-              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Auth\\RegisterDto.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Auth\\RegisterDto.cs",
-              "RelativeToolTip": "Miski.Shared\\DTOs\\Auth\\RegisterDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:24:06.166Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "CreateTipoDocumentoCommand.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Maestros\\TipoDocumento\\Commands\\CreateTipoDocumento\\CreateTipoDocumentoCommand.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Maestros\\TipoDocumento\\Commands\\CreateTipoDocumento\\CreateTipoDocumentoCommand.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Maestros\\TipoDocumento\\Commands\\CreateTipoDocumento\\CreateTipoDocumentoCommand.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Maestros\\TipoDocumento\\Commands\\CreateTipoDocumento\\CreateTipoDocumentoCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:22:58.021Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "CreateTipoDocumentoHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Maestros\\TipoDocumento\\Commands\\CreateTipoDocumento\\CreateTipoDocumentoHandler.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Maestros\\TipoDocumento\\Commands\\CreateTipoDocumento\\CreateTipoDocumentoHandler.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Maestros\\TipoDocumento\\Commands\\CreateTipoDocumento\\CreateTipoDocumentoHandler.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Maestros\\TipoDocumento\\Commands\\CreateTipoDocumento\\CreateTipoDocumentoHandler.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAkAAAA6AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:22:51.961Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "TipoDocumentoDto.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Maestros\\TipoDocumentoDto.cs",
-              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Maestros\\TipoDocumentoDto.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Maestros\\TipoDocumentoDto.cs",
-              "RelativeToolTip": "Miski.Shared\\DTOs\\Maestros\\TipoDocumentoDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T05:22:39.4Z"
+              "WhenOpened": "2025-10-15T23:31:47.206Z"
             }
           ]
         },
         {
-          "DockedHeight": 83,
+          "DockedHeight": 78,
           "SelectedChildIndex": -1,
           "Children": [
             {
