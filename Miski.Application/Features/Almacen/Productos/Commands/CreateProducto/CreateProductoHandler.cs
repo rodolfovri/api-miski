@@ -4,6 +4,7 @@ using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Almacen;
 using Miski.Shared.Exceptions;
+using Miski.Application.Services;
 
 namespace Miski.Application.Features.Almacen.Productos.Commands.CreateProducto;
 
@@ -11,11 +12,13 @@ public class CreateProductoHandler : IRequestHandler<CreateProductoCommand, Prod
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IFileStorageService _fileStorageService;
 
-    public CreateProductoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateProductoHandler(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<ProductoDto> Handle(CreateProductoCommand request, CancellationToken cancellationToken)
@@ -25,30 +28,38 @@ public class CreateProductoHandler : IRequestHandler<CreateProductoCommand, Prod
         // Validar que la categoría existe
         var categoria = await _unitOfWork.Repository<CategoriaProducto>()
             .GetByIdAsync(dto.IdCategoriaProducto, cancellationToken);
-        
+
         if (categoria == null)
             throw new NotFoundException("CategoriaProducto", dto.IdCategoriaProducto);
 
-        // Validar que la unidad de medida existe
-        var unidadMedida = await _unitOfWork.Repository<UnidadMedida>()
-            .GetByIdAsync(dto.IdUnidadMedida, cancellationToken);
-        
-        if (unidadMedida == null)
-            throw new NotFoundException("UnidadMedida", dto.IdUnidadMedida);
+        // Guardar imagen si se proporciona
+        string? imagenUrl = null;
+        if (dto.Imagen != null)
+        {
+            imagenUrl = await _fileStorageService.SaveFileAsync(
+                dto.Imagen, 
+                "productos/imagenes", 
+                cancellationToken);
+        }
 
-        // Validar que el código no exista
-        var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
-        if (productos.Any(p => p.Codigo == dto.Codigo))
-            throw new ValidationException($"Ya existe un producto con el código {dto.Codigo}");
+        // Guardar ficha técnica (PDF) si se proporciona
+        string? fichaTecnicaUrl = null;
+        if (dto.FichaTecnica != null)
+        {
+            fichaTecnicaUrl = await _fileStorageService.SaveFileAsync(
+                dto.FichaTecnica, 
+                "productos/fichas-tecnicas", 
+                cancellationToken);
+        }
 
         var producto = new Producto
         {
             IdCategoriaProducto = dto.IdCategoriaProducto,
-            IdUnidadMedida = dto.IdUnidadMedida,
-            Codigo = dto.Codigo,
             Nombre = dto.Nombre,
             Descripcion = dto.Descripcion,
             Estado = dto.Estado,
+            Imagen = imagenUrl,
+            FichaTecnica = fichaTecnicaUrl,
             FRegistro = DateTime.Now
         };
 
@@ -57,7 +68,6 @@ public class CreateProductoHandler : IRequestHandler<CreateProductoCommand, Prod
 
         // Cargar relaciones para el DTO
         producto.CategoriaProducto = categoria;
-        producto.UnidadMedida = unidadMedida;
 
         return _mapper.Map<ProductoDto>(producto);
     }

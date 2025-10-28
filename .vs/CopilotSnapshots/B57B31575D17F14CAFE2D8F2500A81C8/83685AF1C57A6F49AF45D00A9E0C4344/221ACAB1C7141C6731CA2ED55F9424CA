@@ -1,0 +1,49 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Almacen;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Almacen.Productos.Commands.CreateProducto;
+
+public class CreateProductoHandler : IRequestHandler<CreateProductoCommand, ProductoDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public CreateProductoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<ProductoDto> Handle(CreateProductoCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.Producto;
+
+        // Validar que la categoría existe
+        var categoria = await _unitOfWork.Repository<CategoriaProducto>()
+            .GetByIdAsync(dto.IdCategoriaProducto, cancellationToken);
+
+        if (categoria == null)
+            throw new NotFoundException("CategoriaProducto", dto.IdCategoriaProducto);
+
+        var producto = new Producto
+        {
+            IdCategoriaProducto = dto.IdCategoriaProducto,
+            Nombre = dto.Nombre,
+            Descripcion = dto.Descripcion,
+            Estado = dto.Estado,
+            FRegistro = DateTime.Now
+        };
+
+        await _unitOfWork.Repository<Producto>().AddAsync(producto, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones para el DTO
+        producto.CategoriaProducto = categoria;
+
+        return _mapper.Map<ProductoDto>(producto);
+    }
+}

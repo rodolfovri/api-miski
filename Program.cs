@@ -165,7 +165,6 @@ if (app.Environment.IsDevelopment())
         
         // Personalización de la interfaz
         c.DocumentTitle = "Miski API - Documentación";
-        c.InjectStylesheet("/swagger/custom.css");
     });
 }
 
@@ -173,8 +172,26 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
-// Servir archivos estáticos para personalización de Swagger
+// Servir archivos estáticos para Swagger UI
 app.UseStaticFiles();
+
+// Configurar servicio de archivos estáticos para las imágenes de negociaciones
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine("C:", "MiskiFiles")),
+    RequestPath = "",  // Las rutas empiezan directamente desde /negociaciones/...
+    OnPrepareResponse = ctx =>
+    {
+        // Configurar CORS headers para las imágenes
+        ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+        ctx.Context.Response.Headers.Append("Access-Control-Allow-Methods", "GET");
+        ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type");
+        
+        // Cache control para las imágenes (opcional)
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=3600");
+    }
+});
 
 // Global Exception Handler
 app.UseMiddleware<GlobalExceptionMiddleware>();

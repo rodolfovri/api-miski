@@ -6,5 +6,5 @@ public class UnidadMedida
     public string Nombre { get; set; } = string.Empty;
     public string Abreviatura { get; set; } = string.Empty;
     // Navigation properties
-    public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();
+    public virtual ICollection<VariedadProducto> VariedadProductos { get; set; } = new List<VariedadProducto>();
 }

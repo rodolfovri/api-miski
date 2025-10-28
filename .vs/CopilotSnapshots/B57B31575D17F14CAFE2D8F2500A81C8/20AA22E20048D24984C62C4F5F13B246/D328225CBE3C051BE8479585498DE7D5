@@ -1,0 +1,83 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociacionIngeniero;
+
+public class AprobarNegociacionIngenieroHandler : IRequestHandler<AprobarNegociacionIngenieroCommand, NegociacionDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public AprobarNegociacionIngenieroHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<NegociacionDto> Handle(AprobarNegociacionIngenieroCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.Aprobacion;
+
+        var negociacion = await _unitOfWork.Repository<Negociacion>()
+            .GetByIdAsync(dto.IdNegociacion, cancellationToken);
+
+        if (negociacion == null)
+            throw new NotFoundException("Negociacion", dto.IdNegociacion);
+
+        // Validar que la negociación esté en proceso
+        if (negociacion.Estado != "EN PROCESO")
+        {
+            throw new ValidationException("Solo se pueden aprobar negociaciones en estado 'EN PROCESO'");
+        }
+
+        // Validar que esté pendiente de aprobación por ingeniero
+        if (negociacion.EstadoAprobacionIngeniero != "PENDIENTE")
+        {
+            throw new ValidationException("La negociación ya ha sido procesada por el ingeniero");
+        }
+
+        // Validar que el usuario aprobador existe
+        var aprobador = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(dto.AprobadaPorIngeniero, cancellationToken);
+        
+        if (aprobador == null)
+            throw new NotFoundException("Usuario aprobador", dto.AprobadaPorIngeniero);
+
+        // Aprobar la negociación
+        negociacion.EstadoAprobacionIngeniero = "APROBADO";
+        negociacion.AprobadaPorIngeniero = dto.AprobadaPorIngeniero;
+        negociacion.FAprobacionIngeniero = DateTime.Now;
+        negociacion.Estado = "APROBADO"; // Cambia el estado general a APROBADO
+        
+        if (!string.IsNullOrEmpty(dto.Observacion))
+        {
+            negociacion.Observacion = dto.Observacion;
+        }
+
+        await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones para el DTO
+        negociacion.AprobadaPorUsuarioIngeniero = aprobador;
+        negociacion.Comisionista = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(negociacion.IdComisionista, cancellationToken);
+        
+        if (!string.IsNullOrEmpty(negociacion.NroDocumentoProveedor))
+        {
+            var proveedores = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+            negociacion.Proveedor = proveedores.FirstOrDefault(p => p.NumeroDocumento == negociacion.NroDocumentoProveedor);
+        }
+
+        if (negociacion.IdProducto.HasValue)
+        {
+            negociacion.Producto = await _unitOfWork.Repository<Producto>()
+                .GetByIdAsync(negociacion.IdProducto.Value, cancellationToken);
+        }
+
+        return _mapper.Map<NegociacionDto>(negociacion);
+    }
+}

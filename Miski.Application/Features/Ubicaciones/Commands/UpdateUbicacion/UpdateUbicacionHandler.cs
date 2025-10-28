@@ -4,6 +4,7 @@ using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Ubicaciones;
 using Miski.Shared.Exceptions;
+using Miski.Application.Services;
 
 namespace Miski.Application.Features.Ubicaciones.Commands.UpdateUbicacion;
 
@@ -11,15 +12,19 @@ public class UpdateUbicacionHandler : IRequestHandler<UpdateUbicacionCommand, Ub
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IFileStorageService _fileStorageService;
 
-    public UpdateUbicacionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public UpdateUbicacionHandler(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<UbicacionDto> Handle(UpdateUbicacionCommand request, CancellationToken cancellationToken)
     {
+        var dto = request.Ubicacion;
+
         // Buscar la ubicación
         var ubicacion = await _unitOfWork.Repository<Ubicacion>()
             .GetByIdAsync(request.Id, cancellationToken);
@@ -29,22 +34,44 @@ public class UpdateUbicacionHandler : IRequestHandler<UpdateUbicacionCommand, Ub
 
         // Verificar que el usuario existe
         var usuario = await _unitOfWork.Repository<Usuario>()
-            .GetByIdAsync(request.Ubicacion.IdUsuario, cancellationToken);
+            .GetByIdAsync(dto.IdUsuario, cancellationToken);
 
         if (usuario == null)
-            throw new NotFoundException("Usuario", request.Ubicacion.IdUsuario);
+            throw new NotFoundException("Usuario", dto.IdUsuario);
 
-        // Actualizar la ubicación
-        ubicacion.IdUsuario = request.Ubicacion.IdUsuario;
-        ubicacion.Nombre = request.Ubicacion.Nombre;
-        ubicacion.Direccion = request.Ubicacion.Direccion;
-        ubicacion.Tipo = request.Ubicacion.Tipo;
-        
-        if (!string.IsNullOrEmpty(request.Ubicacion.Estado))
+        // Actualizar PDF si se proporciona uno nuevo
+        if (dto.ComprobantePdf != null)
         {
-            ubicacion.Estado = request.Ubicacion.Estado;
+            // Eliminar PDF anterior si existe
+            if (!string.IsNullOrEmpty(ubicacion.ComprobantePdf))
+            {
+                await _fileStorageService.DeleteFileAsync(ubicacion.ComprobantePdf, cancellationToken);
+            }
+            
+            // Guardar nuevo PDF
+            ubicacion.ComprobantePdf = await _fileStorageService.SaveFileAsync(
+                dto.ComprobantePdf, 
+                "ubicaciones/comprobantes", 
+                cancellationToken);
         }
 
+        // Actualizar la ubicación
+        ubicacion.IdUsuario = dto.IdUsuario;
+        ubicacion.CodigoSenasa = dto.CodigoSenasa;
+        ubicacion.Nombre = dto.Nombre;
+        ubicacion.RazonSocial = dto.RazonSocial;
+        ubicacion.NumeroRuc = dto.NumeroRuc;
+        ubicacion.Direccion = dto.Direccion;
+        ubicacion.DomicilioLegal = dto.DomicilioLegal;
+        ubicacion.GiroEstablecimiento = dto.GiroEstablecimiento;
+        ubicacion.Tipo = dto.Tipo;
+        
+        if (!string.IsNullOrEmpty(dto.Estado))
+        {
+            ubicacion.Estado = dto.Estado;
+        }
+
+        await _unitOfWork.Repository<Ubicacion>().UpdateAsync(ubicacion, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // Cargar el usuario para el DTO

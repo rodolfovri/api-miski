@@ -4,9 +4,8 @@ using Miski.Shared.DTOs.Compras;
 namespace Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociaciones;
 
 public record GetNegociacionesQuery(
-    int? IdProveedor = null,
     int? IdComisionista = null,
-    int? IdProducto = null,
-    string? EstadoAprobado = null,
-    string? Estado = null
+    int? IdVariedadProducto = null,  // CAMBIADO de IdProducto
+    string? Estado = null,
+    string? EstadoAprobacionIngeniero = null
 ) : IRequest<List<NegociacionDto>>;

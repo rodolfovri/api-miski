@@ -1,0 +1,49 @@
+using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Maestros;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Maestros.Vehiculo.Commands.UpdateVehiculo;
+
+public class UpdateVehiculoHandler : IRequestHandler<UpdateVehiculoCommand, VehiculoDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public UpdateVehiculoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<VehiculoDto> Handle(UpdateVehiculoCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.Vehiculo;
+
+        var vehiculo = await _unitOfWork.Repository<Domain.Entities.Vehiculo>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (vehiculo == null)
+            throw new NotFoundException("Vehiculo", request.Id);
+
+        // Validar que la placa no esté duplicada (excepto el mismo vehículo)
+        var vehiculos = await _unitOfWork.Repository<Domain.Entities.Vehiculo>().GetAllAsync(cancellationToken);
+        if (vehiculos.Any(v => v.Placa.Equals(dto.Placa, StringComparison.OrdinalIgnoreCase) && v.IdVehiculo != request.Id))
+        {
+            throw new ValidationException($"Ya existe otro vehículo con la placa {dto.Placa}");
+        }
+
+        // Actualizar vehículo
+        vehiculo.Placa = dto.Placa.ToUpper();
+        vehiculo.Marca = dto.Marca;
+        vehiculo.Modelo = dto.Modelo;
+        vehiculo.Estado = dto.Estado ?? vehiculo.Estado;
+
+        await _unitOfWork.Repository<Domain.Entities.Vehiculo>().UpdateAsync(vehiculo, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return _mapper.Map<VehiculoDto>(vehiculo);
+    }
+}

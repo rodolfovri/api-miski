@@ -1,0 +1,92 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.Negociaciones.Commands.UpdateNegociacion;
+
+public class UpdateNegociacionHandler : IRequestHandler<UpdateNegociacionCommand, NegociacionDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public UpdateNegociacionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<NegociacionDto> Handle(UpdateNegociacionCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.Negociacion;
+
+        var negociacion = await _unitOfWork.Repository<Negociacion>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (negociacion == null)
+            throw new NotFoundException("Negociacion", request.Id);
+
+        // No se puede actualizar una negociación ya aprobada por ingeniero
+        if (negociacion.EstadoAprobacionIngeniero == "APROBADO")
+        {
+            throw new ValidationException("No se puede actualizar una negociación que ya ha sido aprobada por el ingeniero");
+        }
+
+        // No se puede actualizar una negociación rechazada
+        if (negociacion.EstadoAprobacionIngeniero == "RECHAZADO" || negociacion.Estado == "ANULADO")
+        {
+            throw new ValidationException("No se puede actualizar una negociación que ha sido rechazada o anulada");
+        }
+
+        // Validar que el producto existe si se proporciona
+        if (dto.IdProducto.HasValue)
+        {
+            var producto = await _unitOfWork.Repository<Producto>()
+                .GetByIdAsync(dto.IdProducto.Value, cancellationToken);
+            
+            if (producto == null)
+                throw new NotFoundException("Producto", dto.IdProducto.Value);
+        }
+
+        // Actualizar negociación
+        negociacion.NroDocumentoProveedor = dto.NroDocumentoProveedor;
+        negociacion.IdProducto = dto.IdProducto;
+        negociacion.TipoCalidad = dto.TipoCalidad;
+        negociacion.PrecioUnitario = dto.PrecioUnitario;
+        negociacion.SacosTotales = dto.SacosTotales;
+        negociacion.PesoPorSaco = dto.PesoPorSaco;
+        negociacion.PesoTotal = dto.PesoTotal;
+        negociacion.MontoAdelanto = dto.MontoAdelanto;
+        negociacion.FAdelanto = dto.FAdelanto;
+        negociacion.MontoTotalPago = dto.MontoTotalPago;
+        negociacion.FPagoTotal = dto.FPagoTotal;
+        negociacion.NroCuentaBancaria = dto.NroCuentaBancaria;
+        negociacion.Observacion = dto.Observacion;
+
+        // TODO: Implementar lógica de actualización de fotos cuando se requiera
+
+        await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones para el DTO
+        negociacion.Comisionista = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Persona();
+
+        // Buscar proveedor por documento si existe
+        if (!string.IsNullOrEmpty(negociacion.NroDocumentoProveedor))
+        {
+            var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+            negociacion.Proveedor = personas.FirstOrDefault(p => p.NumeroDocumento == negociacion.NroDocumentoProveedor);
+        }
+
+        if (dto.IdProducto.HasValue)
+        {
+            negociacion.Producto = await _unitOfWork.Repository<Producto>()
+                .GetByIdAsync(dto.IdProducto.Value, cancellationToken);
+        }
+
+        return _mapper.Map<NegociacionDto>(negociacion);
+    }
+}

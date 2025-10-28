@@ -13,5 +13,6 @@ public class Usuario
 
     // Navigation properties
     public virtual Persona? Persona { get; set; }
+    public virtual Collection<TipoCambio> TipoCambios { get; set; } = new Collection<TipoCambio>();
     public virtual Collection<UsuarioRol> UsuarioRoles { get; set; } = new Collection<UsuarioRol>();
 }

@@ -1,0 +1,154 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Miski.Application.Features.Compras.CompraVehiculos.Commands.CreateCompraVehiculo;
+using Miski.Application.Features.Compras.CompraVehiculos.Queries.GetCompraVehiculos;
+using Miski.Application.Features.Compras.CompraVehiculos.Queries.GetCompraVehiculoById;
+using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Compras;
+
+namespace Miski.Api.Controllers.Compras;
+
+[ApiController]
+[Route("api/compras/asignacion-vehiculos")]
+[Tags("Compras")]
+[Authorize]
+public class CompraVehiculosController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public CompraVehiculosController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    /// <summary>
+    /// Obtiene todas las asignaciones de compras a vehículos con filtros opcionales
+    /// </summary>
+    /// <remarks>
+    /// Permite filtrar por:
+    /// - idVehiculo: Filtrar por vehículo
+    /// - guiaRemision: Búsqueda parcial por guía de remisión
+    /// </remarks>
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<IEnumerable<CompraVehiculoDto>>>> GetCompraVehiculos(
+        [FromQuery] int? idVehiculo = null,
+        [FromQuery] string? guiaRemision = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetCompraVehiculosQuery(idVehiculo, guiaRemision);
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<CompraVehiculoDto>>.SuccessResult(
+                result, 
+                "Asignaciones de compras a vehículos obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<CompraVehiculoDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene una asignación de compra a vehículo por ID
+    /// </summary>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApiResponse<CompraVehiculoDto>>> GetCompraVehiculoById(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetCompraVehiculoByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<CompraVehiculoDto>.SuccessResult(
+                result,
+                "Asignación de compra a vehículo obtenida exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<CompraVehiculoDto>.ErrorResult(
+                "Asignación de compra a vehículo no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<CompraVehiculoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Crea una nueva asignación de compras a vehículo
+    /// </summary>
+    /// <remarks>
+    /// Permite asignar múltiples compras a un vehículo con una guía de remisión.
+    /// 
+    /// Campos requeridos:
+    /// - IdVehiculo: ID del vehículo al que se asignan las compras
+    /// - GuiaRemision: Número de guía de remisión (único, máx. 50 caracteres)
+    /// - IdCompras: Lista de IDs de compras a asignar (mínimo 1)
+    /// 
+    /// Validaciones:
+    /// - El vehículo debe existir
+    /// - Todas las compras deben existir y estar en estado ACTIVO
+    /// - Las compras no deben estar asignadas previamente a otro vehículo
+    /// - La guía de remisión no debe estar duplicada
+    /// 
+    /// Ejemplo de request:
+    /// {
+    ///   "idVehiculo": 1,
+    ///   "guiaRemision": "GR-2024-001",
+    ///   "idCompras": [1, 2, 3]
+    /// }
+    /// </remarks>
+    [HttpPost]
+    public async Task<ActionResult<ApiResponse<CompraVehiculoDto>>> CreateCompraVehiculo(
+        [FromBody] CreateCompraVehiculoDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new CreateCompraVehiculoCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return CreatedAtAction(
+                nameof(GetCompraVehiculoById), 
+                new { id = result.IdCompraVehiculo }, 
+                ApiResponse<CompraVehiculoDto>.SuccessResult(
+                    result, 
+                    "Asignación de compras a vehículo creada exitosamente"
+                )
+            );
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<CompraVehiculoDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<CompraVehiculoDto>.ErrorResult(
+                "Entidad relacionada no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<CompraVehiculoDto>.ErrorResult(
+                "Error interno del servidor", 
+                ex.Message
+            ));
+        }
+    }
+}

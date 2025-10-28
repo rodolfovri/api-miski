@@ -9,4 +9,5 @@ public class TipoDocumento
 
     // Navigation properties
     public virtual ICollection<Persona> Personas { get; set; } = new List<Persona>();
+    public virtual ICollection<Negociacion> Negociaciones { get; set; } = new List<Negociacion>();
 }

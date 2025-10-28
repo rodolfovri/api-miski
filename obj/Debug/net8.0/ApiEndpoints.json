@@ -13,11 +13,6 @@
         "IsRequired": false
       },
       {
-        "Name": "codigo",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
         "Name": "idCategoriaProducto",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
@@ -52,9 +47,34 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
-        "Type": "Miski.Shared.DTOs.Almacen.CreateProductoDto",
-        "IsRequired": true
+        "Name": "IdCategoriaProducto",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Nombre",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Descripcion",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Estado",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Imagen",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "FichaTecnica",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -115,9 +135,39 @@
         "IsRequired": true
       },
       {
-        "Name": "request",
-        "Type": "Miski.Shared.DTOs.Almacen.UpdateProductoDto",
-        "IsRequired": true
+        "Name": "IdProducto",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdCategoriaProducto",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Nombre",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Descripcion",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Estado",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Imagen",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "FichaTecnica",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -329,58 +379,19 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "negociacionId",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
         "Name": "estado",
         "Type": "System.String",
         "IsRequired": false
       },
       {
-        "Name": "fechaInicio",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "fechaFin",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Name": "idNegociacion",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "Tags": [
-      "Compras"
-    ]
-  },
-  {
-    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
-    "Method": "CreateCompra",
-    "RelativePath": "api/compras",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "System.Object",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Compras.CompraDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -409,7 +420,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.CompraDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -423,9 +434,101 @@
     ]
   },
   {
-    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
-    "Method": "UpdateCompra",
-    "RelativePath": "api/compras/{id}",
+    "ContainingType": "Miski.Api.Controllers.Compras.CompraVehiculosController",
+    "Method": "GetCompraVehiculos",
+    "RelativePath": "api/compras/asignacion-vehiculos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idVehiculo",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "guiaRemision",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Compras.CompraVehiculoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.CompraVehiculosController",
+    "Method": "CreateCompraVehiculo",
+    "RelativePath": "api/compras/asignacion-vehiculos",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Compras.CreateCompraVehiculoDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.CompraVehiculoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.CompraVehiculosController",
+    "Method": "GetCompraVehiculoById",
+    "RelativePath": "api/compras/asignacion-vehiculos/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.CompraVehiculoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.CompraVehiculosController",
+    "Method": "UpdateCompraVehiculo",
+    "RelativePath": "api/compras/asignacion-vehiculos/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -437,71 +540,13 @@
       },
       {
         "Name": "request",
-        "Type": "System.Object",
+        "Type": "Miski.Shared.DTOs.Compras.UpdateCompraVehiculoDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "Tags": [
-      "Compras"
-    ]
-  },
-  {
-    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
-    "Method": "GetLlegadasPlantaByCompra",
-    "RelativePath": "api/compras/{id}/llegadas-planta",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "Tags": [
-      "Compras"
-    ]
-  },
-  {
-    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
-    "Method": "GetLotesByCompra",
-    "RelativePath": "api/compras/{id}/lotes",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.CompraVehiculoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -709,7 +754,7 @@
     ]
   },
   {
-    "ContainingType": "Miski.Api.Controllers.Compras.LotesController",
+    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
     "Method": "GetLotes",
     "RelativePath": "api/compras/lotes",
     "HttpMethod": "GET",
@@ -717,19 +762,19 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "compraId",
+        "Name": "idCompra",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
       {
-        "Name": "grado",
+        "Name": "codigo",
         "Type": "System.String",
         "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Compras.LoteDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -743,7 +788,7 @@
     ]
   },
   {
-    "ContainingType": "Miski.Api.Controllers.Compras.LotesController",
+    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
     "Method": "CreateLote",
     "RelativePath": "api/compras/lotes",
     "HttpMethod": "POST",
@@ -752,13 +797,13 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "System.Object",
+        "Type": "Miski.Shared.DTOs.Compras.CreateLoteDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.LoteDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -772,7 +817,7 @@
     ]
   },
   {
-    "ContainingType": "Miski.Api.Controllers.Compras.LotesController",
+    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
     "Method": "GetLoteById",
     "RelativePath": "api/compras/lotes/{id}",
     "HttpMethod": "GET",
@@ -787,7 +832,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.LoteDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -801,7 +846,7 @@
     ]
   },
   {
-    "ContainingType": "Miski.Api.Controllers.Compras.LotesController",
+    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
     "Method": "UpdateLote",
     "RelativePath": "api/compras/lotes/{id}",
     "HttpMethod": "PUT",
@@ -815,13 +860,42 @@
       },
       {
         "Name": "request",
-        "Type": "System.Object",
+        "Type": "Miski.Shared.DTOs.Compras.UpdateLoteDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.LoteDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
+    "Method": "DeleteLote",
+    "RelativePath": "api/compras/lotes/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -843,27 +917,22 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "idProveedor",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
         "Name": "idComisionista",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
       {
-        "Name": "idProducto",
+        "Name": "idVariedadProducto",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
       {
-        "Name": "estadoAprobado",
+        "Name": "estado",
         "Type": "System.String",
         "IsRequired": false
       },
       {
-        "Name": "estado",
+        "Name": "estadoAprobacionIngeniero",
         "Type": "System.String",
         "IsRequired": false
       }
@@ -892,59 +961,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "IdProveedor",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "IdComisionista",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "IdProducto",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "PesoTotal",
-        "Type": "System.Decimal",
-        "IsRequired": false
-      },
-      {
-        "Name": "SacosTotales",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "PrecioUnitario",
-        "Type": "System.Decimal",
-        "IsRequired": false
-      },
-      {
-        "Name": "NroCuentaRuc",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "FotoCalidadProducto",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      },
-      {
-        "Name": "FotoDniFrontal",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      },
-      {
-        "Name": "FotoDniPosterior",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      },
-      {
-        "Name": "Observacion",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Compras.CreateNegociacionDto",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [
@@ -1005,79 +1024,9 @@
         "IsRequired": true
       },
       {
-        "Name": "IdNegociacion",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "IdProveedor",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "IdComisionista",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "IdProducto",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "PesoTotal",
-        "Type": "System.Decimal",
-        "IsRequired": false
-      },
-      {
-        "Name": "SacosTotales",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "PrecioUnitario",
-        "Type": "System.Decimal",
-        "IsRequired": false
-      },
-      {
-        "Name": "NroCuentaRuc",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "FotoCalidadProducto",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      },
-      {
-        "Name": "FotoDniFrontal",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      },
-      {
-        "Name": "FotoDniPosterior",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      },
-      {
-        "Name": "FotoCalidadProductoUrl",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "FotoDniFrontalUrl",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "FotoDniPosteriorUrl",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Observacion",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Compras.UpdateNegociacionDto",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [
@@ -1126,8 +1075,8 @@
   },
   {
     "ContainingType": "Miski.Api.Controllers.Compras.NegociacionesController",
-    "Method": "AprobarNegociacion",
-    "RelativePath": "api/compras/negociaciones/{id}/aprobar",
+    "Method": "AprobarPorContadora",
+    "RelativePath": "api/compras/negociaciones/{id}/aprobar-contadora",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -1139,7 +1088,7 @@
       },
       {
         "Name": "request",
-        "Type": "Miski.Shared.DTOs.Compras.AprobarNegociacionDto",
+        "Type": "Miski.Shared.DTOs.Compras.AprobarNegociacionContadoraDto",
         "IsRequired": true
       }
     ],
@@ -1160,8 +1109,194 @@
   },
   {
     "ContainingType": "Miski.Api.Controllers.Compras.NegociacionesController",
-    "Method": "GetPendientesAprobacion",
-    "RelativePath": "api/compras/negociaciones/pendientes-aprobacion",
+    "Method": "AprobarPorIngeniero",
+    "RelativePath": "api/compras/negociaciones/{id}/aprobar-ingeniero",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Compras.AprobarNegociacionIngenieroDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.NegociacionDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.NegociacionesController",
+    "Method": "CompletarNegociacion",
+    "RelativePath": "api/compras/negociaciones/{id}/completar",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "IdNegociacion",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdTipoDocumento",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdBanco",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "NroDocumentoProveedor",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "NroCuentaBancaria",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FotoDniFrontal",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "FotoDniPosterior",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "PrimeraEvidenciaFoto",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "SegundaEvidenciaFoto",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "TerceraEvidenciaFoto",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "EvidenciaVideo",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.NegociacionDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.NegociacionesController",
+    "Method": "RechazarPorContadora",
+    "RelativePath": "api/compras/negociaciones/{id}/rechazar-contadora",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Compras.RechazarNegociacionContadoraDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.NegociacionDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.NegociacionesController",
+    "Method": "RechazarPorIngeniero",
+    "RelativePath": "api/compras/negociaciones/{id}/rechazar-ingeniero",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Compras.RechazarNegociacionIngenieroDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.NegociacionDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.NegociacionesController",
+    "Method": "GetPendientesContadora",
+    "RelativePath": "api/compras/negociaciones/pendientes-contadora",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1179,6 +1314,179 @@
     ],
     "Tags": [
       "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.NegociacionesController",
+    "Method": "GetPendientesIngeniero",
+    "RelativePath": "api/compras/negociaciones/pendientes-ingeniero",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Compras.NegociacionDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.BancosController",
+    "Method": "GetBancos",
+    "RelativePath": "api/maestros/bancos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "estado",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Maestros.BancoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.BancosController",
+    "Method": "CreateBanco",
+    "RelativePath": "api/maestros/bancos",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Maestros.CreateBancoDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.BancoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.BancosController",
+    "Method": "GetBancoById",
+    "RelativePath": "api/maestros/bancos/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.BancoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.BancosController",
+    "Method": "UpdateBanco",
+    "RelativePath": "api/maestros/bancos/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Maestros.UpdateBancoDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.BancoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.BancosController",
+    "Method": "DeleteBanco",
+    "RelativePath": "api/maestros/bancos/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
     ]
   },
   {
@@ -1337,6 +1645,334 @@
     ]
   },
   {
+    "ContainingType": "Miski.Api.Controllers.Maestros.MonedasController",
+    "Method": "GetMonedas",
+    "RelativePath": "api/maestros/monedas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Maestros.MonedaDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.MonedasController",
+    "Method": "CreateMoneda",
+    "RelativePath": "api/maestros/monedas",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Maestros.CreateMonedaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.MonedaDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.MonedasController",
+    "Method": "GetMonedaById",
+    "RelativePath": "api/maestros/monedas/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.MonedaDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.MonedasController",
+    "Method": "UpdateMoneda",
+    "RelativePath": "api/maestros/monedas/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Maestros.UpdateMonedaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.MonedaDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.MonedasController",
+    "Method": "DeleteMoneda",
+    "RelativePath": "api/maestros/monedas/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TipoCalidadProductoController",
+    "Method": "GetTipoCalidadProductos",
+    "RelativePath": "api/maestros/tipo-calidad-producto",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idProducto",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "estado",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Maestros.TipoCalidadProductoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TipoCalidadProductoController",
+    "Method": "CreateTipoCalidadProducto",
+    "RelativePath": "api/maestros/tipo-calidad-producto",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Maestros.CreateTipoCalidadProductoDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.TipoCalidadProductoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TipoCalidadProductoController",
+    "Method": "GetTipoCalidadProductoById",
+    "RelativePath": "api/maestros/tipo-calidad-producto/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.TipoCalidadProductoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TipoCalidadProductoController",
+    "Method": "UpdateTipoCalidadProducto",
+    "RelativePath": "api/maestros/tipo-calidad-producto/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Maestros.UpdateTipoCalidadProductoDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.TipoCalidadProductoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TipoCalidadProductoController",
+    "Method": "DeleteTipoCalidadProducto",
+    "RelativePath": "api/maestros/tipo-calidad-producto/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TipoCalidadProductoController",
+    "Method": "GetTipoCalidadByProductoId",
+    "RelativePath": "api/maestros/tipo-calidad-producto/producto/{idProducto}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idProducto",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Maestros.TipoCalidadProductoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
     "ContainingType": "Miski.Api.Controllers.Maestros.TipoDocumentoController",
     "Method": "GetTipoDocumentos",
     "RelativePath": "api/maestros/tipo-documento",
@@ -1461,6 +2097,166 @@
     "ContainingType": "Miski.Api.Controllers.Maestros.TipoDocumentoController",
     "Method": "DeleteTipoDocumento",
     "RelativePath": "api/maestros/tipo-documento/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TiposCambioController",
+    "Method": "GetTiposCambio",
+    "RelativePath": "api/maestros/tipos-cambio",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idMoneda",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "fechaDesde",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "fechaHasta",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Maestros.TipoCambioDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TiposCambioController",
+    "Method": "CreateTipoCambio",
+    "RelativePath": "api/maestros/tipos-cambio",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Maestros.CreateTipoCambioDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.TipoCambioDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TiposCambioController",
+    "Method": "GetTipoCambioById",
+    "RelativePath": "api/maestros/tipos-cambio/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.TipoCambioDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TiposCambioController",
+    "Method": "UpdateTipoCambio",
+    "RelativePath": "api/maestros/tipos-cambio/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Maestros.UpdateTipoCambioDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.TipoCambioDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.TiposCambioController",
+    "Method": "DeleteTipoCambio",
+    "RelativePath": "api/maestros/tipos-cambio/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -1637,6 +2433,236 @@
     ]
   },
   {
+    "ContainingType": "Miski.Api.Controllers.Maestros.VariedadProductoController",
+    "Method": "GetVariedades",
+    "RelativePath": "api/maestros/variedad-producto",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nombre",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "codigo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "idProducto",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "estado",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Maestros.VariedadProductoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.VariedadProductoController",
+    "Method": "CreateVariedad",
+    "RelativePath": "api/maestros/variedad-producto",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "IdProducto",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdUnidadMedida",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Codigo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Nombre",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Descripcion",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Estado",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FichaTecnica",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.VariedadProductoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.VariedadProductoController",
+    "Method": "GetVariedadById",
+    "RelativePath": "api/maestros/variedad-producto/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.VariedadProductoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.VariedadProductoController",
+    "Method": "UpdateVariedad",
+    "RelativePath": "api/maestros/variedad-producto/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "IdVariedadProducto",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdProducto",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdUnidadMedida",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Codigo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Nombre",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Descripcion",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Estado",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FichaTecnica",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.VariedadProductoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Maestros.VariedadProductoController",
+    "Method": "DeleteVariedad",
+    "RelativePath": "api/maestros/variedad-producto/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Maestros"
+    ]
+  },
+  {
     "ContainingType": "Miski.Api.Controllers.Maestros.VehiculosController",
     "Method": "GetVehiculos",
     "RelativePath": "api/maestros/vehiculos",
@@ -1657,7 +2683,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Maestros.VehiculoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1680,13 +2706,13 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "System.Object",
+        "Type": "Miski.Shared.DTOs.Maestros.CreateVehiculoDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.VehiculoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1715,7 +2741,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.VehiculoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1743,13 +2769,13 @@
       },
       {
         "Name": "request",
-        "Type": "System.Object",
+        "Type": "Miski.Shared.DTOs.Maestros.UpdateVehiculoDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Maestros.VehiculoDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -2411,9 +3437,59 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
-        "Type": "Miski.Shared.DTOs.Ubicaciones.CreateUbicacionDto",
-        "IsRequired": true
+        "Name": "IdUsuario",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "CodigoSenasa",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Nombre",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RazonSocial",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "NumeroRuc",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Direccion",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DomicilioLegal",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GiroEstablecimiento",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ComprobantePdf",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "Tipo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Estado",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -2474,9 +3550,69 @@
         "IsRequired": true
       },
       {
-        "Name": "request",
-        "Type": "Miski.Shared.DTOs.Ubicaciones.UpdateUbicacionDto",
-        "IsRequired": true
+        "Name": "IdUbicacion",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdUsuario",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "CodigoSenasa",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Nombre",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RazonSocial",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "NumeroRuc",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Direccion",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DomicilioLegal",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GiroEstablecimiento",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ComprobantePdf",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "ComprobantePdfUrl",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Tipo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Estado",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [

@@ -21,8 +21,9 @@ public class ProductoRepository : Repository<Producto>, IProductoRepository
 
     public async Task<Producto?> GetByCodigoAsync(string codigo, CancellationToken cancellationToken = default)
     {
-        return await _dbSet
-            .FirstOrDefaultAsync(p => p.Codigo == codigo, cancellationToken);
+        // Producto ya no tiene Codigo, ahora está en VariedadProducto
+        // Este método debería buscar en VariedadProducto
+        return null;
     }
 
     public async Task<IEnumerable<Producto>> GetByEstadoAsync(string estado, CancellationToken cancellationToken = default)

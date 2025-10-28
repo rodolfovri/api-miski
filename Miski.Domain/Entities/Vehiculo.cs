@@ -6,10 +6,8 @@ public class Vehiculo
     public string Placa { get; set; } = string.Empty;
     public string? Marca { get; set; }
     public string? Modelo { get; set; }
-    public string? Licencia { get; set; }
     public string? Estado { get; set; }
 
     // Navigation properties
-    public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
     public virtual ICollection<CompraVehiculo> CompraVehiculos { get; set; } = new List<CompraVehiculo>();
 }

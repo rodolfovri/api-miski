@@ -23,8 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Miski.Application\Features\Negociaciones\Commands\CreateNegociacion\" />
-    <Folder Include="Miski.Application\Features\Negociaciones\Queries\GetNegociaciones\" />
+    <Folder Include="Miski.Application\Features\Compras\Negociaciones\Commands\AprobarNegociacion\" />
+    <Folder Include="Miski.Application\Features\Maestros\TipoCalidadProducto\Queries\GetTipoCalidadProductosByProducto\" />
+    <Folder Include="wwwroot\swagger\" />
   </ItemGroup>
 
 </Project>

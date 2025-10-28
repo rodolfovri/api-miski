@@ -24,7 +24,7 @@ public class MappingProfile : Profile
 
         // Mapeos para Auth
         CreateMap<Persona, AuthPersonaDto>()
-            .ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src =>
                 src.TipoDocumento != null ? src.TipoDocumento.Nombre : string.Empty))
             .ForMember(dest => dest.NombreCompleto, opt => opt.MapFrom(src => $"{src.Nombres} {src.Apellidos}"));
 
@@ -42,7 +42,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.ModuloNombre, opt => opt.MapFrom(src => src.Modulo.Nombre));
         CreateMap<SubModuloDetalle, SubModuloDetalleDto>()
             .ForMember(dest => dest.SubModuloNombre, opt => opt.MapFrom(src => src.SubModulo.Nombre));
-        
+
         CreateMap<PermisoRol, PermisoRolDto>()
             .ForMember(dest => dest.RolNombre, opt => opt.MapFrom(src => src.Rol != null ? src.Rol.Nombre : null))
             .ForMember(dest => dest.ModuloNombre, opt => opt.MapFrom(src => src.Modulo != null ? src.Modulo.Nombre : null))
@@ -51,7 +51,7 @@ public class MappingProfile : Profile
 
         // Mapeos para Personas
         CreateMap<Persona, Miski.Shared.DTOs.Personas.PersonaDto>()
-            .ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src =>
                 src.TipoDocumento != null ? src.TipoDocumento.Nombre : string.Empty))
             .ForMember(dest => dest.NombreCompleto, opt => opt.MapFrom(src => $"{src.Nombres} {src.Apellidos}"))
             .ForMember(dest => dest.Categorias, opt => opt.Ignore()); // Se manejará manualmente si es necesario
@@ -67,15 +67,50 @@ public class MappingProfile : Profile
         // Mapeos para Maestros - CategoriaProducto
         CreateMap<CategoriaProducto, CategoriaProductoDto>();
 
+        // Mapeos para Maestros - VariedadProducto
+        CreateMap<Domain.Entities.VariedadProducto, VariedadProductoDto>()
+            .ForMember(dest => dest.ProductoNombre, opt => opt.MapFrom(src =>
+                src.Producto != null ? src.Producto.Nombre : string.Empty))
+            .ForMember(dest => dest.UnidadMedidaNombre, opt => opt.MapFrom(src =>
+                src.UnidadMedida != null ? src.UnidadMedida.Nombre : string.Empty))
+            .ForMember(dest => dest.FichaTecnica, opt => opt.MapFrom(src => src.FichaTecnica));
+
+        // Mapeos para Maestros - Vehiculo
+        CreateMap<Domain.Entities.Vehiculo, VehiculoDto>();
+
+        // Mapeos para Maestros - TipoCalidadProducto
+        CreateMap<Domain.Entities.TipoCalidadProducto, TipoCalidadProductoDto>()
+            .ForMember(dest => dest.ProductoNombre, opt => opt.MapFrom(src =>
+                src.Producto != null ? src.Producto.Nombre : string.Empty));
+
+        // Mapeos para Maestros - Banco
+        CreateMap<Domain.Entities.Banco, BancoDto>();
+
+        // Mapeos para Maestros - Moneda
+        CreateMap<Domain.Entities.Moneda, MonedaDto>();
+
+        // Mapeos para Maestros - TipoCambio
+        CreateMap<Domain.Entities.TipoCambio, TipoCambioDto>()
+            .ForMember(dest => dest.MonedaNombre, opt => opt.MapFrom(src => 
+                src.Moneda != null ? src.Moneda.Nombre : string.Empty))
+            .ForMember(dest => dest.MonedaCodigo, opt => opt.MapFrom(src => 
+                src.Moneda != null ? src.Moneda.Codigo : string.Empty))
+            .ForMember(dest => dest.MonedaSimbolo, opt => opt.MapFrom(src => 
+                src.Moneda != null ? src.Moneda.Simbolo : string.Empty))
+            .ForMember(dest => dest.UsuarioNombre, opt => opt.MapFrom(src => 
+                src.Usuario != null && src.Usuario.Persona != null 
+                    ? $"{src.Usuario.Persona.Nombres} {src.Usuario.Persona.Apellidos}" 
+                    : string.Empty));
+
         // Mapeos para Ubicaciones
         CreateMap<Ubicacion, UbicacionDto>();
 
         // Mapeos para Almacén - Productos
         CreateMap<Producto, Miski.Shared.DTOs.Almacen.ProductoDto>()
-            .ForMember(dest => dest.CategoriaProductoNombre, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.CategoriaProductoNombre, opt => opt.MapFrom(src =>
                 src.CategoriaProducto != null ? src.CategoriaProducto.Nombre : string.Empty))
-            .ForMember(dest => dest.UnidadMedidaNombre, opt => opt.MapFrom(src => 
-                src.UnidadMedida != null ? src.UnidadMedida.Nombre : string.Empty));
+            .ForMember(dest => dest.Imagen, opt => opt.MapFrom(src => src.Imagen))
+            .ForMember(dest => dest.FichaTecnica, opt => opt.MapFrom(src => src.FichaTecnica));
 
         // Mapeos para Compras - Negociaciones
         CreateMap<Negociacion, Miski.Shared.DTOs.Compras.NegociacionDto>()
@@ -83,11 +118,45 @@ public class MappingProfile : Profile
                 src.Proveedor != null ? $"{src.Proveedor.Nombres} {src.Proveedor.Apellidos}" : string.Empty))
             .ForMember(dest => dest.ComisionistaNombre, opt => opt.MapFrom(src => 
                 src.Comisionista != null ? $"{src.Comisionista.Nombres} {src.Comisionista.Apellidos}" : string.Empty))
+            .ForMember(dest => dest.VariedadProductoNombre, opt => opt.MapFrom(src => 
+                src.VariedadProducto != null ? src.VariedadProducto.Nombre : string.Empty))
             .ForMember(dest => dest.ProductoNombre, opt => opt.MapFrom(src => 
-                src.Producto != null ? src.Producto.Nombre : string.Empty))
-            .ForMember(dest => dest.AprobadaPorNombre, opt => opt.MapFrom(src => 
-                src.AprobadaPorPersona != null ? $"{src.AprobadaPorPersona.Nombres} {src.AprobadaPorPersona.Apellidos}" : string.Empty))
-            .ForMember(dest => dest.MontoTotal, opt => opt.MapFrom(src => src.PesoTotal * src.PrecioUnitario));
+                src.VariedadProducto != null && src.VariedadProducto.Producto != null ? src.VariedadProducto.Producto.Nombre : string.Empty))
+            .ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src => 
+                src.TipoDocumento != null ? src.TipoDocumento.Nombre : string.Empty))
+            .ForMember(dest => dest.BancoNombre, opt => opt.MapFrom(src => 
+                src.Banco != null ? src.Banco.Nombre : string.Empty))
+            .ForMember(dest => dest.AprobadaPorIngenieroNombre, opt => opt.MapFrom(src => 
+                src.AprobadaPorUsuarioIngeniero != null && src.AprobadaPorUsuarioIngeniero.Persona != null 
+                    ? $"{src.AprobadaPorUsuarioIngeniero.Persona.Nombres} {src.AprobadaPorUsuarioIngeniero.Persona.Apellidos}" 
+                    : string.Empty))
+            .ForMember(dest => dest.AprobadaPorContadoraNombre, opt => opt.MapFrom(src => 
+                src.AprobadaPorUsuarioContadora != null && src.AprobadaPorUsuarioContadora.Persona != null 
+                    ? $"{src.AprobadaPorUsuarioContadora.Persona.Nombres} {src.AprobadaPorUsuarioContadora.Persona.Apellidos}" 
+                    : string.Empty));
+
+        // Mapeos para Compras - Lotes
+        CreateMap<Lote, Miski.Shared.DTOs.Compras.LoteDto>();
+
+        // Mapeos para Compras - CompraVehiculo
+        CreateMap<CompraVehiculo, Miski.Shared.DTOs.Compras.CompraVehiculoDto>()
+            .ForMember(dest => dest.VehiculoPlaca, opt => opt.MapFrom(src => 
+                src.Vehiculo != null ? src.Vehiculo.Placa : string.Empty))
+            .ForMember(dest => dest.VehiculoMarca, opt => opt.MapFrom(src => 
+                src.Vehiculo != null ? src.Vehiculo.Marca : string.Empty))
+            .ForMember(dest => dest.VehiculoModelo, opt => opt.MapFrom(src => 
+                src.Vehiculo != null ? src.Vehiculo.Modelo : string.Empty))
+            .ForMember(dest => dest.Detalles, opt => opt.MapFrom(src => src.CompraVehiculoDetalles));
+
+        CreateMap<CompraVehiculoDetalle, Miski.Shared.DTOs.Compras.CompraVehiculoDetalleDto>()
+            .ForMember(dest => dest.CompraSerie, opt => opt.MapFrom(src => 
+                src.Compra != null ? src.Compra.Serie : string.Empty))
+            .ForMember(dest => dest.CompraFRegistro, opt => opt.MapFrom(src => 
+                src.Compra != null ? src.Compra.FRegistro : null))
+            .ForMember(dest => dest.CompraMontoTotal, opt => opt.MapFrom(src => 
+                src.Compra != null ? src.Compra.MontoTotal : null))
+            .ForMember(dest => dest.CompraNegociacionId, opt => opt.MapFrom(src => 
+                src.Compra != null ? src.Compra.IdNegociacion.ToString() : string.Empty));
     }
 }
 

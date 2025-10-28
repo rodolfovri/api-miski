@@ -1,0 +1,18 @@
+﻿using FluentValidation;
+using Miski.Shared.DTOs.Compras;
+
+namespace Miski.Application.Features.Compras.Negociaciones.Commands.RechazarNegociacionContadora;
+
+public class RechazarNegociacionContadoraValidator : AbstractValidator<RechazarNegociacionContadoraCommand>
+{
+    public RechazarNegociacionContadoraValidator()
+    {
+        RuleFor(x => x.Rechazo.IdNegociacion)
+            .GreaterThan(0)
+            .WithMessage("El ID de la negociación es requerido");
+
+        RuleFor(x => x.Rechazo.RechazadoPorContadora)
+            .GreaterThan(0)
+            .WithMessage("Debe especificar el usuario que rechaza");
+    }
+}

@@ -1,0 +1,67 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Maestros;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Maestros.VariedadProducto.Commands.UpdateVariedad;
+
+public class UpdateVariedadProductoHandler : IRequestHandler<UpdateVariedadProductoCommand, VariedadProductoDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public UpdateVariedadProductoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<VariedadProductoDto> Handle(UpdateVariedadProductoCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.Variedad;
+
+        var variedad = await _unitOfWork.Repository<Domain.Entities.VariedadProducto>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (variedad == null)
+            throw new NotFoundException("VariedadProducto", request.Id);
+
+        // Validar que el producto existe
+        var producto = await _unitOfWork.Repository<Producto>()
+            .GetByIdAsync(dto.IdProducto, cancellationToken);
+        
+        if (producto == null)
+            throw new NotFoundException("Producto", dto.IdProducto);
+
+        // Validar que la unidad de medida existe
+        var unidadMedida = await _unitOfWork.Repository<Domain.Entities.UnidadMedida>()
+            .GetByIdAsync(dto.IdUnidadMedida, cancellationToken);
+        
+        if (unidadMedida == null)
+            throw new NotFoundException("UnidadMedida", dto.IdUnidadMedida);
+
+        // Validar que el código no esté duplicado (excepto la misma variedad)
+        var variedades = await _unitOfWork.Repository<Domain.Entities.VariedadProducto>().GetAllAsync(cancellationToken);
+        if (variedades.Any(v => v.Codigo == dto.Codigo && v.IdVariedadProducto != request.Id))
+            throw new ValidationException($"Ya existe otra variedad con el código {dto.Codigo}");
+
+        // Actualizar variedad
+        variedad.IdProducto = dto.IdProducto;
+        variedad.IdUnidadMedida = dto.IdUnidadMedida;
+        variedad.Codigo = dto.Codigo;
+        variedad.Nombre = dto.Nombre;
+        variedad.Descripcion = dto.Descripcion;
+        variedad.Estado = dto.Estado ?? variedad.Estado;
+
+        await _unitOfWork.Repository<Domain.Entities.VariedadProducto>().UpdateAsync(variedad, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones para el DTO
+        variedad.Producto = producto;
+        variedad.UnidadMedida = unidadMedida;
+
+        return _mapper.Map<VariedadProductoDto>(variedad);
+    }
+}

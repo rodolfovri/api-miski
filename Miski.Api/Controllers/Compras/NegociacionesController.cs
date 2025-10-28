@@ -4,7 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Compras.Negociaciones.Commands.CreateNegociacion;
 using Miski.Application.Features.Compras.Negociaciones.Commands.UpdateNegociacion;
 using Miski.Application.Features.Compras.Negociaciones.Commands.DeleteNegociacion;
-using Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociacion;
+using Miski.Application.Features.Compras.Negociaciones.Commands.CompletarNegociacion;
+using Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociacionIngeniero;
+using Miski.Application.Features.Compras.Negociaciones.Commands.RechazarNegociacionIngeniero;
+using Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociacionContadora;
+using Miski.Application.Features.Compras.Negociaciones.Commands.RechazarNegociacionContadora;
 using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociaciones;
 using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociacionById;
 using Miski.Shared.DTOs.Base;
@@ -38,16 +42,15 @@ public class NegociacionesController : ControllerBase
     /// </remarks>
     [HttpGet]
     public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetNegociaciones(
-        [FromQuery] int? idProveedor = null,
         [FromQuery] int? idComisionista = null,
-        [FromQuery] int? idProducto = null,
-        [FromQuery] string? estadoAprobado = null,
+        [FromQuery] int? idVariedadProducto = null,  // CAMBIADO de idProducto
         [FromQuery] string? estado = null,
+        [FromQuery] string? estadoAprobacionIngeniero = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetNegociacionesQuery(idProveedor, idComisionista, idProducto, estadoAprobado, estado);
+            var query = new GetNegociacionesQuery(idComisionista, idVariedadProducto, estado, estadoAprobacionIngeniero);
             var result = await _mediator.Send(query, cancellationToken);
             
             return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
@@ -99,19 +102,15 @@ public class NegociacionesController : ControllerBase
     }
 
     /// <summary>
-    /// Crea una nueva negociación
+    /// Crea una nueva negociación - PRIMERA ETAPA
     /// </summary>
     /// <remarks>
-    /// NOTA: Este endpoint acepta multipart/form-data para subir las fotos.
-    /// Las fotos son obligatorias:
-    /// - FotoCalidadProducto
-    /// - FotoDniFrontal
-    /// - FotoDniPosterior
+    /// Solo requiere: IdComisionista, SacosTotales, TipoCalidad, PrecioUnitario
+    /// El estado se asigna automáticamente como 'EN PROCESO'
     /// </remarks>
     [HttpPost]
-    [Consumes("multipart/form-data")]
     public async Task<ActionResult<ApiResponse<NegociacionDto>>> CreateNegociacion(
-        [FromForm] CreateNegociacionDto request,
+        [FromBody] CreateNegociacionDto request,
         CancellationToken cancellationToken = default)
     {
         try
@@ -124,7 +123,7 @@ public class NegociacionesController : ControllerBase
                 new { id = result.IdNegociacion }, 
                 ApiResponse<NegociacionDto>.SuccessResult(
                     result, 
-                    "Negociación creada exitosamente"
+                    "Negociación creada exitosamente con estado 'EN PROCESO'"
                 )
             );
         }
@@ -149,18 +148,18 @@ public class NegociacionesController : ControllerBase
     }
 
     /// <summary>
-    /// Actualiza una negociación
+    /// Actualiza una negociación - PRIMERA ETAPA
     /// </summary>
     /// <remarks>
-    /// NOTA: Este endpoint acepta multipart/form-data.
-    /// Las fotos son opcionales, solo se actualizan si se envían.
-    /// No se puede actualizar una negociación ya aprobada.
+    /// Solo permite actualizar negociaciones en estado 'EN PROCESO' con EstadoAprobacionIngeniero 'PENDIENTE'.
+    /// Acepta los mismos parámetros que el POST: IdComisionista, IdVariedadProducto, SacosTotales, TipoCalidad, PrecioUnitario.
+    /// Calcula automáticamente: PesoPorSaco (50kg), PesoTotal y MontoTotalPago.
+    /// Mantiene el estado en 'EN PROCESO' y EstadoAprobacionIngeniero en 'PENDIENTE'.
     /// </remarks>
     [HttpPut("{id}")]
-    [Consumes("multipart/form-data")]
     public async Task<ActionResult<ApiResponse<NegociacionDto>>> UpdateNegociacion(
         int id,
-        [FromForm] UpdateNegociacionDto request,
+        [FromBody] UpdateNegociacionDto request,
         CancellationToken cancellationToken = default)
     {
         try
@@ -241,15 +240,15 @@ public class NegociacionesController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene negociaciones pendientes de aprobación
+    /// Obtiene negociaciones pendientes de aprobación por ingeniero
     /// </summary>
-    [HttpGet("pendientes-aprobacion")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetPendientesAprobacion(
+    [HttpGet("pendientes-ingeniero")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetPendientesIngeniero(
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetNegociacionesQuery(EstadoAprobado: "PENDIENTE");
+            var query = new GetNegociacionesQuery(EstadoAprobacionIngeniero: "PENDIENTE");
             var result = await _mediator.Send(query, cancellationToken);
             
             return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
@@ -267,12 +266,16 @@ public class NegociacionesController : ControllerBase
     }
 
     /// <summary>
-    /// Aprueba una negociación
+    /// Aprueba una negociación por parte del ingeniero - PRIMERA ETAPA
     /// </summary>
-    [HttpPut("{id}/aprobar")]
-    public async Task<ActionResult<ApiResponse<NegociacionDto>>> AprobarNegociacion(
+    /// <remarks>
+    /// Cambia EstadoAprobacionIngeniero a 'APROBADO' y Estado a 'APROBADO'
+    /// Solo si está en estado 'EN PROCESO' y EstadoAprobacionIngeniero 'PENDIENTE'
+    /// </remarks>
+    [HttpPut("{id}/aprobar-ingeniero")]
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> AprobarPorIngeniero(
         int id,
-        [FromBody] AprobarNegociacionDto request,
+        [FromBody] AprobarNegociacionIngenieroDto request,
         CancellationToken cancellationToken = default)
     {
         try
@@ -285,12 +288,12 @@ public class NegociacionesController : ControllerBase
                 ));
             }
 
-            var command = new AprobarNegociacionCommand(request);
+            var command = new AprobarNegociacionIngenieroCommand(request);
             var result = await _mediator.Send(command, cancellationToken);
 
             return Ok(ApiResponse<NegociacionDto>.SuccessResult(
                 result,
-                "Negociación aprobada exitosamente"
+                "Negociación aprobada por ingeniero exitosamente"
             ));
         }
         catch (Shared.Exceptions.NotFoundException ex)
@@ -308,6 +311,252 @@ public class NegociacionesController : ControllerBase
         {
             return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
                 "Error al aprobar la negociación", 
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Rechaza una negociación por parte del ingeniero - PRIMERA ETAPA
+    /// </summary>
+    /// <remarks>
+    /// Cambia EstadoAprobacionIngeniero a 'RECHAZADO' y Estado a 'ANULADO'
+    /// Solo si está en estado 'EN PROCESO' y EstadoAprobacionIngeniero 'PENDIENTE'
+    /// </remarks>
+    [HttpPut("{id}/rechazar-ingeniero")]
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> RechazarPorIngeniero(
+        int id,
+        [FromBody] RechazarNegociacionIngenieroDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (id != request.IdNegociacion)
+            {
+                return BadRequest(ApiResponse<NegociacionDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new RechazarNegociacionIngenieroCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionDto>.SuccessResult(
+                result,
+                "Negociación rechazada por ingeniero exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error al rechazar la negociación", 
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Completa una negociación con datos del proveedor y evidencias - SEGUNDA ETAPA
+    /// </summary>
+    /// <remarks>
+    /// NOTA: Este endpoint acepta multipart/form-data para subir fotos y video.
+    /// Solo se puede completar si está APROBADO por el ingeniero.
+    /// Campos requeridos:
+    /// - NroDocumentoProveedor
+    /// - NroCuentaBancaria
+    /// - FotoDniFrontal (archivo)
+    /// - FotoDniPosterior (archivo)
+    /// - PrimeraEvindenciaFoto (archivo)
+    /// - SegundaEvindenciaFoto (archivo)
+    /// - TerceraEvindenciaFoto (archivo)
+    /// - EvidenciaVideo (archivo de video)
+    /// 
+    /// Campos opcionales:
+    /// - IdTipoDocumento (tipo de documento del proveedor)
+    /// - IdBanco (banco de la cuenta)
+    /// 
+    /// Después de completar, el estado cambia a 'EN REVISIÓN'
+    /// </remarks>
+    [HttpPut("{id}/completar")]
+    [Consumes("multipart/form-data")]
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> CompletarNegociacion(
+        int id,
+        [FromForm] CompletarNegociacionDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (id != request.IdNegociacion)
+            {
+                return BadRequest(ApiResponse<NegociacionDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new CompletarNegociacionCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionDto>.SuccessResult(
+                result,
+                "Negociación completada exitosamente. Estado cambiado a 'EN REVISIÓN'"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error al completar la negociación", 
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene negociaciones pendientes de aprobación por contadora
+    /// </summary>
+    [HttpGet("pendientes-contadora")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetPendientesContadora(
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetNegociacionesQuery(Estado: "EN REVISIÓN");
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
+                result, 
+                "Negociaciones pendientes de contadora obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<NegociacionDto>>.ErrorResult(
+                "Error al obtener negociaciones pendientes", 
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Aprueba una negociación por parte de la contadora - SEGUNDA ETAPA
+    /// </summary>
+    /// <remarks>
+    /// Cambia EstadoAprobacionContadora a 'APROBADO' y Estado a 'FINALIZADO'
+    /// Solo si está en estado 'EN REVISIÓN' y EstadoAprobacionContadora 'PENDIENTE'
+    /// </remarks>
+    [HttpPut("{id}/aprobar-contadora")]
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> AprobarPorContadora(
+        int id,
+        [FromBody] AprobarNegociacionContadoraDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (id != request.IdNegociacion)
+            {
+                return BadRequest(ApiResponse<NegociacionDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new AprobarNegociacionContadoraCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionDto>.SuccessResult(
+                result,
+                "Negociación aprobada por contadora exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error al aprobar la negociación", 
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Rechaza una negociación por parte de la contadora - SEGUNDA ETAPA
+    /// </summary>
+    /// <remarks>
+    /// Cambia EstadoAprobacionContadora a 'RECHAZADO' y Estado a 'ANULADO'
+    /// Solo si está en estado 'EN REVISIÓN' y EstadoAprobacionContadora 'PENDIENTE'
+    /// </remarks>
+    [HttpPut("{id}/rechazar-contadora")]
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> RechazarPorContadora(
+        int id,
+        [FromBody] RechazarNegociacionContadoraDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (id != request.IdNegociacion)
+            {
+                return BadRequest(ApiResponse<NegociacionDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new RechazarNegociacionContadoraCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionDto>.SuccessResult(
+                result,
+                "Negociación rechazada por contadora exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error al rechazar la negociación", 
                 ex.Message
             ));
         }

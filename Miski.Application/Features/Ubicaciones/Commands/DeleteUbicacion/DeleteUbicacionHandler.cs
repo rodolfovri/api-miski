@@ -2,16 +2,19 @@ using MediatR;
 using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.Exceptions;
+using Miski.Application.Services;
 
 namespace Miski.Application.Features.Ubicaciones.Commands.DeleteUbicacion;
 
 public class DeleteUbicacionHandler : IRequestHandler<DeleteUbicacionCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IFileStorageService _fileStorageService;
 
-    public DeleteUbicacionHandler(IUnitOfWork unitOfWork)
+    public DeleteUbicacionHandler(IUnitOfWork unitOfWork, IFileStorageService fileStorageService)
     {
         _unitOfWork = unitOfWork;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<bool> Handle(DeleteUbicacionCommand request, CancellationToken cancellationToken)
@@ -34,8 +37,15 @@ public class DeleteUbicacionHandler : IRequestHandler<DeleteUbicacionCommand, bo
             });
         }
 
+        // Eliminar el PDF asociado si existe
+        if (!string.IsNullOrEmpty(ubicacion.ComprobantePdf))
+        {
+            await _fileStorageService.DeleteFileAsync(ubicacion.ComprobantePdf, cancellationToken);
+        }
+
         // Cambiar estado a INACTIVO en lugar de eliminar físicamente
         ubicacion.Estado = "INACTIVO";
+        await _unitOfWork.Repository<Ubicacion>().UpdateAsync(ubicacion, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return true;

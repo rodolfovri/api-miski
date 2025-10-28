@@ -21,20 +21,12 @@ public class GetProductosHandler : IRequestHandler<GetProductosQuery, List<Produ
     {
         var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
         var categorias = await _unitOfWork.Repository<CategoriaProducto>().GetAllAsync(cancellationToken);
-        var unidades = await _unitOfWork.Repository<UnidadMedida>().GetAllAsync(cancellationToken);
 
         // Aplicar filtros
         if (!string.IsNullOrEmpty(request.Nombre))
         {
             productos = productos.Where(p =>
                 p.Nombre.Contains(request.Nombre, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        if (!string.IsNullOrEmpty(request.Codigo))
-        {
-            productos = productos.Where(p =>
-                p.Codigo.Contains(request.Codigo, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
@@ -52,7 +44,6 @@ public class GetProductosHandler : IRequestHandler<GetProductosQuery, List<Produ
         foreach (var producto in productos)
         {
             producto.CategoriaProducto = categorias.FirstOrDefault(c => c.IdCategoriaProducto == producto.IdCategoriaProducto) ?? new CategoriaProducto();
-            producto.UnidadMedida = unidades.FirstOrDefault(u => u.IdUnidadMedida == producto.IdUnidadMedida) ?? new UnidadMedida();
         }
 
         return productos.Select(p => _mapper.Map<ProductoDto>(p)).ToList();

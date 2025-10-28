@@ -1,0 +1,34 @@
+﻿namespace Miski.Shared.DTOs.Compras;
+
+public class LoteDto
+{
+    public int IdLote { get; set; }
+    public int IdCompra { get; set; }
+    public decimal Peso { get; set; }
+    public int Sacos { get; set; }
+    public string? Codigo { get; set; }
+    public string? Grado { get; set; }
+    
+    // Información adicional
+    public string? CompraSerie { get; set; }
+    public int? NegociacionId { get; set; }
+}
+
+public class CreateLoteDto
+{
+    public int IdCompra { get; set; }
+    public decimal Peso { get; set; }
+    public int Sacos { get; set; }
+    public string? Codigo { get; set; }
+    public string? Grado { get; set; }
+}
+
+public class UpdateLoteDto
+{
+    public int IdLote { get; set; }
+    public int IdCompra { get; set; }
+    public decimal Peso { get; set; }
+    public int Sacos { get; set; }
+    public string? Codigo { get; set; }
+    public string? Grado { get; set; }
+}

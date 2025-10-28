@@ -1,11 +1,19 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Miski.Shared.DTOs.Ubicaciones;
 
 public class UbicacionDto
 {
     public int IdUbicacion { get; set; }
     public int IdUsuario { get; set; }
+    public string? CodigoSenasa { get; set; }
     public string Nombre { get; set; } = string.Empty;
+    public string RazonSocial { get; set; } = string.Empty;
+    public string? NumeroRuc { get; set; } 
     public string Direccion { get; set; } = string.Empty;
+    public string? DomicilioLegal { get; set; }
+    public string? GiroEstablecimiento { get; set; }
+    public string? ComprobantePdf { get; set; }  // URL del PDF
     public string? Tipo { get; set; }
     public string? Estado { get; set; }
     public DateTime FRegistro { get; set; }
@@ -14,8 +22,17 @@ public class UbicacionDto
 public class CreateUbicacionDto
 {
     public int IdUsuario { get; set; }
+    public string? CodigoSenasa { get; set; }
     public string Nombre { get; set; } = string.Empty;
+    public string RazonSocial { get; set; } = string.Empty;
+    public string? NumeroRuc { get; set; }
     public string Direccion { get; set; } = string.Empty;
+    public string? DomicilioLegal { get; set; }
+    public string? GiroEstablecimiento { get; set; }
+    
+    // PDF opcional
+    public IFormFile? ComprobantePdf { get; set; }
+    
     public string? Tipo { get; set; }
     public string Estado { get; set; } = "ACTIVO";
 }
@@ -24,8 +41,20 @@ public class UpdateUbicacionDto
 {
     public int IdUbicacion { get; set; }
     public int IdUsuario { get; set; }
+    public string? CodigoSenasa { get; set; }
     public string Nombre { get; set; } = string.Empty;
+    public string RazonSocial { get; set; } = string.Empty;
+    public string? NumeroRuc { get; set; } 
     public string Direccion { get; set; } = string.Empty;
+    public string? DomicilioLegal { get; set; }
+    public string? GiroEstablecimiento { get; set; }
+    
+    // PDF opcional para actualización
+    public IFormFile? ComprobantePdf { get; set; }
+    
+    // URL actual (si no se sube nuevo PDF)
+    public string? ComprobantePdfUrl { get; set; }
+    
     public string? Tipo { get; set; }
     public string? Estado { get; set; }
 }

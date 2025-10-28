@@ -4,6 +4,7 @@ using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Almacen;
 using Miski.Shared.Exceptions;
+using Miski.Application.Services;
 
 namespace Miski.Application.Features.Almacen.Productos.Commands.UpdateProducto;
 
@@ -11,11 +12,13 @@ public class UpdateProductoHandler : IRequestHandler<UpdateProductoCommand, Prod
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IFileStorageService _fileStorageService;
 
-    public UpdateProductoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public UpdateProductoHandler(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<ProductoDto> Handle(UpdateProductoCommand request, CancellationToken cancellationToken)
@@ -31,26 +34,42 @@ public class UpdateProductoHandler : IRequestHandler<UpdateProductoCommand, Prod
         // Validar que la categoría existe
         var categoria = await _unitOfWork.Repository<CategoriaProducto>()
             .GetByIdAsync(dto.IdCategoriaProducto, cancellationToken);
-        
+
         if (categoria == null)
             throw new NotFoundException("CategoriaProducto", dto.IdCategoriaProducto);
 
-        // Validar que la unidad de medida existe
-        var unidadMedida = await _unitOfWork.Repository<UnidadMedida>()
-            .GetByIdAsync(dto.IdUnidadMedida, cancellationToken);
-        
-        if (unidadMedida == null)
-            throw new NotFoundException("UnidadMedida", dto.IdUnidadMedida);
+        // Actualizar imagen si se proporciona una nueva
+        if (dto.Imagen != null)
+        {
+            // Eliminar imagen anterior si existe
+            if (!string.IsNullOrEmpty(producto.Imagen))
+            {
+                await _fileStorageService.DeleteFileAsync(producto.Imagen, cancellationToken);
+            }
 
-        // Validar que el código no esté duplicado (excepto el mismo producto)
-        var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
-        if (productos.Any(p => p.Codigo == dto.Codigo && p.IdProducto != request.Id))
-            throw new ValidationException($"Ya existe otro producto con el código {dto.Codigo}");
+            producto.Imagen = await _fileStorageService.SaveFileAsync(
+                dto.Imagen, 
+                "productos/imagenes", 
+                cancellationToken);
+        }
+
+        // Actualizar ficha técnica si se proporciona una nueva
+        if (dto.FichaTecnica != null)
+        {
+            // Eliminar ficha técnica anterior si existe
+            if (!string.IsNullOrEmpty(producto.FichaTecnica))
+            {
+                await _fileStorageService.DeleteFileAsync(producto.FichaTecnica, cancellationToken);
+            }
+
+            producto.FichaTecnica = await _fileStorageService.SaveFileAsync(
+                dto.FichaTecnica, 
+                "productos/fichas-tecnicas", 
+                cancellationToken);
+        }
 
         // Actualizar producto
         producto.IdCategoriaProducto = dto.IdCategoriaProducto;
-        producto.IdUnidadMedida = dto.IdUnidadMedida;
-        producto.Codigo = dto.Codigo;
         producto.Nombre = dto.Nombre;
         producto.Descripcion = dto.Descripcion;
         producto.Estado = dto.Estado ?? producto.Estado;
@@ -60,7 +79,6 @@ public class UpdateProductoHandler : IRequestHandler<UpdateProductoCommand, Prod
 
         // Cargar relaciones para el DTO
         producto.CategoriaProducto = categoria;
-        producto.UnidadMedida = unidadMedida;
 
         return _mapper.Map<ProductoDto>(producto);
     }

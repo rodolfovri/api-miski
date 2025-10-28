@@ -13,11 +13,16 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
 
     public async Task<IEnumerable<Negociacion>> GetByProveedorIdAsync(int proveedorId, CancellationToken cancellationToken = default)
     {
+        // Buscar por documento del proveedor ya que ahora usamos NroDocumentoProveedor
+        var proveedor = await _context.Set<Persona>().FindAsync(new object[] { proveedorId }, cancellationToken);
+        if (proveedor == null) return new List<Negociacion>();
+
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.Producto)
-            .Where(n => n.IdProveedor == proveedorId)
+            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
+                .ThenInclude(v => v.Producto)   // Incluir el producto base
+            .Where(n => n.NroDocumentoProveedor == proveedor.NumeroDocumento)
             .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
     }
@@ -27,7 +32,8 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.Producto)
+            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
+                .ThenInclude(v => v.Producto)   // Incluir el producto base
             .Where(n => n.IdComisionista == comisionistaId)
             .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
@@ -38,7 +44,8 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.Producto)
+            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
+                .ThenInclude(v => v.Producto)   // Incluir el producto base
             .Where(n => n.Estado == estado)
             .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
@@ -49,8 +56,9 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.Producto)
-            .Where(n => n.EstadoAprobado == null || n.EstadoAprobado == "Pendiente")
+            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
+                .ThenInclude(v => v.Producto)   // Incluir el producto base
+            .Where(n => n.EstadoAprobacionIngeniero == "PENDIENTE")
             .OrderBy(n => n.FRegistro)
             .ToListAsync(cancellationToken);
     }
@@ -60,8 +68,16 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.Producto)
-            .Include(n => n.AprobadaPorPersona)
+            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
+                .ThenInclude(v => v.Producto)   // Incluir el producto base
+            .Include(n => n.AprobadaPorUsuarioIngeniero)
+                .ThenInclude(u => u.Persona)
+            .Include(n => n.AprobadaPorUsuarioContadora)
+                .ThenInclude(u => u.Persona)
+            .Include(n => n.RechazadoPorUsuarioIngeniero)
+                .ThenInclude(u => u.Persona)
+            .Include(n => n.RechazadoPorUsuarioContadora)
+                .ThenInclude(u => u.Persona)
             .FirstOrDefaultAsync(n => n.IdNegociacion == id, cancellationToken);
     }
 
@@ -70,7 +86,8 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.Producto)
+            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
+                .ThenInclude(v => v.Producto)   // Incluir el producto base
             .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
     }

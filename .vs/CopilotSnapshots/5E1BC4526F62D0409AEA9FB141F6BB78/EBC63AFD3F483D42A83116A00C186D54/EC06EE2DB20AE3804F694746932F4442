@@ -1,0 +1,35 @@
+﻿using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Maestros.Moneda.Commands.DeleteMoneda;
+
+public class DeleteMonedaHandler : IRequestHandler<DeleteMonedaCommand, Unit>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public DeleteMonedaHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<Unit> Handle(DeleteMonedaCommand request, CancellationToken cancellationToken)
+    {
+        var moneda = await _unitOfWork.Repository<Domain.Entities.Moneda>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (moneda == null)
+            throw new NotFoundException("Moneda", request.Id);
+
+        // Validar que no tenga tipos de cambio asociados
+        var tiposCambio = await _unitOfWork.Repository<Domain.Entities.TipoCambio>().GetAllAsync(cancellationToken);
+        if (tiposCambio.Any(tc => tc.IdMoneda == request.Id))
+            throw new ValidationException("No se puede eliminar la moneda porque tiene tipos de cambio asociados");
+
+        await _unitOfWork.Repository<Domain.Entities.Moneda>().DeleteAsync(moneda, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
+    }
+}

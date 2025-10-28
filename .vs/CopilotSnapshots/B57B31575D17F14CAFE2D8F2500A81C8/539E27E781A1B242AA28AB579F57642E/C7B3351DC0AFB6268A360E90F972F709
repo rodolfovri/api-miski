@@ -1,0 +1,53 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociacionById;
+
+public class GetNegociacionByIdHandler : IRequestHandler<GetNegociacionByIdQuery, NegociacionDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public GetNegociacionByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<NegociacionDto> Handle(GetNegociacionByIdQuery request, CancellationToken cancellationToken)
+    {
+        var negociacion = await _unitOfWork.Repository<Negociacion>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (negociacion == null)
+            throw new NotFoundException("Negociacion", request.Id);
+
+        // Cargar relaciones
+        if (negociacion.IdProveedor.HasValue)
+        {
+            negociacion.Proveedor = await _unitOfWork.Repository<Persona>()
+                .GetByIdAsync(negociacion.IdProveedor.Value, cancellationToken);
+        }
+
+        negociacion.Comisionista = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Persona();
+
+        if (negociacion.IdProducto.HasValue)
+        {
+            negociacion.Producto = await _unitOfWork.Repository<Producto>()
+                .GetByIdAsync(negociacion.IdProducto.Value, cancellationToken);
+        }
+
+        if (negociacion.AprobadaPor.HasValue)
+        {
+            negociacion.AprobadaPorUsuario = await _unitOfWork.Repository<Usuario>()
+                .GetByIdAsync(negociacion.AprobadaPor.Value, cancellationToken);
+        }
+
+        return _mapper.Map<NegociacionDto>(negociacion);
+    }
+}

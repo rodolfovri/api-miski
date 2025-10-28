@@ -22,15 +22,15 @@ public class DeleteUnidadMedidaHandler : IRequestHandler<DeleteUnidadMedidaComma
         if (unidadMedida == null)
             throw new NotFoundException("UnidadMedida", request.Id);
 
-        // Verificar si hay productos usando esta unidad de medida
-        var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
-        var tieneProductos = productos.Any(p => p.IdUnidadMedida == request.Id);
+        // Verificar si hay variedades de productos usando esta unidad de medida
+        var variedades = await _unitOfWork.Repository<Domain.Entities.VariedadProducto>().GetAllAsync(cancellationToken);
+        var tieneVariedades = variedades.Any(v => v.IdUnidadMedida == request.Id);
 
-        if (tieneProductos)
+        if (tieneVariedades)
         {
             throw new ValidationException(new Dictionary<string, string[]>
             {
-                { "UnidadMedida", new[] { "No se puede eliminar la unidad de medida porque está siendo utilizada por productos" } }
+                { "UnidadMedida", new[] { "No se puede eliminar la unidad de medida porque está siendo utilizada por variedades de productos" } }
             });
         }
 

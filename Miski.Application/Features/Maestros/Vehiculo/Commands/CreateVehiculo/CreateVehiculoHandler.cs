@@ -1,0 +1,45 @@
+using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Maestros;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Maestros.Vehiculo.Commands.CreateVehiculo;
+
+public class CreateVehiculoHandler : IRequestHandler<CreateVehiculoCommand, VehiculoDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public CreateVehiculoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<VehiculoDto> Handle(CreateVehiculoCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.Vehiculo;
+
+        // Validar que la placa no esté duplicada
+        var vehiculos = await _unitOfWork.Repository<Domain.Entities.Vehiculo>().GetAllAsync(cancellationToken);
+        if (vehiculos.Any(v => v.Placa.Equals(dto.Placa, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new ValidationException($"Ya existe un vehículo con la placa {dto.Placa}");
+        }
+
+        var vehiculo = new Domain.Entities.Vehiculo
+        {
+            Placa = dto.Placa.ToUpper(),
+            Marca = dto.Marca,
+            Modelo = dto.Modelo,
+            Estado = "ACTIVO"
+        };
+
+        await _unitOfWork.Repository<Domain.Entities.Vehiculo>().AddAsync(vehiculo, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return _mapper.Map<VehiculoDto>(vehiculo);
+    }
+}

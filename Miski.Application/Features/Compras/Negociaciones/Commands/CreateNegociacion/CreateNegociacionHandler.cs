@@ -4,7 +4,6 @@ using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Compras;
 using Miski.Shared.Exceptions;
-using Miski.Application.Services;
 
 namespace Miski.Application.Features.Compras.Negociaciones.Commands.CreateNegociacion;
 
@@ -12,28 +11,17 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly IFileStorageService _fileStorageService;
+    private const decimal PESO_POR_SACO_DEFAULT = 50m; // Peso por defecto en kg
 
-    public CreateNegociacionHandler(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService)
+    public CreateNegociacionHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _fileStorageService = fileStorageService;
     }
 
     public async Task<NegociacionDto> Handle(CreateNegociacionCommand request, CancellationToken cancellationToken)
     {
         var dto = request.Negociacion;
-
-        // Validar que el proveedor existe si se proporciona
-        if (dto.IdProveedor.HasValue)
-        {
-            var proveedor = await _unitOfWork.Repository<Persona>()
-                .GetByIdAsync(dto.IdProveedor.Value, cancellationToken);
-            
-            if (proveedor == null)
-                throw new NotFoundException("Proveedor", dto.IdProveedor.Value);
-        }
 
         // Validar que el comisionista existe
         var comisionista = await _unitOfWork.Repository<Persona>()
@@ -42,44 +30,52 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
         if (comisionista == null)
             throw new NotFoundException("Comisionista", dto.IdComisionista);
 
-        // Validar que el producto existe si se proporciona
-        if (dto.IdProducto.HasValue)
+        // Validar que la variedad de producto existe si se proporciona
+        if (dto.IdVariedadProducto.HasValue)
         {
-            var producto = await _unitOfWork.Repository<Producto>()
-                .GetByIdAsync(dto.IdProducto.Value, cancellationToken);
+            var variedadProducto = await _unitOfWork.Repository<VariedadProducto>()
+                .GetByIdAsync(dto.IdVariedadProducto.Value, cancellationToken);
             
-            if (producto == null)
-                throw new NotFoundException("Producto", dto.IdProducto.Value);
+            if (variedadProducto == null)
+                throw new NotFoundException("VariedadProducto", dto.IdVariedadProducto.Value);
         }
 
-        // Validar que las fotos estén presentes
-        if (dto.FotoCalidadProducto == null || dto.FotoDniFrontal == null || dto.FotoDniPosterior == null)
+        // Calcular PesoTotal: SacosTotales * PesoPorSaco (50 kg)
+        decimal? pesoTotal = null;
+        if (dto.SacosTotales.HasValue)
         {
-            throw new ValidationException("Las tres fotos son obligatorias: Calidad del Producto, DNI Frontal y DNI Posterior");
+            pesoTotal = dto.SacosTotales.Value * PESO_POR_SACO_DEFAULT;
         }
 
-        // Guardar las fotos
-        var fotoCalidadUrl = await _fileStorageService.SaveFileAsync(dto.FotoCalidadProducto, "negociaciones/calidad", cancellationToken);
-        var fotoDniFrontalUrl = await _fileStorageService.SaveFileAsync(dto.FotoDniFrontal, "negociaciones/dni", cancellationToken);
-        var fotoDniPosteriorUrl = await _fileStorageService.SaveFileAsync(dto.FotoDniPosterior, "negociaciones/dni", cancellationToken);
+        // Calcular MontoTotalPago: SacosTotales * PrecioUnitario * PesoPorSaco (50 kg)
+        decimal? montoTotalPago = null;
+        if (dto.SacosTotales.HasValue && dto.PrecioUnitario.HasValue)
+        {
+            montoTotalPago = dto.SacosTotales.Value * dto.PrecioUnitario.Value * PESO_POR_SACO_DEFAULT;
+        }
 
-        // Crear la negociación
+        // Crear la negociación - PRIMERA ETAPA
         var negociacion = new Negociacion
         {
-            IdProveedor = dto.IdProveedor,
             IdComisionista = dto.IdComisionista,
-            IdProducto = dto.IdProducto,
-            PesoTotal = dto.PesoTotal,
+            IdVariedadProducto = dto.IdVariedadProducto,
             SacosTotales = dto.SacosTotales,
+            TipoCalidad = dto.TipoCalidad,
             PrecioUnitario = dto.PrecioUnitario,
-            NroCuentaRuc = dto.NroCuentaRuc,
-            FotoCalidadProducto = fotoCalidadUrl,
-            FotoDniFrontal = fotoDniFrontalUrl,
-            FotoDniPosterior = fotoDniPosteriorUrl,
-            Observacion = dto.Observacion,
-            Estado = "PENDIENTE",           // Siempre PENDIENTE al crear
-            EstadoAprobado = "PENDIENTE",   // Siempre PENDIENTE al crear
-            FRegistro = DateTime.Now
+            PesoPorSaco = PESO_POR_SACO_DEFAULT, // Asignar peso por saco por defecto (50 kg)
+            PesoTotal = pesoTotal, // Asignar peso total calculado
+            MontoTotalPago = montoTotalPago, // Asignar monto total calculado
+            Estado = "EN PROCESO",  // Estado inicial automático
+            EstadoAprobacionIngeniero = "PENDIENTE",
+            FRegistro = DateTime.Now,
+            // Otros campos se llenarán en etapas posteriores
+            NroDocumentoProveedor = string.Empty,
+            FotoDniFrontal = string.Empty,
+            FotoDniPosterior = string.Empty,
+            PrimeraEvidenciaFoto = string.Empty,
+            SegundaEvidenciaFoto = string.Empty,
+            TerceraEvidenciaFoto = string.Empty,
+            EvidenciaVideo = string.Empty
         };
 
         await _unitOfWork.Repository<Negociacion>().AddAsync(negociacion, cancellationToken);
@@ -87,15 +83,11 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
 
         // Cargar relaciones para el DTO
         negociacion.Comisionista = comisionista;
-        if (dto.IdProveedor.HasValue)
+
+        if (dto.IdVariedadProducto.HasValue)
         {
-            negociacion.Proveedor = await _unitOfWork.Repository<Persona>()
-                .GetByIdAsync(dto.IdProveedor.Value, cancellationToken);
-        }
-        if (dto.IdProducto.HasValue)
-        {
-            negociacion.Producto = await _unitOfWork.Repository<Producto>()
-                .GetByIdAsync(dto.IdProducto.Value, cancellationToken);
+            negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
+                .GetByIdAsync(dto.IdVariedadProducto.Value, cancellationToken);
         }
 
         return _mapper.Map<NegociacionDto>(negociacion);

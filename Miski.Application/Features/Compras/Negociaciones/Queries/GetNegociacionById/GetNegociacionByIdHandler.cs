@@ -27,25 +27,44 @@ public class GetNegociacionByIdHandler : IRequestHandler<GetNegociacionByIdQuery
             throw new NotFoundException("Negociacion", request.Id);
 
         // Cargar relaciones
-        if (negociacion.IdProveedor.HasValue)
+        // Buscar proveedor por documento si existe
+        if (!string.IsNullOrEmpty(negociacion.NroDocumentoProveedor))
         {
-            negociacion.Proveedor = await _unitOfWork.Repository<Persona>()
-                .GetByIdAsync(negociacion.IdProveedor.Value, cancellationToken);
+            var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+            negociacion.Proveedor = personas.FirstOrDefault(p => p.NumeroDocumento == negociacion.NroDocumentoProveedor);
         }
 
         negociacion.Comisionista = await _unitOfWork.Repository<Persona>()
             .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Persona();
 
-        if (negociacion.IdProducto.HasValue)
+        if (negociacion.IdVariedadProducto.HasValue)  // CAMBIADO de IdProducto
         {
-            negociacion.Producto = await _unitOfWork.Repository<Producto>()
-                .GetByIdAsync(negociacion.IdProducto.Value, cancellationToken);
+            negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
+                .GetByIdAsync(negociacion.IdVariedadProducto.Value, cancellationToken);
         }
 
-        if (negociacion.AprobadaPor.HasValue)
+        if (negociacion.IdTipoDocumento.HasValue)
         {
-            negociacion.AprobadaPorPersona = await _unitOfWork.Repository<Persona>()
-                .GetByIdAsync(negociacion.AprobadaPor.Value, cancellationToken);
+            negociacion.TipoDocumento = await _unitOfWork.Repository<TipoDocumento>()
+                .GetByIdAsync(negociacion.IdTipoDocumento.Value, cancellationToken);
+        }
+
+        if (negociacion.IdBanco.HasValue)
+        {
+            negociacion.Banco = await _unitOfWork.Repository<Banco>()
+                .GetByIdAsync(negociacion.IdBanco.Value, cancellationToken);
+        }
+
+        if (negociacion.AprobadaPorIngeniero.HasValue)
+        {
+            negociacion.AprobadaPorUsuarioIngeniero = await _unitOfWork.Repository<Usuario>()
+                .GetByIdAsync(negociacion.AprobadaPorIngeniero.Value, cancellationToken);
+        }
+
+        if (negociacion.AprobadaPorContadora.HasValue)
+        {
+            negociacion.AprobadaPorUsuarioContadora = await _unitOfWork.Repository<Usuario>()
+                .GetByIdAsync(negociacion.AprobadaPorContadora.Value, cancellationToken);
         }
 
         return _mapper.Map<NegociacionDto>(negociacion);

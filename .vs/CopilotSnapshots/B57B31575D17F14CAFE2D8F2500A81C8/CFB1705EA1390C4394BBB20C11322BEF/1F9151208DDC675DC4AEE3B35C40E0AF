@@ -1,0 +1,222 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Miski.Application.Features.Almacen.Productos.Commands.CreateProducto;
+using Miski.Application.Features.Almacen.Productos.Commands.UpdateProducto;
+using Miski.Application.Features.Almacen.Productos.Commands.DeleteProducto;
+using Miski.Application.Features.Almacen.Productos.Queries.GetProductos;
+using Miski.Application.Features.Almacen.Productos.Queries.GetProductoById;
+using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Almacen;
+
+namespace Miski.Api.Controllers.Almacen;
+
+[ApiController]
+[Route("api/almacen/productos")]
+[Tags("Almacén")]
+[Authorize]
+public class ProductosController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public ProductosController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    /// <summary>
+    /// Obtiene todos los productos
+    /// </summary>
+    /// <remarks>
+    /// Permite filtrar por:
+    /// - nombre: Búsqueda parcial por nombre
+    /// - idCategoriaProducto: Filtrar por categoría
+    /// - estado: Filtrar por estado (ACTIVO/INACTIVO)
+    /// </remarks>
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<IEnumerable<ProductoDto>>>> GetProductos(
+        [FromQuery] string? nombre = null,
+        [FromQuery] int? idCategoriaProducto = null,
+        [FromQuery] string? estado = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetProductosQuery(nombre, idCategoriaProducto, estado);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<IEnumerable<ProductoDto>>.SuccessResult(
+                result,
+                "Productos obtenidos exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<ProductoDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene un producto por ID
+    /// </summary>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApiResponse<ProductoDto>>> GetProductoById(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetProductoByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<ProductoDto>.SuccessResult(
+                result,
+                "Producto obtenido exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<ProductoDto>.ErrorResult(
+                "Producto no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<ProductoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Crea un nuevo producto
+    /// </summary>
+    [HttpPost]
+    public async Task<ActionResult<ApiResponse<ProductoDto>>> CreateProducto(
+        [FromBody] CreateProductoDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new CreateProductoCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return CreatedAtAction(
+                nameof(GetProductoById),
+                new { id = result.IdProducto },
+                ApiResponse<ProductoDto>.SuccessResult(
+                    result,
+                    "Producto creado exitosamente"
+                )
+            );
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<ProductoDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<ProductoDto>.ErrorResult(
+                "Entidad relacionada no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<ProductoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Actualiza un producto
+    /// </summary>
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ApiResponse<ProductoDto>>> UpdateProducto(
+        int id,
+        [FromBody] UpdateProductoDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (id != request.IdProducto)
+            {
+                return BadRequest(ApiResponse<ProductoDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new UpdateProductoCommand(id, request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<ProductoDto>.SuccessResult(
+                result,
+                "Producto actualizado exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<ProductoDto>.ErrorResult(
+                "Producto no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<ProductoDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<ProductoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Elimina un producto
+    /// </summary>
+    /// <remarks>
+    /// NOTA: No se puede eliminar un producto que tiene stock asociado o negociaciones activas.
+    /// </remarks>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse>> DeleteProducto(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new DeleteProductoCommand(id);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Producto eliminado exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Producto no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+}

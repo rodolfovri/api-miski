@@ -30,21 +30,19 @@ public class ProductosController : ControllerBase
     /// <remarks>
     /// Permite filtrar por:
     /// - nombre: Búsqueda parcial por nombre
-    /// - codigo: Búsqueda parcial por código
     /// - idCategoriaProducto: Filtrar por categoría
     /// - estado: Filtrar por estado (ACTIVO/INACTIVO)
     /// </remarks>
     [HttpGet]
     public async Task<ActionResult<ApiResponse<IEnumerable<ProductoDto>>>> GetProductos(
         [FromQuery] string? nombre = null,
-        [FromQuery] string? codigo = null,
         [FromQuery] int? idCategoriaProducto = null,
         [FromQuery] string? estado = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetProductosQuery(nombre, codigo, idCategoriaProducto, estado);
+            var query = new GetProductosQuery(nombre, idCategoriaProducto, estado);
             var result = await _mediator.Send(query, cancellationToken);
 
             return Ok(ApiResponse<IEnumerable<ProductoDto>>.SuccessResult(
@@ -98,9 +96,16 @@ public class ProductosController : ControllerBase
     /// <summary>
     /// Crea un nuevo producto
     /// </summary>
+    /// <remarks>
+    /// Este endpoint acepta multipart/form-data.
+    /// Campos opcionales:
+    /// - Imagen: Archivo de imagen (jpg, png, etc.)
+    /// - FichaTecnica: Archivo PDF con información técnica del producto
+    /// </remarks>
     [HttpPost]
+    [Consumes("multipart/form-data")]
     public async Task<ActionResult<ApiResponse<ProductoDto>>> CreateProducto(
-        [FromBody] CreateProductoDto request,
+        [FromForm] CreateProductoDto request,
         CancellationToken cancellationToken = default)
     {
         try
@@ -140,10 +145,17 @@ public class ProductosController : ControllerBase
     /// <summary>
     /// Actualiza un producto
     /// </summary>
+    /// <remarks>
+    /// Este endpoint acepta multipart/form-data.
+    /// Campos opcionales para actualizar:
+    /// - Imagen: Archivo de imagen (reemplaza la imagen anterior)
+    /// - FichaTecnica: Archivo PDF (reemplaza la ficha técnica anterior)
+    /// </remarks>
     [HttpPut("{id}")]
+    [Consumes("multipart/form-data")]
     public async Task<ActionResult<ApiResponse<ProductoDto>>> UpdateProducto(
         int id,
-        [FromBody] UpdateProductoDto request,
+        [FromForm] UpdateProductoDto request,
         CancellationToken cancellationToken = default)
     {
         try

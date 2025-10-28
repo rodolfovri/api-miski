@@ -1,0 +1,74 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Almacen;
+using Miski.Shared.Exceptions;
+using Miski.Application.Services;
+
+namespace Miski.Application.Features.Almacen.Productos.Commands.CreateProducto;
+
+public class CreateProductoHandler : IRequestHandler<CreateProductoCommand, ProductoDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+    private readonly IFileStorageService _fileStorageService;
+
+    public CreateProductoHandler(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+        _fileStorageService = fileStorageService;
+    }
+
+    public async Task<ProductoDto> Handle(CreateProductoCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.Producto;
+
+        // Validar que la categoría existe
+        var categoria = await _unitOfWork.Repository<CategoriaProducto>()
+            .GetByIdAsync(dto.IdCategoriaProducto, cancellationToken);
+        
+        if (categoria == null)
+            throw new NotFoundException("CategoriaProducto", dto.IdCategoriaProducto);
+
+        // Guardar imagen si se proporciona
+        string? imagenUrl = null;
+        if (dto.Imagen != null)
+        {
+            imagenUrl = await _fileStorageService.SaveFileAsync(
+                dto.Imagen, 
+                "productos/imagenes", 
+                cancellationToken);
+        }
+
+        // Guardar ficha técnica (PDF) si se proporciona
+        string? fichaTecnicaUrl = null;
+        if (dto.FichaTecnica != null)
+        {
+            fichaTecnicaUrl = await _fileStorageService.SaveFileAsync(
+                dto.FichaTecnica, 
+                "productos/fichas-tecnicas", 
+                cancellationToken);
+        }
+
+        var producto = new Producto
+        {
+            IdCategoriaProducto = dto.IdCategoriaProducto,
+            Nombre = dto.Nombre,
+            Descripcion = dto.Descripcion,
+            Estado = dto.Estado,
+            Imagen = imagenUrl,
+            FichaTecnica = fichaTecnicaUrl,
+            FRegistro = DateTime.Now
+        };
+
+        await _unitOfWork.Repository<Producto>().AddAsync(producto, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones para el DTO
+        producto.CategoriaProducto = categoria;
+
+        return _mapper.Map<ProductoDto>(producto);
+    }
+}

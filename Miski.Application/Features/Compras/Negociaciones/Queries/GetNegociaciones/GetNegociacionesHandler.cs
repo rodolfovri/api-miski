@@ -21,27 +21,23 @@ public class GetNegociacionesHandler : IRequestHandler<GetNegociacionesQuery, Li
     {
         var negociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
         var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
-        var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
+        var variedadesProducto = await _unitOfWork.Repository<VariedadProducto>().GetAllAsync(cancellationToken);
+        var usuarios = await _unitOfWork.Repository<Usuario>().GetAllAsync(cancellationToken);
 
         // Aplicar filtros
-        if (request.IdProveedor.HasValue)
-        {
-            negociaciones = negociaciones.Where(n => n.IdProveedor == request.IdProveedor.Value).ToList();
-        }
-
         if (request.IdComisionista.HasValue)
         {
             negociaciones = negociaciones.Where(n => n.IdComisionista == request.IdComisionista.Value).ToList();
         }
 
-        if (request.IdProducto.HasValue)
+        if (request.IdVariedadProducto.HasValue)
         {
-            negociaciones = negociaciones.Where(n => n.IdProducto == request.IdProducto.Value).ToList();
+            negociaciones = negociaciones.Where(n => n.IdVariedadProducto == request.IdVariedadProducto.Value).ToList();
         }
 
-        if (!string.IsNullOrEmpty(request.EstadoAprobado))
+        if (!string.IsNullOrEmpty(request.EstadoAprobacionIngeniero))
         {
-            negociaciones = negociaciones.Where(n => n.EstadoAprobado == request.EstadoAprobado).ToList();
+            negociaciones = negociaciones.Where(n => n.EstadoAprobacionIngeniero == request.EstadoAprobacionIngeniero).ToList();
         }
 
         if (!string.IsNullOrEmpty(request.Estado))
@@ -52,21 +48,49 @@ public class GetNegociacionesHandler : IRequestHandler<GetNegociacionesQuery, Li
         // Cargar relaciones
         foreach (var negociacion in negociaciones)
         {
-            if (negociacion.IdProveedor.HasValue)
+            // Buscar proveedor por documento si existe
+            if (!string.IsNullOrEmpty(negociacion.NroDocumentoProveedor))
             {
-                negociacion.Proveedor = personas.FirstOrDefault(p => p.IdPersona == negociacion.IdProveedor.Value);
+                negociacion.Proveedor = personas.FirstOrDefault(p => p.NumeroDocumento == negociacion.NroDocumentoProveedor);
             }
 
             negociacion.Comisionista = personas.FirstOrDefault(p => p.IdPersona == negociacion.IdComisionista) ?? new Persona();
 
-            if (negociacion.IdProducto.HasValue)
+            if (negociacion.IdVariedadProducto.HasValue)
             {
-                negociacion.Producto = productos.FirstOrDefault(p => p.IdProducto == negociacion.IdProducto.Value);
+                negociacion.VariedadProducto = variedadesProducto.FirstOrDefault(v => v.IdVariedadProducto == negociacion.IdVariedadProducto.Value);
             }
 
-            if (negociacion.AprobadaPor.HasValue)
+            if (negociacion.IdTipoDocumento.HasValue)
             {
-                negociacion.AprobadaPorPersona = personas.FirstOrDefault(p => p.IdPersona == negociacion.AprobadaPor.Value);
+                var tiposDocumento = await _unitOfWork.Repository<TipoDocumento>().GetAllAsync(cancellationToken);
+                negociacion.TipoDocumento = tiposDocumento.FirstOrDefault(t => t.IdTipoDocumento == negociacion.IdTipoDocumento.Value);
+            }
+
+            if (negociacion.IdBanco.HasValue)
+            {
+                var bancos = await _unitOfWork.Repository<Banco>().GetAllAsync(cancellationToken);
+                negociacion.Banco = bancos.FirstOrDefault(b => b.IdBanco == negociacion.IdBanco.Value);
+            }
+
+            if (negociacion.AprobadaPorIngeniero.HasValue)
+            {
+                negociacion.AprobadaPorUsuarioIngeniero = usuarios.FirstOrDefault(u => u.IdUsuario == negociacion.AprobadaPorIngeniero.Value);
+            }
+
+            if (negociacion.AprobadaPorContadora.HasValue)
+            {
+                negociacion.AprobadaPorUsuarioContadora = usuarios.FirstOrDefault(u => u.IdUsuario == negociacion.AprobadaPorContadora.Value);
+            }
+
+            if (negociacion.RechazadoPorIngeniero.HasValue)
+            {
+                negociacion.RechazadoPorUsuarioIngeniero = usuarios.FirstOrDefault(u => u.IdUsuario == negociacion.RechazadoPorIngeniero.Value);
+            }
+
+            if (negociacion.RechazadoPorContadora.HasValue)
+            {
+                negociacion.RechazadoPorUsuarioContadora = usuarios.FirstOrDefault(u => u.IdUsuario == negociacion.RechazadoPorContadora.Value);
             }
         }
 

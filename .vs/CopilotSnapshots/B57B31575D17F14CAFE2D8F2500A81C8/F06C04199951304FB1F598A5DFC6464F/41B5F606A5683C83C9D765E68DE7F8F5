@@ -1,0 +1,42 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Miski.Domain.Contracts.Repositories;
+using Miski.Domain.Entities;
+using Miski.Infrastructure.Data;
+
+namespace Miski.Infrastructure.Repositories;
+
+public class ProductoRepository : Repository<Producto>, IProductoRepository
+{
+    public ProductoRepository(MiskiDbContext context) : base(context)
+    {
+    }
+
+    public async Task<IEnumerable<Producto>> GetActivosAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Where(p => p.Estado == "ACTIVO")
+            .OrderBy(p => p.Nombre)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Producto?> GetByCodigoAsync(string codigo, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .FirstOrDefaultAsync(p => p.Codigo == codigo, cancellationToken);
+    }
+
+    public async Task<IEnumerable<Producto>> GetByEstadoAsync(string estado, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .Where(p => p.Estado == estado)
+            .OrderBy(p => p.Nombre)
+            .ToListAsync(cancellationToken);
+    }
+
+    public override async Task<IEnumerable<Producto>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .OrderBy(p => p.Nombre)
+            .ToListAsync(cancellationToken);
+    }
+}

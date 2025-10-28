@@ -1,0 +1,47 @@
+﻿using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.Exceptions;
+using Miski.Application.Services;
+
+namespace Miski.Application.Features.Compras.Negociaciones.Commands.DeleteNegociacion;
+
+public class DeleteNegociacionHandler : IRequestHandler<DeleteNegociacionCommand, Unit>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IFileStorageService _fileStorageService;
+
+    public DeleteNegociacionHandler(IUnitOfWork unitOfWork, IFileStorageService fileStorageService)
+    {
+        _unitOfWork = unitOfWork;
+        _fileStorageService = fileStorageService;
+    }
+
+    public async Task<Unit> Handle(DeleteNegociacionCommand request, CancellationToken cancellationToken)
+    {
+        var negociacion = await _unitOfWork.Repository<Negociacion>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (negociacion == null)
+            throw new NotFoundException("Negociacion", request.Id);
+
+        // Validar que no tenga compras asociadas
+        var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
+        if (compras.Any(c => c.IdNegociacion == request.Id))
+        {
+            throw new ValidationException("No se puede eliminar la negociación porque tiene compras asociadas");
+        }
+
+        // Eliminar las fotos del almacenamiento
+        await _fileStorageService.DeleteFileAsync(negociacion.FotoCalidadProducto, cancellationToken);
+        await _fileStorageService.DeleteFileAsync(negociacion.FotoDniFrontal, cancellationToken);
+        await _fileStorageService.DeleteFileAsync(negociacion.FotoDniPosterior, cancellationToken);
+
+        // Cambiar estado a INACTIVO en lugar de eliminar físicamente
+        negociacion.Estado = "INACTIVO";
+        await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
+    }
+}

@@ -98,9 +98,13 @@ public class UbicacionesController : ControllerBase
     /// <summary>
     /// Crea una nueva ubicación
     /// </summary>
+    /// <remarks>
+    /// NOTA: Este endpoint usa multipart/form-data porque acepta un archivo PDF opcional (ComprobantePdf).
+    /// </remarks>
     [HttpPost]
+    [Consumes("multipart/form-data")]
     public async Task<ActionResult<ApiResponse<UbicacionDto>>> CreateUbicacion(
-        [FromBody] CreateUbicacionDto request,
+        [FromForm] CreateUbicacionDto request,
         CancellationToken cancellationToken = default)
     {
         try
@@ -140,10 +144,15 @@ public class UbicacionesController : ControllerBase
     /// <summary>
     /// Actualiza una ubicación
     /// </summary>
+    /// <remarks>
+    /// NOTA: Este endpoint usa multipart/form-data porque acepta un archivo PDF opcional (ComprobantePdf).
+    /// Si no se envía un nuevo PDF, se mantiene el anterior.
+    /// </remarks>
     [HttpPut("{id}")]
+    [Consumes("multipart/form-data")]
     public async Task<ActionResult<ApiResponse<UbicacionDto>>> UpdateUbicacion(
         int id,
-        [FromBody] UpdateUbicacionDto request,
+        [FromForm] UpdateUbicacionDto request,
         CancellationToken cancellationToken = default)
     {
         try

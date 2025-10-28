@@ -2,19 +2,16 @@ using MediatR;
 using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.Exceptions;
-using Miski.Application.Services;
 
 namespace Miski.Application.Features.Compras.Negociaciones.Commands.DeleteNegociacion;
 
 public class DeleteNegociacionHandler : IRequestHandler<DeleteNegociacionCommand, Unit>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IFileStorageService _fileStorageService;
 
-    public DeleteNegociacionHandler(IUnitOfWork unitOfWork, IFileStorageService fileStorageService)
+    public DeleteNegociacionHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _fileStorageService = fileStorageService;
     }
 
     public async Task<Unit> Handle(DeleteNegociacionCommand request, CancellationToken cancellationToken)
@@ -32,13 +29,16 @@ public class DeleteNegociacionHandler : IRequestHandler<DeleteNegociacionCommand
             throw new ValidationException("No se puede eliminar la negociación porque tiene compras asociadas");
         }
 
-        // Eliminar las fotos del almacenamiento
-        await _fileStorageService.DeleteFileAsync(negociacion.FotoCalidadProducto, cancellationToken);
-        await _fileStorageService.DeleteFileAsync(negociacion.FotoDniFrontal, cancellationToken);
-        await _fileStorageService.DeleteFileAsync(negociacion.FotoDniPosterior, cancellationToken);
+        // Validar que no esté aprobada
+        if (negociacion.EstadoAprobacionIngeniero == "APROBADO" || negociacion.Estado == "APROBADO")
+        {
+            throw new ValidationException("No se puede eliminar una negociación que ya ha sido aprobada");
+        }
 
-        // Cambiar estado a INACTIVO en lugar de eliminar físicamente
-        negociacion.Estado = "INACTIVO";
+        // TODO: Eliminar fotos del almacenamiento si las hubiera
+
+        // Cambiar estado a ANULADO
+        negociacion.Estado = "ANULADO";
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

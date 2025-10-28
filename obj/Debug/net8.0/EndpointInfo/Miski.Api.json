@@ -273,6 +273,265 @@
         ]
       }
     },
+    "/api/maestros/bancos": {
+      "get": {
+        "tags": [
+          "Bancos"
+        ],
+        "parameters": [
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Bancos"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBancoDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBancoDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBancoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/maestros/bancos/{id}": {
+      "get": {
+        "tags": [
+          "Bancos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Bancos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBancoDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBancoDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBancoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BancoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Bancos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
     "/api/personas/categorias": {
       "get": {
         "tags": [
@@ -805,14 +1064,6 @@
         ],
         "parameters": [
           {
-            "name": "negociacionId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
             "name": "estado",
             "in": "query",
             "schema": {
@@ -820,19 +1071,11 @@
             }
           },
           {
-            "name": "fechaInicio",
+            "name": "idNegociacion",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "fechaFin",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -842,65 +1085,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraDtoIEnumerableApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraDtoIEnumerableApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "No autorizado"
-          }
-        },
-        "security": [
-          {
-            "Bearer": [ ]
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "Compras"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { }
-            },
-            "text/json": {
-              "schema": { }
-            },
-            "application/*+json": {
-              "schema": { }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/CompraDtoIEnumerableApiResponse"
                 }
               }
             }
@@ -938,17 +1133,173 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/CompraDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/CompraDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/CompraDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/lotes": {
+      "get": {
+        "tags": [
+          "Compras"
+        ],
+        "parameters": [
+          {
+            "name": "idCompra",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "codigo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Compras"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoteDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoteDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/lotes/{id}": {
+      "get": {
+        "tags": [
+          "Compras"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
                 }
               }
             }
@@ -981,13 +1332,19 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLoteDto"
+              }
             },
             "text/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLoteDto"
+              }
             },
             "application/*+json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLoteDto"
+              }
             }
           }
         },
@@ -997,17 +1354,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
                 }
               }
             }
@@ -1021,10 +1378,8 @@
             "Bearer": [ ]
           }
         ]
-      }
-    },
-    "/api/compras/{id}/lotes": {
-      "get": {
+      },
+      "delete": {
         "tags": [
           "Compras"
         ],
@@ -1045,17 +1400,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/ApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/ApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/ApiResponse"
                 }
               }
             }
@@ -1071,10 +1426,118 @@
         ]
       }
     },
-    "/api/compras/{id}/llegadas-planta": {
+    "/api/compras/asignacion-vehiculos": {
       "get": {
         "tags": [
-          "Compras"
+          "CompraVehiculos"
+        ],
+        "parameters": [
+          {
+            "name": "idVehiculo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "guiaRemision",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraVehiculoDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraVehiculoDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraVehiculoDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "CompraVehiculos"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCompraVehiculoDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCompraVehiculoDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCompraVehiculoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraVehiculoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraVehiculoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraVehiculoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/asignacion-vehiculos/{id}": {
+      "get": {
+        "tags": [
+          "CompraVehiculos"
         ],
         "parameters": [
           {
@@ -1093,17 +1556,82 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraVehiculoDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraVehiculoDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraVehiculoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "CompraVehiculos"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompraVehiculoDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompraVehiculoDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompraVehiculoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraVehiculoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraVehiculoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraVehiculoDtoApiResponse"
                 }
               }
             }
@@ -1442,27 +1970,10 @@
         ]
       }
     },
-    "/api/compras/lotes": {
+    "/api/maestros/monedas": {
       "get": {
         "tags": [
-          "Lotes"
-        ],
-        "parameters": [
-          {
-            "name": "compraId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "grado",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
+          "Monedas"
         ],
         "responses": {
           "200": {
@@ -1470,17 +1981,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoIEnumerableApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoIEnumerableApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoIEnumerableApiResponse"
                 }
               }
             }
@@ -1497,18 +2008,24 @@
       },
       "post": {
         "tags": [
-          "Lotes"
+          "Monedas"
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/CreateMonedaDto"
+              }
             },
             "text/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/CreateMonedaDto"
+              }
             },
             "application/*+json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/CreateMonedaDto"
+              }
             }
           }
         },
@@ -1518,17 +2035,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoApiResponse"
                 }
               }
             }
@@ -1544,10 +2061,10 @@
         ]
       }
     },
-    "/api/compras/lotes/{id}": {
+    "/api/maestros/monedas/{id}": {
       "get": {
         "tags": [
-          "Lotes"
+          "Monedas"
         ],
         "parameters": [
           {
@@ -1566,17 +2083,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoApiResponse"
                 }
               }
             }
@@ -1593,7 +2110,7 @@
       },
       "put": {
         "tags": [
-          "Lotes"
+          "Monedas"
         ],
         "parameters": [
           {
@@ -1609,13 +2126,19 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMonedaDto"
+              }
             },
             "text/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMonedaDto"
+              }
             },
             "application/*+json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMonedaDto"
+              }
             }
           }
         },
@@ -1625,17 +2148,63 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/MonedaDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Monedas"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
                 }
               }
             }
@@ -1658,14 +2227,6 @@
         ],
         "parameters": [
           {
-            "name": "idProveedor",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
             "name": "idComisionista",
             "in": "query",
             "schema": {
@@ -1674,7 +2235,7 @@
             }
           },
           {
-            "name": "idProducto",
+            "name": "idVariedadProducto",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -1682,14 +2243,14 @@
             }
           },
           {
-            "name": "estadoAprobado",
+            "name": "estado",
             "in": "query",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "estado",
+            "name": "estadoAprobacionIngeniero",
             "in": "query",
             "schema": {
               "type": "string"
@@ -1733,88 +2294,19 @@
         ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "IdProveedor": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "IdComisionista": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "IdProducto": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "PesoTotal": {
-                    "type": "number",
-                    "format": "double"
-                  },
-                  "SacosTotales": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "PrecioUnitario": {
-                    "type": "number",
-                    "format": "double"
-                  },
-                  "NroCuentaRuc": {
-                    "type": "string"
-                  },
-                  "FotoCalidadProducto": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "FotoDniFrontal": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "FotoDniPosterior": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "Observacion": {
-                    "type": "string"
-                  }
-                }
-              },
-              "encoding": {
-                "IdProveedor": {
-                  "style": "form"
-                },
-                "IdComisionista": {
-                  "style": "form"
-                },
-                "IdProducto": {
-                  "style": "form"
-                },
-                "PesoTotal": {
-                  "style": "form"
-                },
-                "SacosTotales": {
-                  "style": "form"
-                },
-                "PrecioUnitario": {
-                  "style": "form"
-                },
-                "NroCuentaRuc": {
-                  "style": "form"
-                },
-                "FotoCalidadProducto": {
-                  "style": "form"
-                },
-                "FotoDniFrontal": {
-                  "style": "form"
-                },
-                "FotoDniPosterior": {
-                  "style": "form"
-                },
-                "Observacion": {
-                  "style": "form"
-                }
+                "$ref": "#/components/schemas/CreateNegociacionDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNegociacionDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNegociacionDto"
               }
             }
           }
@@ -1915,113 +2407,19 @@
         ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "IdNegociacion": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "IdProveedor": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "IdComisionista": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "IdProducto": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "PesoTotal": {
-                    "type": "number",
-                    "format": "double"
-                  },
-                  "SacosTotales": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "PrecioUnitario": {
-                    "type": "number",
-                    "format": "double"
-                  },
-                  "NroCuentaRuc": {
-                    "type": "string"
-                  },
-                  "FotoCalidadProducto": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "FotoDniFrontal": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "FotoDniPosterior": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "FotoCalidadProductoUrl": {
-                    "type": "string"
-                  },
-                  "FotoDniFrontalUrl": {
-                    "type": "string"
-                  },
-                  "FotoDniPosteriorUrl": {
-                    "type": "string"
-                  },
-                  "Observacion": {
-                    "type": "string"
-                  }
-                }
-              },
-              "encoding": {
-                "IdNegociacion": {
-                  "style": "form"
-                },
-                "IdProveedor": {
-                  "style": "form"
-                },
-                "IdComisionista": {
-                  "style": "form"
-                },
-                "IdProducto": {
-                  "style": "form"
-                },
-                "PesoTotal": {
-                  "style": "form"
-                },
-                "SacosTotales": {
-                  "style": "form"
-                },
-                "PrecioUnitario": {
-                  "style": "form"
-                },
-                "NroCuentaRuc": {
-                  "style": "form"
-                },
-                "FotoCalidadProducto": {
-                  "style": "form"
-                },
-                "FotoDniFrontal": {
-                  "style": "form"
-                },
-                "FotoDniPosterior": {
-                  "style": "form"
-                },
-                "FotoCalidadProductoUrl": {
-                  "style": "form"
-                },
-                "FotoDniFrontalUrl": {
-                  "style": "form"
-                },
-                "FotoDniPosteriorUrl": {
-                  "style": "form"
-                },
-                "Observacion": {
-                  "style": "form"
-                }
+                "$ref": "#/components/schemas/UpdateNegociacionDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNegociacionDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNegociacionDto"
               }
             }
           }
@@ -2104,7 +2502,7 @@
         ]
       }
     },
-    "/api/compras/negociaciones/pendientes-aprobacion": {
+    "/api/compras/negociaciones/pendientes-ingeniero": {
       "get": {
         "tags": [
           "Negociaciones"
@@ -2141,7 +2539,7 @@
         ]
       }
     },
-    "/api/compras/negociaciones/{id}/aprobar": {
+    "/api/compras/negociaciones/{id}/aprobar-ingeniero": {
       "put": {
         "tags": [
           "Negociaciones"
@@ -2161,17 +2559,391 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AprobarNegociacionDto"
+                "$ref": "#/components/schemas/AprobarNegociacionIngenieroDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/AprobarNegociacionDto"
+                "$ref": "#/components/schemas/AprobarNegociacionIngenieroDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/AprobarNegociacionDto"
+                "$ref": "#/components/schemas/AprobarNegociacionIngenieroDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/negociaciones/{id}/rechazar-ingeniero": {
+      "put": {
+        "tags": [
+          "Negociaciones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RechazarNegociacionIngenieroDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RechazarNegociacionIngenieroDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RechazarNegociacionIngenieroDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/negociaciones/{id}/completar": {
+      "put": {
+        "tags": [
+          "Negociaciones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "IdNegociacion": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "IdTipoDocumento": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "IdBanco": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "NroDocumentoProveedor": {
+                    "type": "string"
+                  },
+                  "NroCuentaBancaria": {
+                    "type": "string"
+                  },
+                  "FotoDniFrontal": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "FotoDniPosterior": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "PrimeraEvidenciaFoto": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "SegundaEvidenciaFoto": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "TerceraEvidenciaFoto": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "EvidenciaVideo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "IdNegociacion": {
+                  "style": "form"
+                },
+                "IdTipoDocumento": {
+                  "style": "form"
+                },
+                "IdBanco": {
+                  "style": "form"
+                },
+                "NroDocumentoProveedor": {
+                  "style": "form"
+                },
+                "NroCuentaBancaria": {
+                  "style": "form"
+                },
+                "FotoDniFrontal": {
+                  "style": "form"
+                },
+                "FotoDniPosterior": {
+                  "style": "form"
+                },
+                "PrimeraEvidenciaFoto": {
+                  "style": "form"
+                },
+                "SegundaEvidenciaFoto": {
+                  "style": "form"
+                },
+                "TerceraEvidenciaFoto": {
+                  "style": "form"
+                },
+                "EvidenciaVideo": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/negociaciones/pendientes-contadora": {
+      "get": {
+        "tags": [
+          "Negociaciones"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/negociaciones/{id}/aprobar-contadora": {
+      "put": {
+        "tags": [
+          "Negociaciones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AprobarNegociacionContadoraDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AprobarNegociacionContadoraDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AprobarNegociacionContadoraDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/negociaciones/{id}/rechazar-contadora": {
+      "put": {
+        "tags": [
+          "Negociaciones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RechazarNegociacionContadoraDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RechazarNegociacionContadoraDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RechazarNegociacionContadoraDto"
               }
             }
           }
@@ -2932,13 +3704,6 @@
             }
           },
           {
-            "name": "codigo",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "idCategoriaProducto",
             "in": "query",
             "schema": {
@@ -2991,19 +3756,52 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/CreateProductoDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProductoDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProductoDto"
+                "type": "object",
+                "properties": {
+                  "IdCategoriaProducto": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Nombre": {
+                    "type": "string"
+                  },
+                  "Descripcion": {
+                    "type": "string"
+                  },
+                  "Estado": {
+                    "type": "string"
+                  },
+                  "Imagen": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "FichaTecnica": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "IdCategoriaProducto": {
+                  "style": "form"
+                },
+                "Nombre": {
+                  "style": "form"
+                },
+                "Descripcion": {
+                  "style": "form"
+                },
+                "Estado": {
+                  "style": "form"
+                },
+                "Imagen": {
+                  "style": "form"
+                },
+                "FichaTecnica": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -3104,19 +3902,59 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateProductoDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProductoDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProductoDto"
+                "type": "object",
+                "properties": {
+                  "IdProducto": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "IdCategoriaProducto": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Nombre": {
+                    "type": "string"
+                  },
+                  "Descripcion": {
+                    "type": "string"
+                  },
+                  "Estado": {
+                    "type": "string"
+                  },
+                  "Imagen": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "FichaTecnica": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "IdProducto": {
+                  "style": "form"
+                },
+                "IdCategoriaProducto": {
+                  "style": "form"
+                },
+                "Nombre": {
+                  "style": "form"
+                },
+                "Descripcion": {
+                  "style": "form"
+                },
+                "Estado": {
+                  "style": "form"
+                },
+                "Imagen": {
+                  "style": "form"
+                },
+                "FichaTecnica": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -3184,6 +4022,321 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/maestros/tipo-calidad-producto": {
+      "get": {
+        "tags": [
+          "TipoCalidadProducto"
+        ],
+        "parameters": [
+          {
+            "name": "idProducto",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "TipoCalidadProducto"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTipoCalidadProductoDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTipoCalidadProductoDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTipoCalidadProductoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/maestros/tipo-calidad-producto/{id}": {
+      "get": {
+        "tags": [
+          "TipoCalidadProducto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "TipoCalidadProducto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTipoCalidadProductoDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTipoCalidadProductoDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTipoCalidadProductoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "TipoCalidadProducto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/maestros/tipo-calidad-producto/producto/{idProducto}": {
+      "get": {
+        "tags": [
+          "TipoCalidadProducto"
+        ],
+        "parameters": [
+          {
+            "name": "idProducto",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCalidadProductoDtoIEnumerableApiResponse"
                 }
               }
             }
@@ -3414,6 +4567,282 @@
       "delete": {
         "tags": [
           "TipoDocumento"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/maestros/tipos-cambio": {
+      "get": {
+        "tags": [
+          "TiposCambio"
+        ],
+        "parameters": [
+          {
+            "name": "idMoneda",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "fechaDesde",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "fechaHasta",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "TiposCambio"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTipoCambioDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTipoCambioDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTipoCambioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/maestros/tipos-cambio/{id}": {
+      "get": {
+        "tags": [
+          "TiposCambio"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "TiposCambio"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTipoCambioDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTipoCambioDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTipoCambioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoCambioDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "TiposCambio"
         ],
         "parameters": [
           {
@@ -3730,19 +5159,81 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/CreateUbicacionDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUbicacionDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUbicacionDto"
+                "type": "object",
+                "properties": {
+                  "IdUsuario": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "CodigoSenasa": {
+                    "type": "string"
+                  },
+                  "Nombre": {
+                    "type": "string"
+                  },
+                  "RazonSocial": {
+                    "type": "string"
+                  },
+                  "NumeroRuc": {
+                    "type": "string"
+                  },
+                  "Direccion": {
+                    "type": "string"
+                  },
+                  "DomicilioLegal": {
+                    "type": "string"
+                  },
+                  "GiroEstablecimiento": {
+                    "type": "string"
+                  },
+                  "ComprobantePdf": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Tipo": {
+                    "type": "string"
+                  },
+                  "Estado": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "IdUsuario": {
+                  "style": "form"
+                },
+                "CodigoSenasa": {
+                  "style": "form"
+                },
+                "Nombre": {
+                  "style": "form"
+                },
+                "RazonSocial": {
+                  "style": "form"
+                },
+                "NumeroRuc": {
+                  "style": "form"
+                },
+                "Direccion": {
+                  "style": "form"
+                },
+                "DomicilioLegal": {
+                  "style": "form"
+                },
+                "GiroEstablecimiento": {
+                  "style": "form"
+                },
+                "ComprobantePdf": {
+                  "style": "form"
+                },
+                "Tipo": {
+                  "style": "form"
+                },
+                "Estado": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -3843,19 +5334,94 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateUbicacionDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUbicacionDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUbicacionDto"
+                "type": "object",
+                "properties": {
+                  "IdUbicacion": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "IdUsuario": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "CodigoSenasa": {
+                    "type": "string"
+                  },
+                  "Nombre": {
+                    "type": "string"
+                  },
+                  "RazonSocial": {
+                    "type": "string"
+                  },
+                  "NumeroRuc": {
+                    "type": "string"
+                  },
+                  "Direccion": {
+                    "type": "string"
+                  },
+                  "DomicilioLegal": {
+                    "type": "string"
+                  },
+                  "GiroEstablecimiento": {
+                    "type": "string"
+                  },
+                  "ComprobantePdf": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "ComprobantePdfUrl": {
+                    "type": "string"
+                  },
+                  "Tipo": {
+                    "type": "string"
+                  },
+                  "Estado": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "IdUbicacion": {
+                  "style": "form"
+                },
+                "IdUsuario": {
+                  "style": "form"
+                },
+                "CodigoSenasa": {
+                  "style": "form"
+                },
+                "Nombre": {
+                  "style": "form"
+                },
+                "RazonSocial": {
+                  "style": "form"
+                },
+                "NumeroRuc": {
+                  "style": "form"
+                },
+                "Direccion": {
+                  "style": "form"
+                },
+                "DomicilioLegal": {
+                  "style": "form"
+                },
+                "GiroEstablecimiento": {
+                  "style": "form"
+                },
+                "ComprobantePdf": {
+                  "style": "form"
+                },
+                "ComprobantePdfUrl": {
+                  "style": "form"
+                },
+                "Tipo": {
+                  "style": "form"
+                },
+                "Estado": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -4197,6 +5763,372 @@
         ]
       }
     },
+    "/api/maestros/variedad-producto": {
+      "get": {
+        "tags": [
+          "VariedadProducto"
+        ],
+        "parameters": [
+          {
+            "name": "nombre",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idProducto",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "VariedadProducto"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "IdProducto": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "IdUnidadMedida": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Codigo": {
+                    "type": "string"
+                  },
+                  "Nombre": {
+                    "type": "string"
+                  },
+                  "Descripcion": {
+                    "type": "string"
+                  },
+                  "Estado": {
+                    "type": "string"
+                  },
+                  "FichaTecnica": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "IdProducto": {
+                  "style": "form"
+                },
+                "IdUnidadMedida": {
+                  "style": "form"
+                },
+                "Codigo": {
+                  "style": "form"
+                },
+                "Nombre": {
+                  "style": "form"
+                },
+                "Descripcion": {
+                  "style": "form"
+                },
+                "Estado": {
+                  "style": "form"
+                },
+                "FichaTecnica": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/maestros/variedad-producto/{id}": {
+      "get": {
+        "tags": [
+          "VariedadProducto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "VariedadProducto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "IdVariedadProducto": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "IdProducto": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "IdUnidadMedida": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Codigo": {
+                    "type": "string"
+                  },
+                  "Nombre": {
+                    "type": "string"
+                  },
+                  "Descripcion": {
+                    "type": "string"
+                  },
+                  "Estado": {
+                    "type": "string"
+                  },
+                  "FichaTecnica": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "IdVariedadProducto": {
+                  "style": "form"
+                },
+                "IdProducto": {
+                  "style": "form"
+                },
+                "IdUnidadMedida": {
+                  "style": "form"
+                },
+                "Codigo": {
+                  "style": "form"
+                },
+                "Nombre": {
+                  "style": "form"
+                },
+                "Descripcion": {
+                  "style": "form"
+                },
+                "Estado": {
+                  "style": "form"
+                },
+                "FichaTecnica": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariedadProductoDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "VariedadProducto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
     "/api/maestros/vehiculos": {
       "get": {
         "tags": [
@@ -4224,17 +6156,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoIEnumerableApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoIEnumerableApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoIEnumerableApiResponse"
                 }
               }
             }
@@ -4256,13 +6188,19 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/CreateVehiculoDto"
+              }
             },
             "text/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/CreateVehiculoDto"
+              }
             },
             "application/*+json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/CreateVehiculoDto"
+              }
             }
           }
         },
@@ -4272,17 +6210,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoApiResponse"
                 }
               }
             }
@@ -4320,17 +6258,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoApiResponse"
                 }
               }
             }
@@ -4363,13 +6301,19 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVehiculoDto"
+              }
             },
             "text/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVehiculoDto"
+              }
             },
             "application/*+json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVehiculoDto"
+              }
             }
           }
         },
@@ -4379,17 +6323,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/VehiculoDtoApiResponse"
                 }
               }
             }
@@ -4473,20 +6417,30 @@
         },
         "additionalProperties": false
       },
-      "AprobarNegociacionDto": {
+      "AprobarNegociacionContadoraDto": {
         "type": "object",
         "properties": {
           "idNegociacion": {
             "type": "integer",
             "format": "int32"
           },
-          "aprobadaPor": {
+          "aprobadaPorContadora": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AprobarNegociacionIngenieroDto": {
+        "type": "object",
+        "properties": {
+          "idNegociacion": {
             "type": "integer",
             "format": "int32"
           },
-          "observacion": {
-            "type": "string",
-            "nullable": true
+          "aprobadaPorIngeniero": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -4618,6 +6572,66 @@
           },
           "data": {
             "$ref": "#/components/schemas/AuthResponseDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BancoDto": {
+        "type": "object",
+        "properties": {
+          "idBanco": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BancoDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/BancoDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BancoDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BancoDto"
+            },
+            "nullable": true
           },
           "errors": {
             "nullable": true
@@ -4786,6 +6800,244 @@
         },
         "additionalProperties": false
       },
+      "CompraDto": {
+        "type": "object",
+        "properties": {
+          "idCompra": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idNegociacion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serie": {
+            "type": "string",
+            "nullable": true
+          },
+          "fRegistro": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fEmision": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "proveedorNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "comisionistaNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "pesoTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "sacosTotales": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "precioUnitario": {
+            "type": "number",
+            "format": "double"
+          },
+          "montoTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "lotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoteDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/CompraDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompraDto"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraVehiculoDetalleDto": {
+        "type": "object",
+        "properties": {
+          "idCompraVehiculoDetalle": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idCompraVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idCompra": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "compraSerie": {
+            "type": "string",
+            "nullable": true
+          },
+          "compraFRegistro": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "compraMontoTotal": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "compraNegociacionId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraVehiculoDto": {
+        "type": "object",
+        "properties": {
+          "idCompraVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "guiaRemision": {
+            "type": "string",
+            "nullable": true
+          },
+          "fRegistro": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "vehiculoPlaca": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehiculoMarca": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehiculoModelo": {
+            "type": "string",
+            "nullable": true
+          },
+          "detalles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompraVehiculoDetalleDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraVehiculoDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/CompraVehiculoDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraVehiculoDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompraVehiculoDto"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateBancoDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateCategoriaPersonaDto": {
         "type": "object",
         "properties": {
@@ -4809,6 +7061,97 @@
           },
           "estado": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateCompraVehiculoDto": {
+        "type": "object",
+        "properties": {
+          "idVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "guiaRemision": {
+            "type": "string",
+            "nullable": true
+          },
+          "idCompras": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateLoteDto": {
+        "type": "object",
+        "properties": {
+          "idCompra": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "peso": {
+            "type": "number",
+            "format": "double"
+          },
+          "sacos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateMonedaDto": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "simbolo": {
+            "type": "string",
+            "nullable": true
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateNegociacionDto": {
+        "type": "object",
+        "properties": {
+          "idComisionista": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idVariedadProducto": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "sacosTotales": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "tipoCalidad": {
+            "type": "string",
+            "nullable": true
+          },
+          "precioUnitario": {
+            "type": "number",
+            "format": "double",
             "nullable": true
           }
         },
@@ -4852,32 +7195,42 @@
         },
         "additionalProperties": false
       },
-      "CreateProductoDto": {
+      "CreateTipoCalidadProductoDto": {
         "type": "object",
         "properties": {
-          "idCategoriaProducto": {
+          "idProducto": {
             "type": "integer",
             "format": "int32"
-          },
-          "idUnidadMedida": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "codigo": {
-            "type": "string",
-            "nullable": true
           },
           "nombre": {
-            "type": "string",
-            "nullable": true
-          },
-          "descripcion": {
             "type": "string",
             "nullable": true
           },
           "estado": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateTipoCambioDto": {
+        "type": "object",
+        "properties": {
+          "idMoneda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idUsuario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "valorCompra": {
+            "type": "number",
+            "format": "double"
+          },
+          "valorVenta": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
@@ -4902,32 +7255,6 @@
         },
         "additionalProperties": false
       },
-      "CreateUbicacionDto": {
-        "type": "object",
-        "properties": {
-          "idUsuario": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nombre": {
-            "type": "string",
-            "nullable": true
-          },
-          "direccion": {
-            "type": "string",
-            "nullable": true
-          },
-          "tipo": {
-            "type": "string",
-            "nullable": true
-          },
-          "estado": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "CreateUnidadMedidaDto": {
         "type": "object",
         "properties": {
@@ -4936,6 +7263,24 @@
             "nullable": true
           },
           "abreviatura": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateVehiculoDto": {
+        "type": "object",
+        "properties": {
+          "placa": {
+            "type": "string",
+            "nullable": true
+          },
+          "marca": {
+            "type": "string",
+            "nullable": true
+          },
+          "modelo": {
             "type": "string",
             "nullable": true
           }
@@ -4955,6 +7300,74 @@
           },
           "tipoPlataforma": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoteDto": {
+        "type": "object",
+        "properties": {
+          "idLote": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idCompra": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "peso": {
+            "type": "number",
+            "format": "double"
+          },
+          "sacos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoteDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/LoteDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoteDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoteDto"
+            },
+            "nullable": true
+          },
+          "errors": {
             "nullable": true
           }
         },
@@ -5044,6 +7457,70 @@
         },
         "additionalProperties": false
       },
+      "MonedaDto": {
+        "type": "object",
+        "properties": {
+          "idMoneda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "simbolo": {
+            "type": "string",
+            "nullable": true
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MonedaDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/MonedaDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MonedaDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonedaDto"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "NegociacionDto": {
         "type": "object",
         "properties": {
@@ -5051,41 +7528,74 @@
             "type": "integer",
             "format": "int32"
           },
-          "idProveedor": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
           "idComisionista": {
             "type": "integer",
             "format": "int32"
           },
-          "idProducto": {
+          "idTipoDocumento": {
             "type": "integer",
             "format": "int32",
             "nullable": true
           },
-          "fRegistro": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "pesoTotal": {
-            "type": "number",
-            "format": "double"
-          },
-          "sacosTotales": {
+          "idBanco": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "precioUnitario": {
-            "type": "number",
-            "format": "double"
-          },
-          "nroCuentaRuc": {
+          "nroDocumentoProveedor": {
             "type": "string",
             "nullable": true
           },
-          "fotoCalidadProducto": {
+          "idVariedadProducto": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "tipoCalidad": {
+            "type": "string",
+            "nullable": true
+          },
+          "precioUnitario": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "sacosTotales": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pesoPorSaco": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "pesoTotal": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "montoAdelanto": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "fAdelanto": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "montoTotalPago": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "fPagoTotal": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "nroCuentaBancaria": {
             "type": "string",
             "nullable": true
           },
@@ -5097,25 +7607,79 @@
             "type": "string",
             "nullable": true
           },
-          "estadoAprobado": {
+          "primeraEvidenciaFoto": {
             "type": "string",
             "nullable": true
           },
-          "aprobadaPor": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "fAprobacion": {
+          "segundaEvidenciaFoto": {
             "type": "string",
-            "format": "date-time",
             "nullable": true
           },
-          "observacion": {
+          "terceraEvidenciaFoto": {
+            "type": "string",
+            "nullable": true
+          },
+          "evidenciaVideo": {
             "type": "string",
             "nullable": true
           },
           "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "estadoAprobacionIngeniero": {
+            "type": "string",
+            "nullable": true
+          },
+          "estadoAprobacionContadora": {
+            "type": "string",
+            "nullable": true
+          },
+          "aprobadaPorIngeniero": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "aprobadaPorContadora": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rechazadoPorIngeniero": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "rechazadoPorContadora": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "fAprobacionIngeniero": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fAprobacionContadora": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fRechazoIngeniero": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fRechazoContadora": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fRegistro": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "observacion": {
             "type": "string",
             "nullable": true
           },
@@ -5127,17 +7691,29 @@
             "type": "string",
             "nullable": true
           },
+          "variedadProductoNombre": {
+            "type": "string",
+            "nullable": true
+          },
           "productoNombre": {
             "type": "string",
             "nullable": true
           },
-          "aprobadaPorNombre": {
+          "tipoDocumentoNombre": {
             "type": "string",
             "nullable": true
           },
-          "montoTotal": {
-            "type": "number",
-            "format": "double"
+          "bancoNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "aprobadaPorIngenieroNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "aprobadaPorContadoraNombre": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -5492,14 +8068,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "idUnidadMedida": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "codigo": {
-            "type": "string",
-            "nullable": true
-          },
           "nombre": {
             "type": "string",
             "nullable": true
@@ -5512,15 +8080,19 @@
             "type": "string",
             "nullable": true
           },
+          "imagen": {
+            "type": "string",
+            "nullable": true
+          },
+          "fichaTecnica": {
+            "type": "string",
+            "nullable": true
+          },
           "fRegistro": {
             "type": "string",
             "format": "date-time"
           },
           "categoriaProductoNombre": {
-            "type": "string",
-            "nullable": true
-          },
-          "unidadMedidaNombre": {
             "type": "string",
             "nullable": true
           }
@@ -5565,6 +8137,34 @@
           },
           "errors": {
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RechazarNegociacionContadoraDto": {
+        "type": "object",
+        "properties": {
+          "idNegociacion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rechazadoPorContadora": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RechazarNegociacionIngenieroDto": {
+        "type": "object",
+        "properties": {
+          "idNegociacion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rechazadoPorIngeniero": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -5780,6 +8380,162 @@
         },
         "additionalProperties": false
       },
+      "TipoCalidadProductoDto": {
+        "type": "object",
+        "properties": {
+          "idTipoCalidadProducto": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idProducto": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "productoNombre": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TipoCalidadProductoDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/TipoCalidadProductoDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TipoCalidadProductoDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TipoCalidadProductoDto"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TipoCambioDto": {
+        "type": "object",
+        "properties": {
+          "idTipoCambio": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idMoneda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idUsuario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "valorCompra": {
+            "type": "number",
+            "format": "double"
+          },
+          "valorVenta": {
+            "type": "number",
+            "format": "double"
+          },
+          "fRegistro": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "monedaNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "monedaCodigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "monedaSimbolo": {
+            "type": "string",
+            "nullable": true
+          },
+          "usuarioNombre": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TipoCambioDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/TipoCambioDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TipoCambioDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TipoCambioDto"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "TipoDocumentoDto": {
         "type": "object",
         "properties": {
@@ -5857,11 +8613,35 @@
             "type": "integer",
             "format": "int32"
           },
+          "codigoSenasa": {
+            "type": "string",
+            "nullable": true
+          },
           "nombre": {
             "type": "string",
             "nullable": true
           },
+          "razonSocial": {
+            "type": "string",
+            "nullable": true
+          },
+          "numeroRuc": {
+            "type": "string",
+            "nullable": true
+          },
           "direccion": {
+            "type": "string",
+            "nullable": true
+          },
+          "domicilioLegal": {
+            "type": "string",
+            "nullable": true
+          },
+          "giroEstablecimiento": {
+            "type": "string",
+            "nullable": true
+          },
+          "comprobantePdf": {
             "type": "string",
             "nullable": true
           },
@@ -5982,6 +8762,24 @@
         },
         "additionalProperties": false
       },
+      "UpdateBancoDto": {
+        "type": "object",
+        "properties": {
+          "idBanco": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateCategoriaPersonaDto": {
         "type": "object",
         "properties": {
@@ -6013,6 +8811,113 @@
           },
           "estado": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateCompraVehiculoDto": {
+        "type": "object",
+        "properties": {
+          "idCompraVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "guiaRemision": {
+            "type": "string",
+            "nullable": true
+          },
+          "idCompras": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateLoteDto": {
+        "type": "object",
+        "properties": {
+          "idLote": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idCompra": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "peso": {
+            "type": "number",
+            "format": "double"
+          },
+          "sacos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateMonedaDto": {
+        "type": "object",
+        "properties": {
+          "idMoneda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "simbolo": {
+            "type": "string",
+            "nullable": true
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateNegociacionDto": {
+        "type": "object",
+        "properties": {
+          "idNegociacion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idComisionista": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idVariedadProducto": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "sacosTotales": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "tipoCalidad": {
+            "type": "string",
+            "nullable": true
+          },
+          "precioUnitario": {
+            "type": "number",
+            "format": "double",
             "nullable": true
           }
         },
@@ -6060,36 +8965,50 @@
         },
         "additionalProperties": false
       },
-      "UpdateProductoDto": {
+      "UpdateTipoCalidadProductoDto": {
         "type": "object",
         "properties": {
+          "idTipoCalidadProducto": {
+            "type": "integer",
+            "format": "int32"
+          },
           "idProducto": {
             "type": "integer",
             "format": "int32"
           },
-          "idCategoriaProducto": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "idUnidadMedida": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "codigo": {
-            "type": "string",
-            "nullable": true
-          },
           "nombre": {
-            "type": "string",
-            "nullable": true
-          },
-          "descripcion": {
             "type": "string",
             "nullable": true
           },
           "estado": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateTipoCambioDto": {
+        "type": "object",
+        "properties": {
+          "idTipoCambio": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idMoneda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idUsuario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "valorCompra": {
+            "type": "number",
+            "format": "double"
+          },
+          "valorVenta": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
@@ -6114,36 +9033,6 @@
         },
         "additionalProperties": false
       },
-      "UpdateUbicacionDto": {
-        "type": "object",
-        "properties": {
-          "idUbicacion": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "idUsuario": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nombre": {
-            "type": "string",
-            "nullable": true
-          },
-          "direccion": {
-            "type": "string",
-            "nullable": true
-          },
-          "tipo": {
-            "type": "string",
-            "nullable": true
-          },
-          "estado": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "UpdateUnidadMedidaDto": {
         "type": "object",
         "properties": {
@@ -6157,6 +9046,192 @@
           },
           "abreviatura": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateVehiculoDto": {
+        "type": "object",
+        "properties": {
+          "idVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "placa": {
+            "type": "string",
+            "nullable": true
+          },
+          "marca": {
+            "type": "string",
+            "nullable": true
+          },
+          "modelo": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VariedadProductoDto": {
+        "type": "object",
+        "properties": {
+          "idVariedadProducto": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idProducto": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idUnidadMedida": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "nombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "descripcion": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "fichaTecnica": {
+            "type": "string",
+            "nullable": true
+          },
+          "fRegistro": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "productoNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "unidadMedidaNombre": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VariedadProductoDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/VariedadProductoDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VariedadProductoDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VariedadProductoDto"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VehiculoDto": {
+        "type": "object",
+        "properties": {
+          "idVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "placa": {
+            "type": "string",
+            "nullable": true
+          },
+          "marca": {
+            "type": "string",
+            "nullable": true
+          },
+          "modelo": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VehiculoDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/VehiculoDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VehiculoDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehiculoDto"
+            },
+            "nullable": true
+          },
+          "errors": {
             "nullable": true
           }
         },

@@ -26,15 +26,11 @@ public class GetProductoByIdHandler : IRequestHandler<GetProductoByIdQuery, Prod
         if (producto == null)
             throw new NotFoundException("Producto", request.Id);
 
-        // Cargar categoría y unidad de medida
+        // Cargar categoría
         var categoria = await _unitOfWork.Repository<CategoriaProducto>()
             .GetByIdAsync(producto.IdCategoriaProducto, cancellationToken);
-        
-        var unidadMedida = await _unitOfWork.Repository<UnidadMedida>()
-            .GetByIdAsync(producto.IdUnidadMedida, cancellationToken);
 
         producto.CategoriaProducto = categoria ?? new CategoriaProducto();
-        producto.UnidadMedida = unidadMedida ?? new UnidadMedida();
 
         return _mapper.Map<ProductoDto>(producto);
     }

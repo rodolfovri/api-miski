@@ -1,0 +1,221 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Miski.Application.Features.Maestros.VariedadProducto.Commands.CreateVariedad;
+using Miski.Application.Features.Maestros.VariedadProducto.Commands.UpdateVariedad;
+using Miski.Application.Features.Maestros.VariedadProducto.Commands.DeleteVariedad;
+using Miski.Application.Features.Maestros.VariedadProducto.Queries.GetVariedades;
+using Miski.Application.Features.Maestros.VariedadProducto.Queries.GetVariedadById;
+using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Maestros;
+
+namespace Miski.Api.Controllers.Maestros;
+
+[ApiController]
+[Route("api/maestros/variedad-producto")]
+[Tags("Maestros")]
+[Authorize]
+public class VariedadProductoController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public VariedadProductoController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    /// <summary>
+    /// Obtiene todas las variedades de productos
+    /// </summary>
+    /// <remarks>
+    /// Permite filtrar por:
+    /// - nombre: Búsqueda parcial por nombre
+    /// - codigo: Búsqueda parcial por código
+    /// - idProducto: Filtrar por producto
+    /// - estado: Filtrar por estado (ACTIVO, INACTIVO)
+    /// </remarks>
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<IEnumerable<VariedadProductoDto>>>> GetVariedades(
+        [FromQuery] string? nombre = null,
+        [FromQuery] string? codigo = null,
+        [FromQuery] int? idProducto = null,
+        [FromQuery] string? estado = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetVariedadesProductoQuery(nombre, codigo, idProducto, estado);
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<VariedadProductoDto>>.SuccessResult(
+                result,
+                "Variedades obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<VariedadProductoDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene una variedad por ID
+    /// </summary>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApiResponse<VariedadProductoDto>>> GetVariedadById(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetVariedadProductoByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<VariedadProductoDto>.SuccessResult(
+                result,
+                "Variedad obtenida exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<VariedadProductoDto>.ErrorResult(
+                "Variedad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<VariedadProductoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Crea una nueva variedad de producto
+    /// </summary>
+    [HttpPost]
+    public async Task<ActionResult<ApiResponse<VariedadProductoDto>>> CreateVariedad(
+        [FromBody] CreateVariedadProductoDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new CreateVariedadProductoCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return CreatedAtAction(
+                nameof(GetVariedadById),
+                new { id = result.IdVariedadProducto },
+                ApiResponse<VariedadProductoDto>.SuccessResult(
+                    result,
+                    "Variedad creada exitosamente"
+                )
+            );
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<VariedadProductoDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<VariedadProductoDto>.ErrorResult(
+                "Entidad relacionada no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<VariedadProductoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Actualiza una variedad de producto
+    /// </summary>
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ApiResponse<VariedadProductoDto>>> UpdateVariedad(
+        int id,
+        [FromBody] UpdateVariedadProductoDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (id != request.IdVariedadProducto)
+            {
+                return BadRequest(ApiResponse<VariedadProductoDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new UpdateVariedadProductoCommand(id, request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<VariedadProductoDto>.SuccessResult(
+                result,
+                "Variedad actualizada exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<VariedadProductoDto>.ErrorResult(
+                "Variedad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<VariedadProductoDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<VariedadProductoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Elimina una variedad de producto (cambio de estado a INACTIVO)
+    /// </summary>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse>> DeleteVariedad(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new DeleteVariedadProductoCommand(id);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Variedad eliminada exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Variedad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+}

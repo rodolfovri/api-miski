@@ -1,0 +1,60 @@
+using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Maestros;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Maestros.TipoCambio.Commands.UpdateTipoCambio;
+
+public class UpdateTipoCambioHandler : IRequestHandler<UpdateTipoCambioCommand, TipoCambioDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public UpdateTipoCambioHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<TipoCambioDto> Handle(UpdateTipoCambioCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.TipoCambio;
+
+        var tipoCambio = await _unitOfWork.Repository<Domain.Entities.TipoCambio>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (tipoCambio == null)
+            throw new NotFoundException("TipoCambio", request.Id);
+
+        // Validar que la moneda existe
+        var moneda = await _unitOfWork.Repository<Domain.Entities.Moneda>()
+            .GetByIdAsync(dto.IdMoneda, cancellationToken);
+        
+        if (moneda == null)
+            throw new NotFoundException("Moneda", dto.IdMoneda);
+
+        // Validar que el usuario existe
+        var usuario = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(dto.IdUsuario, cancellationToken);
+        
+        if (usuario == null)
+            throw new NotFoundException("Usuario", dto.IdUsuario);
+
+        // Actualizar el tipo de cambio
+        tipoCambio.IdMoneda = dto.IdMoneda;
+        tipoCambio.IdUsuario = dto.IdUsuario;
+        tipoCambio.ValorCompra = dto.ValorCompra;
+        tipoCambio.ValorVenta = dto.ValorVenta;
+
+        await _unitOfWork.Repository<Domain.Entities.TipoCambio>().UpdateAsync(tipoCambio, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones
+        tipoCambio.Moneda = moneda;
+        tipoCambio.Usuario = usuario;
+
+        return _mapper.Map<TipoCambioDto>(tipoCambio);
+    }
+}

@@ -1,7 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Miski.Application.Features.Maestros.Vehiculo.Commands.CreateVehiculo;
+using Miski.Application.Features.Maestros.Vehiculo.Commands.DeleteVehiculo;
+using Miski.Application.Features.Maestros.Vehiculo.Commands.UpdateVehiculo;
+using Miski.Application.Features.Maestros.Vehiculo.Queries.GetVehiculoById;
+using Miski.Application.Features.Maestros.Vehiculo.Queries.GetVehiculos;
 using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Maestros;
 
 namespace Miski.Api.Controllers.Maestros;
 
@@ -21,25 +27,30 @@ public class VehiculosController : ControllerBase
     /// <summary>
     /// Obtiene todos los vehículos
     /// </summary>
+    /// <remarks>
+    /// Permite filtrar por:
+    /// - placa: Búsqueda parcial por placa
+    /// - estado: Filtrar por estado (ACTIVO/INACTIVO)
+    /// </remarks>
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetVehiculos(
+    public async Task<ActionResult<ApiResponse<IEnumerable<VehiculoDto>>>> GetVehiculos(
         [FromQuery] string? placa = null,
         [FromQuery] string? estado = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            var result = new List<object>();
-            
-            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+            var query = new GetVehiculosQuery(placa, estado);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<IEnumerable<VehiculoDto>>.SuccessResult(
                 result,
                 "Vehículos obtenidos exitosamente"
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
+            return StatusCode(500, ApiResponse<IEnumerable<VehiculoDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -50,21 +61,30 @@ public class VehiculosController : ControllerBase
     /// Obtiene un vehículo por ID
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> GetVehiculoById(
+    public async Task<ActionResult<ApiResponse<VehiculoDto>>> GetVehiculoById(
         int id,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            return NotFound(ApiResponse<object>.ErrorResult(
+            var query = new GetVehiculoByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<VehiculoDto>.SuccessResult(
+                result,
+                "Vehículo obtenido exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<VehiculoDto>.ErrorResult(
                 "Vehículo no encontrado",
-                $"No se encontró un vehículo con ID {id}"
+                ex.Message
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<VehiculoDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -75,25 +95,31 @@ public class VehiculosController : ControllerBase
     /// Crea un nuevo vehículo
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<object>>> CreateVehiculo(
-        [FromBody] object request,
+    public async Task<ActionResult<ApiResponse<VehiculoDto>>> CreateVehiculo(
+        [FromBody] CreateVehiculoDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new CreateVehiculoCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
             return CreatedAtAction(
                 nameof(GetVehiculoById),
-                new { id = 1 },
-                ApiResponse<object>.SuccessResult(
-                    request,
+                new { id = result.IdVehiculo },
+                ApiResponse<VehiculoDto>.SuccessResult(
+                    result,
                     "Vehículo creado exitosamente"
                 )
             );
         }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<VehiculoDto>.ValidationErrorResult(ex.Errors));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<VehiculoDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -104,22 +130,43 @@ public class VehiculosController : ControllerBase
     /// Actualiza un vehículo
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> UpdateVehiculo(
+    public async Task<ActionResult<ApiResponse<VehiculoDto>>> UpdateVehiculo(
         int id,
-        [FromBody] object request,
+        [FromBody] UpdateVehiculoDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
-            return Ok(ApiResponse<object>.SuccessResult(
-                request,
+            if (id != request.IdVehiculo)
+            {
+                return BadRequest(ApiResponse<VehiculoDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new UpdateVehiculoCommand(id, request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<VehiculoDto>.SuccessResult(
+                result,
                 "Vehículo actualizado exitosamente"
             ));
         }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<VehiculoDto>.ErrorResult(
+                "Vehículo no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<VehiculoDto>.ValidationErrorResult(ex.Errors));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<VehiculoDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -127,8 +174,12 @@ public class VehiculosController : ControllerBase
     }
 
     /// <summary>
-    /// Elimina un vehículo
+    /// Elimina (inactiva) un vehículo
     /// </summary>
+    /// <remarks>
+    /// NOTA: No se puede eliminar un vehículo que tiene compras asociadas.
+    /// El registro no se elimina físicamente, solo se marca como INACTIVO.
+    /// </remarks>
     [HttpDelete("{id}")]
     public async Task<ActionResult<ApiResponse>> DeleteVehiculo(
         int id,
@@ -136,8 +187,21 @@ public class VehiculosController : ControllerBase
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new DeleteVehiculoCommand(id);
+            await _mediator.Send(command, cancellationToken);
+
             return Ok(ApiResponse.SuccessResult("Vehículo eliminado exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Vehículo no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
         }
         catch (Exception ex)
         {

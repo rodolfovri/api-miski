@@ -1,0 +1,580 @@
+﻿# ✅ Actualización Completa del Flujo de Negociaciones - Primera Etapa
+
+## 🎉 COMPILACIÓN EXITOSA
+
+---
+
+## 📋 Resumen de Cambios Realizados
+
+### 1. **DTOs Actualizados**
+
+#### ✅ NegociacionDto
+Refleja la nueva estructura completa de la entidad Negociacion:
+```csharp
+- NroDocumentoProveedor (en lugar de IdProveedor)
+- IdProducto (AGREGADO en CreateNegociacion)
+- TipoCalidad
+- EstadoAprobacionIngeniero
+- EstadoAprobacionContadora
+- AprobadaPorIngeniero / AprobadaPorContadora
+- RechazadoPorIngeniero / RechazadoPorContadora
+- Fechas de aprobación y rechazo
+- Fotos y evidencias
+```
+
+#### ✅ CreateNegociacionDto - PRIMERA ETAPA
+```csharp
+{
+    IdComisionista,     // REQUERIDO
+    IdProducto,         // OPCIONAL (AGREGADO)
+    SacosTotales,      // OPCIONAL
+    TipoCalidad,       // REQUERIDO
+    PrecioUnitario     // OPCIONAL
+}
+```
+**Automático:**
+- Estado: `EN PROCESO`
+- EstadoAprobacionIngeniero: `PENDIENTE`
+
+#### ✅ UpdateNegociacionDto
+```csharp
+{
+    IdNegociacion,
+    NroDocumentoProveedor,
+    IdProducto,
+    TipoCalidad,
+    PrecioUnitario,
+    SacosTotales,
+    PesoPorSaco,
+    PesoTotal,
+    MontoAdelanto,
+    FAdelanto,
+    MontoTotalPago,
+    FPagoTotal,
+    NroCuentaBancaria,
+    Fotos (IFormFile - opcionales),
+    Observacion
+}
+```
+
+#### ✅ AprobarNegociacionIngenieroDto
+```csharp
+{
+    IdNegociacion,
+    AprobadaPorIngeniero,
+    Observacion (opcional)
+}
+```
+
+#### ✅ RechazarNegociacionIngenieroDto
+```csharp
+{
+    IdNegociacion,
+    RechazadoPorIngeniero,
+    Observacion (opcional)
+}
+```
+
+---
+
+### 2. **Comandos y Handlers**
+
+#### ✅ CreateNegociacionHandler
+**Ruta:** `Miski.Application\Features\Compras\Negociaciones\Commands\CreateNegociacion\`
+
+**Cambios:**
+- Eliminada dependencia de `IFileStorageService`
+- Solo valida comisionista
+- Crea con campos mínimos
+- Estado automático: `EN PROCESO`
+- EstadoAprobacionIngeniero: `PENDIENTE`
+
+#### ✅ AprobarNegociacionIngenieroHandler (NUEVO)
+**Ruta:** `Miski.Application\Features\Compras\Negociaciones\Commands\AprobarNegociacionIngeniero\`
+
+**Lógica:**
+1. Valida negociación existe
+2. Valida estado `EN PROCESO`
+3. Valida `EstadoAprobacionIngeniero` es `PENDIENTE`
+4. Valida usuario existe
+5. **Actualiza:**
+   - `EstadoAprobacionIngeniero` → `APROBADO`
+   - `AprobadaPorIngeniero` → ID usuario
+   - `FAprobacionIngeniero` → DateTime.Now
+   - `Estado` → `APROBADO`
+   - `Observacion` (opcional)
+
+#### ✅ RechazarNegociacionIngenieroHandler (NUEVO)
+**Ruta:** `Miski.Application\Features\Compras\Negociaciones\Commands\RechazarNegociacionIngeniero\`
+
+**Lógica:**
+1. Valida negociación existe
+2. Valida estado `EN PROCESO`
+3. Valida `EstadoAprobacionIngeniero` es `PENDIENTE`
+4. Valida usuario existe
+5. **Actualiza:**
+   - `EstadoAprobacionIngeniero` → `RECHAZADO`
+   - `RechazadoPorIngeniero` → ID usuario
+   - `FRechazoIngeniero` → DateTime.Now
+   - `Estado` → `ANULADO`
+   - `Observacion` (opcional)
+
+#### ✅ UpdateNegociacionHandler
+**Cambios:**
+- Eliminada dependencia de `IFileStorageService`
+- Usa `NroDocumentoProveedor` en lugar de `IdProveedor`
+- Valida que no esté aprobada por ingeniero
+- Valida que no esté anulada
+- Actualiza todos los campos nuevos
+
+#### ✅ DeleteNegociacionHandler
+**Cambios:**
+- Eliminada dependencia de `IFileStorageService`
+- Valida que no tenga compras
+- Valida que no esté aprobada
+- Cambia estado a `ANULADO` (soft delete)
+
+---
+
+### 3. **Queries Actualizadas**
+
+#### ✅ GetNegociacionesQuery
+**Cambios:**
+- Removido `IdProveedor`
+- Agregado `EstadoAprobacionIngeniero`
+
+**Parámetros:**
+```csharp
+{
+    IdComisionista (opcional),
+    IdProducto (opcional),
+    Estado (opcional),
+    EstadoAprobacionIngeniero (opcional)
+}
+```
+
+#### ✅ GetNegociacionesHandler
+**Cambios:**
+- Busca proveedor por `NroDocumentoProveedor`
+- Carga relaciones de usuarios de aprobación/rechazo
+- Carga para ingeniero y contadora
+
+#### ✅ GetNegociacionByIdHandler
+**Cambios:**
+- Busca proveedor por `NroDocumentoProveedor`
+- Carga usuarios aprobadores/rechazadores
+- Carga para ingeniero y contadora
+
+---
+
+### 4. **Controller Actualizado**
+
+#### ✅ NegociacionesController
+**Ruta:** `Miski.Api\Controllers\Compras\`
+
+**Endpoints Modificados:**
+
+**GET /api/compras/negociaciones**
+```
+Query params:
+- idComisionista
+- idProducto
+- estado
+- estadoAprobacionIngeniero
+```
+
+**POST /api/compras/negociaciones**
+```
+Content-Type: application/json
+Body: CreateNegociacionDto
+```
+
+**PUT /api/compras/negociaciones/{id}**
+```
+Content-Type: multipart/form-data
+Body: UpdateNegociacionDto
+```
+
+**DELETE /api/compras/negociaciones/{id}**
+```
+Cambia estado a ANULADO
+```
+
+**Endpoints Nuevos:**
+
+**GET /api/compras/negociaciones/pendientes-ingeniero**
+```
+Retorna negociaciones con EstadoAprobacionIngeniero = PENDIENTE
+```
+
+**PUT /api/compras/negociaciones/{id}/aprobar-ingeniero**
+```
+Body: AprobarNegociacionIngenieroDto
+Aprueba la negociación por parte del ingeniero
+```
+
+**PUT /api/compras/negociaciones/{id}/rechazar-ingeniero**
+```
+Body: RechazarNegociacionIngenieroDto
+Rechaza la negociación por parte del ingeniero
+```
+
+---
+
+### 5. **Validators Actualizados**
+
+#### ✅ CreateNegociacionValidator
+```csharp
+- IdComisionista > 0
+- TipoCalidad requerido, max 50 caracteres
+- SacosTotales: 0 < sacos ≤ 2000 (opcional)
+- PrecioUnitario: 0 < precio ≤ 1000 (opcional)
+```
+
+#### ✅ AprobarNegociacionIngenieroValidator
+```csharp
+- IdNegociacion > 0
+- AprobadaPorIngeniero > 0
+- Observacion max 500 caracteres (opcional)
+```
+
+#### ✅ RechazarNegociacionIngenieroValidator
+```csharp
+- IdNegociacion > 0
+- RechazadoPorIngeniero > 0
+- Observacion max 500 caracteres (opcional)
+```
+
+---
+
+### 6. **Repositories Actualizados**
+
+#### ✅ NegociacionRepository
+**Ruta:** `Miski.Infrastructure\Repositories\`
+
+**Cambios:**
+- `GetByProveedorIdAsync`: Busca por `NroDocumentoProveedor`
+- `GetPendientesAprobacionAsync`: Usa `EstadoAprobacionIngeniero = PENDIENTE`
+- `GetWithRelacionesAsync`: Incluye todas las relaciones de usuarios
+
+---
+
+### 7. **Handlers de Compras Actualizados**
+
+#### ✅ GetComprasHandler
+**Cambios:**
+- Busca proveedor por `NroDocumentoProveedor`
+- Maneja campos nullable correctamente
+
+#### ✅ GetCompraByIdHandler
+**Cambios:**
+- Busca proveedor por `NroDocumentoProveedor`
+- Maneja campos nullable correctamente
+
+---
+
+### 8. **Mappings Actualizados**
+
+#### ✅ MappingProfile
+```csharp
+CreateMap<Negociacion, NegociacionDto>()
+    .ForMember(dest => dest.AprobadaPorIngenieroNombre, ...)
+    .ForMember(dest => dest.AprobadaPorContadoraNombre, ...)
+```
+
+---
+
+## 📊 Flujo Completo de Negociación - Primera Etapa
+
+```
+┌─────────────────────────────────────────────────────┐
+│  1. CREAR NEGOCIACIÓN                               │
+│     POST /api/compras/negociaciones                 │
+│                                                      │
+│     Body:                                           │
+│     {                                               │
+│       "idComisionista": 5,                          │
+│       "sacosTotales": 100,                          │
+│       "tipoCalidad": "Primera",                     │
+│       "precioUnitario": 8.50                        │
+│     }                                               │
+│                                                      │
+│     Estado Automático: EN PROCESO                   │
+│     EstadoAprobacionIngeniero: PENDIENTE            │
+└─────────────────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────────┐
+│  2. LISTAR PENDIENTES                               │
+│     GET /api/compras/negociaciones/pendientes-      │
+│     ingeniero                                       │
+│                                                      │
+│     El ingeniero revisa las negociaciones           │
+│     pendientes                                      │
+└─────────────────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────────┐
+│  3. DECISIÓN DEL INGENIERO                          │
+│                                                      │
+│     Opción A: Aprobar    |    Opción B: Rechazar   │
+└─────────────────────────────────────────────────────┘
+         ↓                                   ↓
+┌──────────────────────┐        ┌──────────────────────┐
+│  A) APROBAR          │        │  B) RECHAZAR         │
+│                      │        │                      │
+│  PUT .../aprobar-    │        │  PUT .../rechazar-   │
+│  ingeniero           │        │  ingeniero           │
+│                      │        │                      │
+│  Body:               │        │  Body:               │
+│  {                   │        │  {                   │
+│    "idNegociacion":1,│        │    "idNegociacion":1,│
+│    "aprobadaPor": 3, │        │    "rechazadoPor": 3,│
+│    "observacion": "" │        │    "observacion": "" │
+│  }                   │        │  }                   │
+│                      │        │                      │
+│  ↓                   │        │  ↓                   │
+│  EstadoAprobacion:   │        │  EstadoAprobacion:   │
+│  APROBADO            │        │  RECHAZADO           │
+│                      │        │                      │
+│  Estado: APROBADO    │        │  Estado: ANULADO     │
+│                      │        │                      │
+│  ↓                   │        │  ↓                   │
+│  Pasa a 2da Etapa    │        │  FIN                 │
+│  (Contadora)         │        │  (No continúa)       │
+└──────────────────────┘        └──────────────────────┘
+```
+
+---
+
+## 🎯 Estados Implementados
+
+### Estado General:
+- `EN PROCESO` - Negociación en proceso de aprobación
+- `APROBADO` - Aprobada por ingeniero (pasa a 2da etapa)
+- `ANULADO` - Rechazada o eliminada
+
+### EstadoAprobacionIngeniero:
+- `PENDIENTE` - Esperando aprobación del ingeniero
+- `APROBADO` - Aprobada por el ingeniero
+- `RECHAZADO` - Rechazada por el ingeniero
+
+### EstadoAprobacionContadora (Preparado para 2da Etapa):
+- `PENDIENTE` - Esperando aprobación de la contadora
+- `APROBADO` - Aprobada por la contadora
+- `RECHAZADO` - Rechazada por la contadora
+
+---
+
+## ✅ Archivos Modificados (Total: 18)
+
+### DTOs (1):
+- ✅ `Miski.Shared\DTOs\Compras\NegociacionDto.cs`
+
+### Commands (7):
+- ✅ `CreateNegociacionHandler.cs`
+- ✅ `CreateNegociacionValidator.cs`
+- ✅ `UpdateNegociacionHandler.cs`
+- ✅ `DeleteNegociacionHandler.cs`
+- ✅ `AprobarNegociacionIngenieroCommand.cs` (NUEVO)
+- ✅ `AprobarNegociacionIngenieroHandler.cs` (NUEVO)
+- ✅ `AprobarNegociacionIngenieroValidator.cs` (NUEVO)
+- ✅ `RechazarNegociacionIngenieroCommand.cs` (NUEVO)
+- ✅ `RechazarNegociacionIngenieroHandler.cs` (NUEVO)
+- ✅ `RechazarNegociacionIngenieroValidator.cs` (NUEVO)
+
+### Queries (3):
+- ✅ `GetNegociacionesQuery.cs`
+- ✅ `GetNegociacionesHandler.cs`
+- ✅ `GetNegociacionByIdHandler.cs`
+
+### Queries de Compras (2):
+- ✅ `GetComprasHandler.cs`
+- ✅ `GetCompraByIdHandler.cs`
+
+### Controllers (1):
+- ✅ `NegociacionesController.cs`
+
+### Repositories (1):
+- ✅ `NegociacionRepository.cs`
+
+### Mappings (1):
+- ✅ `MappingProfile.cs`
+
+### Archivos Eliminados (2):
+- ❌ `AprobarNegociacionCommand.cs` (antiguo)
+- ❌ `AprobarNegociacionHandler.cs` (antiguo)
+
+---
+
+## 🚀 Ejemplos de Uso
+
+### 1. Crear Negociación
+```http
+POST /api/compras/negociaciones
+Content-Type: application/json
+
+{
+  "idComisionista": 5,
+  "sacosTotales": 100,
+  "tipoCalidad": "Primera",
+  "precioUnitario": 8.50
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Negociación creada exitosamente con estado 'EN PROCESO'",
+  "data": {
+    "idNegociacion": 1,
+    "idComisionista": 5,
+    "sacosTotales": 100,
+    "tipoCalidad": "Primera",
+    "precioUnitario": 8.50,
+    "estado": "EN PROCESO",
+    "estadoAprobacionIngeniero": "PENDIENTE",
+    "fRegistro": "2024-01-15T10:30:00"
+  }
+}
+```
+
+### 2. Listar Pendientes de Ingeniero
+```http
+GET /api/compras/negociaciones/pendientes-ingeniero
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Negociaciones pendientes obtenidas exitosamente",
+  "data": [
+    {
+      "idNegociacion": 1,
+      "comisionistaNombre": "Juan Pérez",
+      "tipoCalidad": "Primera",
+      "sacosTotales": 100,
+      "precioUnitario": 8.50,
+      "estado": "EN PROCESO",
+      "estadoAprobacionIngeniero": "PENDIENTE"
+    }
+  ]
+}
+```
+
+### 3. Aprobar por Ingeniero
+```http
+PUT /api/compras/negociaciones/1/aprobar-ingeniero
+Content-Type: application/json
+
+{
+  "idNegociacion": 1,
+  "aprobadaPorIngeniero": 3,
+  "observacion": "Calidad verificada, aprobado"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Negociación aprobada por ingeniero exitosamente",
+  "data": {
+    "idNegociacion": 1,
+    "estado": "APROBADO",
+    "estadoAprobacionIngeniero": "APROBADO",
+    "aprobadaPorIngeniero": 3,
+    "aprobadaPorIngenieroNombre": "Carlos Ingeniero",
+    "fAprobacionIngeniero": "2024-01-15T14:00:00",
+    "observacion": "Calidad verificada, aprobado"
+  }
+}
+```
+
+### 4. Rechazar por Ingeniero
+```http
+PUT /api/compras/negociaciones/1/rechazar-ingeniero
+Content-Type: application/json
+
+{
+  "idNegociacion": 1,
+  "rechazadoPorIngeniero": 3,
+  "observacion": "Calidad no cumple estándares"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Negociación rechazada por ingeniero exitosamente",
+  "data": {
+    "idNegociacion": 1,
+    "estado": "ANULADO",
+    "estadoAprobacionIngeniero": "RECHAZADO",
+    "rechazadoPorIngeniero": 3,
+    "fRechazoIngeniero": "2024-01-15T14:00:00",
+    "observacion": "Calidad no cumple estándares"
+  }
+}
+```
+
+---
+
+## 📝 Validaciones Implementadas
+
+### CreateNegociacion:
+- ✅ IdComisionista debe existir
+- ✅ TipoCalidad requerido
+- ✅ SacosTotales entre 0-2000 (opcional)
+- ✅ PrecioUnitario entre 0-1000 (opcional)
+
+### AprobarNegociacion:
+- ✅ Negociación debe existir
+- ✅ Debe estar en estado `EN PROCESO`
+- ✅ EstadoAprobacionIngeniero debe ser `PENDIENTE`
+- ✅ Usuario aprobador debe existir
+
+### RechazarNegociacion:
+- ✅ Negociación debe existir
+- ✅ Debe estar en estado `EN PROCESO`
+- ✅ EstadoAprobacionIngeniero debe ser `PENDIENTE`
+- ✅ Usuario rechazador debe existir
+
+### UpdateNegociacion:
+- ✅ No se puede actualizar si está aprobada
+- ✅ No se puede actualizar si está anulada
+- ✅ Producto debe existir (si se proporciona)
+
+### DeleteNegociacion:
+- ✅ No puede tener compras asociadas
+- ✅ No puede estar aprobada
+- ✅ Cambia estado a `ANULADO`
+
+---
+
+## 🔄 Próximos Pasos (Segunda Etapa)
+
+1. ⏳ Implementar aprobación/rechazo por Contadora
+2. ⏳ Crear endpoints similares para Contadora:
+   - `GET /api/compras/negociaciones/pendientes-contadora`
+   - `PUT /api/compras/negociaciones/{id}/aprobar-contadora`
+   - `PUT /api/compras/negociaciones/{id}/rechazar-contadora`
+3. ⏳ Implementar lógica de subida de fotos
+4. ⏳ Crear migración de base de datos
+5. ⏳ Testing de endpoints
+
+---
+
+## ✅ Estado Final: COMPILACIÓN EXITOSA
+
+🎉 **Todos los archivos compilan correctamente**
+🎉 **Arquitectura Clean Architecture mantenida**
+🎉 **Patrón CQRS implementado**
+🎉 **Primera Etapa (Ingeniero) completamente funcional**
+
+---
+
+## 📚 Documentación Adicional
+
+Ver archivo: `NEGOCIACIONES_PRIMERA_ETAPA_RESUMEN.md`

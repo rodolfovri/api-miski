@@ -4,6 +4,7 @@ using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Ubicaciones;
 using Miski.Shared.Exceptions;
+using Miski.Application.Services;
 
 namespace Miski.Application.Features.Ubicaciones.Commands.CreateUbicacion;
 
@@ -11,30 +12,50 @@ public class CreateUbicacionHandler : IRequestHandler<CreateUbicacionCommand, Ub
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IFileStorageService _fileStorageService;
 
-    public CreateUbicacionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateUbicacionHandler(IUnitOfWork unitOfWork, IMapper mapper, IFileStorageService fileStorageService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<UbicacionDto> Handle(CreateUbicacionCommand request, CancellationToken cancellationToken)
     {
+        var dto = request.Ubicacion;
+
         // Verificar que el usuario existe
         var usuario = await _unitOfWork.Repository<Usuario>()
-            .GetByIdAsync(request.Ubicacion.IdUsuario, cancellationToken);
+            .GetByIdAsync(dto.IdUsuario, cancellationToken);
 
         if (usuario == null)
-            throw new NotFoundException("Usuario", request.Ubicacion.IdUsuario);
+            throw new NotFoundException("Usuario", dto.IdUsuario);
+
+        // Guardar el PDF si se proporciona (opcional)
+        string? comprobantePdfUrl = null;
+        if (dto.ComprobantePdf != null)
+        {
+            comprobantePdfUrl = await _fileStorageService.SaveFileAsync(
+                dto.ComprobantePdf, 
+                "ubicaciones/comprobantes", 
+                cancellationToken);
+        }
 
         // Crear la nueva ubicación
         var nuevaUbicacion = new Ubicacion
         {
-            IdUsuario = request.Ubicacion.IdUsuario,
-            Nombre = request.Ubicacion.Nombre,
-            Direccion = request.Ubicacion.Direccion,
-            Tipo = request.Ubicacion.Tipo,
-            Estado = request.Ubicacion.Estado,
+            IdUsuario = dto.IdUsuario,
+            CodigoSenasa = dto.CodigoSenasa,
+            Nombre = dto.Nombre,
+            RazonSocial = dto.RazonSocial,
+            NumeroRuc = dto.NumeroRuc,
+            Direccion = dto.Direccion,
+            DomicilioLegal = dto.DomicilioLegal,
+            GiroEstablecimiento = dto.GiroEstablecimiento,
+            ComprobantePdf = comprobantePdfUrl,
+            Tipo = dto.Tipo,
+            Estado = dto.Estado,
             FRegistro = DateTime.Now
         };
 
