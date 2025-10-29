@@ -1111,6 +1111,43 @@
         ]
       }
     },
+    "/api/compras/sin-asignar": {
+      "get": {
+        "tags": [
+          "Compras"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
     "/api/compras/{id}": {
       "get": {
         "tags": [
@@ -1647,42 +1684,20 @@
         ]
       }
     },
-    "/api/compras/llegadas-planta": {
+    "/api/compras/asignacion-vehiculos/{id}/con-disponibles": {
       "get": {
         "tags": [
-          "LlegadaPlanta"
+          "CompraVehiculos"
         ],
         "parameters": [
           {
-            "name": "compraId",
-            "in": "query",
+            "name": "id",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
             }
-          },
-          {
-            "name": "estado",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "fechaInicio",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "fechaFin",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
           }
         ],
         "responses": {
@@ -1691,65 +1706,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraVehiculoConDisponiblesDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraVehiculoConDisponiblesDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "No autorizado"
-          }
-        },
-        "security": [
-          {
-            "Bearer": [ ]
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "LlegadaPlanta"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { }
-            },
-            "text/json": {
-              "schema": { }
-            },
-            "application/*+json": {
-              "schema": { }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/CompraVehiculoConDisponiblesDtoApiResponse"
                 }
               }
             }
@@ -1787,17 +1754,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoApiResponse"
                 }
               }
             }
@@ -1813,14 +1780,14 @@
         ]
       }
     },
-    "/api/compras/llegadas-planta/{id}/detalles": {
+    "/api/compras/llegadas-planta/por-vehiculo/{idCompraVehiculo}": {
       "get": {
         "tags": [
           "LlegadaPlanta"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "idCompraVehiculo",
             "in": "path",
             "required": true,
             "schema": {
@@ -1835,17 +1802,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraVehiculoConLotesDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraVehiculoConLotesDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectIEnumerableApiResponse"
+                  "$ref": "#/components/schemas/CompraVehiculoConLotesDtoApiResponse"
                 }
               }
             }
@@ -1861,32 +1828,27 @@
         ]
       }
     },
-    "/api/compras/llegadas-planta/{llegadaId}/procesar-lote": {
+    "/api/compras/llegadas-planta": {
       "post": {
         "tags": [
           "LlegadaPlanta"
         ],
-        "parameters": [
-          {
-            "name": "llegadaId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/CreateLlegadaPlantaDto"
+              }
             },
             "text/json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/CreateLlegadaPlantaDto"
+              }
             },
             "application/*+json": {
-              "schema": { }
+              "schema": {
+                "$ref": "#/components/schemas/CreateLlegadaPlantaDto"
+              }
             }
           }
         },
@@ -1896,17 +1858,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectApiResponse"
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoApiResponse"
                 }
               }
             }
@@ -1920,21 +1882,41 @@
             "Bearer": [ ]
           }
         ]
-      }
-    },
-    "/api/compras/llegadas-planta/{id}/finalizar": {
-      "put": {
+      },
+      "get": {
         "tags": [
           "LlegadaPlanta"
         ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "idCompra",
+            "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fechaInicio",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "fechaFin",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
             }
           }
         ],
@@ -1944,17 +1926,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoIEnumerableApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoIEnumerableApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoIEnumerableApiResponse"
                 }
               }
             }
@@ -6800,6 +6782,32 @@
         },
         "additionalProperties": false
       },
+      "CompraConLotesDto": {
+        "type": "object",
+        "properties": {
+          "idCompra": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serie": {
+            "type": "string",
+            "nullable": true
+          },
+          "fRegistro": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoteConRecepcionDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CompraDto": {
         "type": "object",
         "properties": {
@@ -6905,6 +6913,126 @@
         },
         "additionalProperties": false
       },
+      "CompraVehiculoConDisponiblesDto": {
+        "type": "object",
+        "properties": {
+          "idCompraVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "guiaRemision": {
+            "type": "string",
+            "nullable": true
+          },
+          "fRegistro": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "vehiculoPlaca": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehiculoMarca": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehiculoModelo": {
+            "type": "string",
+            "nullable": true
+          },
+          "detalles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompraVehiculoDetalleDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraVehiculoConDisponiblesDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/CompraVehiculoConDisponiblesDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraVehiculoConLotesDto": {
+        "type": "object",
+        "properties": {
+          "idCompraVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "guiaRemision": {
+            "type": "string",
+            "nullable": true
+          },
+          "fRegistro": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "vehiculoPlaca": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehiculoMarca": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehiculoModelo": {
+            "type": "string",
+            "nullable": true
+          },
+          "compras": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompraConLotesDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompraVehiculoConLotesDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/CompraVehiculoConLotesDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CompraVehiculoDetalleDto": {
         "type": "object",
         "properties": {
@@ -6937,6 +7065,9 @@
           "compraNegociacionId": {
             "type": "string",
             "nullable": true
+          },
+          "asignado": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -7082,6 +7213,58 @@
             "items": {
               "type": "integer",
               "format": "int32"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateLlegadaPlantaDetalleDto": {
+        "type": "object",
+        "properties": {
+          "idLote": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sacosRecibidos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pesoRecibido": {
+            "type": "number",
+            "format": "double"
+          },
+          "observaciones": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateLlegadaPlantaDto": {
+        "type": "object",
+        "properties": {
+          "idCompra": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idUsuario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fLlegada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "observaciones": {
+            "type": "string",
+            "nullable": true
+          },
+          "detalles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateLlegadaPlantaDetalleDto"
             },
             "nullable": true
           }
@@ -7287,6 +7470,144 @@
         },
         "additionalProperties": false
       },
+      "LlegadaPlantaDetalleDto": {
+        "type": "object",
+        "properties": {
+          "idLlegadaDetalle": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idLlegadaPlanta": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idLote": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sacosRecibidos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pesoRecibido": {
+            "type": "number",
+            "format": "double"
+          },
+          "observaciones": {
+            "type": "string",
+            "nullable": true
+          },
+          "loteCodigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "sacosAsignados": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pesoAsignado": {
+            "type": "number",
+            "format": "double"
+          },
+          "diferenciaSacos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "diferenciaPeso": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LlegadaPlantaDto": {
+        "type": "object",
+        "properties": {
+          "idLlegadaPlanta": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idCompra": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idUsuario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fLlegada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "observaciones": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "compraSerie": {
+            "type": "string",
+            "nullable": true
+          },
+          "usuarioNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "detalles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LlegadaPlantaDetalleDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LlegadaPlantaDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/LlegadaPlantaDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LlegadaPlantaDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LlegadaPlantaDto"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginDto": {
         "type": "object",
         "properties": {
@@ -7301,6 +7622,50 @@
           "tipoPlataforma": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoteConRecepcionDto": {
+        "type": "object",
+        "properties": {
+          "idLote": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "sacosAsignados": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pesoAsignado": {
+            "type": "number",
+            "format": "double"
+          },
+          "idLlegadaDetalle": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "sacosRecibidos": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pesoRecibido": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "observaciones": {
+            "type": "string",
+            "nullable": true
+          },
+          "yaRecibido": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

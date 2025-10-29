@@ -1,0 +1,72 @@
+﻿namespace Miski.Shared.DTOs.Compras;
+
+public class CompraVehiculoDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public DateTime FRegistro { get; set; }
+    
+    // Información adicional
+    public string? VehiculoPlaca { get; set; }
+    public string? VehiculoMarca { get; set; }
+    public string? VehiculoModelo { get; set; }
+    
+    // Lista de compras asignadas
+    public List<CompraVehiculoDetalleDto> Detalles { get; set; } = new List<CompraVehiculoDetalleDto>();
+}
+
+public class CompraVehiculoDetalleDto
+{
+    public int IdCompraVehiculoDetalle { get; set; }
+    public int IdCompraVehiculo { get; set; }
+    public int IdCompra { get; set; }
+    
+    // Información adicional de la compra
+    public string? CompraSerie { get; set; }
+    public DateTime? CompraFRegistro { get; set; }
+    public decimal? CompraMontoTotal { get; set; }
+    public string? CompraNegociacionId { get; set; }
+}
+
+// DTO para el detalle de compras por CompraVehiculo (asignación específica)
+public class ComprasPorCompraVehiculoDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public DateTime FRegistro { get; set; }
+    public string? VehiculoPlaca { get; set; }
+    public string? VehiculoMarca { get; set; }
+    public string? VehiculoModelo { get; set; }
+    
+    // Lista de compras (asignadas a esta asignación y disponibles)
+    public List<CompraConAsignacionDto> Compras { get; set; } = new List<CompraConAsignacionDto>();
+}
+
+// DTO para compra con indicador de asignación
+public class CompraConAsignacionDto
+{
+    public int IdCompra { get; set; }
+    public int IdNegociacion { get; set; }
+    public string? Serie { get; set; }
+    public DateTime? FRegistro { get; set; }
+    public DateTime? FEmision { get; set; }
+    public string? Estado { get; set; }
+    public bool Asignado { get; set; }  // true si está asignado al CompraVehiculo, false si no
+    
+    // Información adicional de la compra
+    public string? ProveedorNombre { get; set; }
+    public string? ComisionistaNombre { get; set; }
+    public decimal PesoTotal { get; set; }
+    public int SacosTotales { get; set; }
+    public decimal PrecioUnitario { get; set; }
+    public decimal MontoTotal { get; set; }
+    
+    // Si está asignado, información de la asignación
+    public int? IdCompraVehiculo { get; set; }
+    public string? GuiaRemision { get; set; }
+    public DateTime? FechaAsignacion { get; set; }
+    
+    // Lotes asociados
+    public List<LoteDto> Lote

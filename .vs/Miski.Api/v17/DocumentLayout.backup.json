@@ -3,20 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\completarnegociacion\\completarnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\completarnegociacion\\completarnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\llegadaplantacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\llegadaplantacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.domain\\entities\\llegadaplantadetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.domain\\entities\\llegadaplantadetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\compravehiculoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\compravehiculoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\compras\\negociaciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.shared\\dtos\\compras\\negociaciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\completarnegociacion\\completarnegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\completarnegociacion\\completarnegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\completarnegociacion\\completarnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\completarnegociacion\\completarnegociacionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\llegadaplantacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\llegadaplantacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\negociaciones\\commands\\completarnegociacion\\completarnegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\negociaciones\\commands\\completarnegociacion\\completarnegociacioncommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\lotes\\commands\\createlote\\createlotevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -29,10 +45,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\lotes\\queries\\getlotes\\getloteshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\lotes\\queries\\getlotes\\getloteshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.infrastructure\\data\\miskidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\lotes\\commands\\updatelote\\updatelotehandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -69,6 +81,78 @@
     {
       "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\compras\\queries\\getcomprassinasignar\\getcomprassinasignarquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\compras\\queries\\getcomprassinasignar\\getcomprassinasignarquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\compras\\queries\\getcomprassinasignar\\getcomprassinasignarhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\compras\\queries\\getcomprassinasignar\\getcomprassinasignarhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\comprascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\comprascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\compravehiculos\\queries\\getcompravehiculocondisponibles\\getcompravehiculocondisponiblesquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\compravehiculos\\queries\\getcompravehiculocondisponibles\\getcompravehiculocondisponiblesquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\compravehiculos\\queries\\getcompravehiculocondisponibles\\getcompravehiculocondisponibleshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\compravehiculos\\queries\\getcompravehiculocondisponibles\\getcompravehiculocondisponibleshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.shared\\dtos\\compras\\llegadaplantadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.shared\\dtos\\compras\\llegadaplantadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\queries\\getllegadaplantabyid\\getllegadaplantabyidquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\queries\\getllegadaplantabyid\\getllegadaplantabyidquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\queries\\getllegadaplantabyid\\getllegadaplantabyidhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\queries\\getllegadaplantabyid\\getllegadaplantabyidhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\queries\\getcompravehiculoconlotes\\getcompravehiculoconlotesquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\queries\\getcompravehiculoconlotes\\getcompravehiculoconlotesquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\queries\\getcompravehiculoconlotes\\getcompravehiculoconloteshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\queries\\getcompravehiculoconlotes\\getcompravehiculoconloteshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\commands\\createllegadaplanta\\createllegadaplantacommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\commands\\createllegadaplanta\\createllegadaplantacommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\commands\\createllegadaplanta\\createllegadaplantavalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\commands\\createllegadaplanta\\createllegadaplantavalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\commands\\createllegadaplanta\\createllegadaplantahandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\commands\\createllegadaplanta\\createllegadaplantahandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\queries\\getllegadasplanta\\getllegadasplantaquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\queries\\getllegadasplanta\\getllegadasplantaquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\queries\\getllegadasplanta\\getllegadasplantahandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\queries\\getllegadasplanta\\getllegadasplantahandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.api\\controllers\\compras\\readme_llegadas_planta.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.api\\controllers\\compras\\readme_llegadas_planta.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\queries\\getvehiculosconcomprasyrecepciones\\getvehiculosconcomprasyrecepcionesquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\queries\\getvehiculosconcomprasyrecepciones\\getvehiculosconcomprasyrecepcionesquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|c:\\users\\rodolfo\\source\\repos\\miski.api\\miski.application\\features\\compras\\llegadasplanta\\queries\\getvehiculosconcomprasyrecepciones\\getvehiculosconcomprasyrecepcioneshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D5F7C54-01E2-4102-9225-838D8B4FC94D}|Miski.Api.csproj|solutionrelative:miski.application\\features\\compras\\llegadasplanta\\queries\\getvehiculosconcomprasyrecepciones\\getvehiculosconcomprasyrecepcioneshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -77,8 +161,8 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedHeight": 358,
-          "SelectedChildIndex": 4,
+          "DockedHeight": 142,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -95,32 +179,257 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "NegociacionDto.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
-              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
-              "RelativeToolTip": "Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
-              "ViewState": "AgIAAHkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "MiskiDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "RelativeDocumentMoniker": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "RelativeToolTip": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
+              "ViewState": "AgIAAPcBAAAAAAAAAAAUwAICAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T23:57:45.429Z",
+              "WhenOpened": "2025-10-27T22:33:58.059Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "CreateLlegadaPlantaCommand.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaCommand.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaCommand.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaCommand.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:52:14.944Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CompletarNegociacionHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionHandler.cs",
-              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionHandler.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionHandler.cs",
-              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionHandler.cs",
-              "ViewState": "AgIAALgAAAAAAAAAAAAcwNQAAAABAAAAAAAAAA==",
+              "Title": "LlegadaPlantaController.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\LlegadaPlantaController.cs",
+              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\LlegadaPlantaController.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\LlegadaPlantaController.cs",
+              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\LlegadaPlantaController.cs",
+              "ViewState": "AgIAACUBAAAAAAAAAAD4vysBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T23:43:05.75Z",
+              "WhenOpened": "2025-10-27T22:58:55.794Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "CreateLlegadaPlantaValidator.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaValidator.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaValidator.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaValidator.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:52:23.788Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "CreateLlegadaPlantaHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Commands\\CreateLlegadaPlanta\\CreateLlegadaPlantaHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:52:45.165Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "GetCompraVehiculoConLotesHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetCompraVehiculoConLotes\\GetCompraVehiculoConLotesHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetCompraVehiculoConLotes\\GetCompraVehiculoConLotesHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetCompraVehiculoConLotes\\GetCompraVehiculoConLotesHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetCompraVehiculoConLotes\\GetCompraVehiculoConLotesHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAG0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:52:09.087Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "GetCompraVehiculoConLotesQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetCompraVehiculoConLotes\\GetCompraVehiculoConLotesQuery.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetCompraVehiculoConLotes\\GetCompraVehiculoConLotesQuery.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetCompraVehiculoConLotes\\GetCompraVehiculoConLotesQuery.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetCompraVehiculoConLotes\\GetCompraVehiculoConLotesQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:51:51.697Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "GetLlegadaPlantaByIdHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadaPlantaById\\GetLlegadaPlantaByIdHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadaPlantaById\\GetLlegadaPlantaByIdHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadaPlantaById\\GetLlegadaPlantaByIdHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadaPlantaById\\GetLlegadaPlantaByIdHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:51:45.612Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "GetLlegadaPlantaByIdQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadaPlantaById\\GetLlegadaPlantaByIdQuery.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadaPlantaById\\GetLlegadaPlantaByIdQuery.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadaPlantaById\\GetLlegadaPlantaByIdQuery.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadaPlantaById\\GetLlegadaPlantaByIdQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:51:30.465Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "LlegadaPlantaDto.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Compras\\LlegadaPlantaDto.cs",
+              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Compras\\LlegadaPlantaDto.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Compras\\LlegadaPlantaDto.cs",
+              "RelativeToolTip": "Miski.Shared\\DTOs\\Compras\\LlegadaPlantaDto.cs",
+              "ViewState": "AgIAAJgAAAAAAAAAAEBkwJ0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:51:23.478Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Producto.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Producto.cs",
+              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Producto.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Producto.cs",
+              "RelativeToolTip": "Miski.Domain\\Entities\\Producto.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAA/wA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T21:00:27.582Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LlegadaPlantaDetalle.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\LlegadaPlantaDetalle.cs",
+              "RelativeDocumentMoniker": "Miski.Domain\\Entities\\LlegadaPlantaDetalle.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\LlegadaPlantaDetalle.cs",
+              "RelativeToolTip": "Miski.Domain\\Entities\\LlegadaPlantaDetalle.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAYwAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T20:59:46.042Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "GetCompraVehiculoConDisponiblesHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\CompraVehiculos\\Queries\\GetCompraVehiculoConDisponibles\\GetCompraVehiculoConDisponiblesHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\CompraVehiculos\\Queries\\GetCompraVehiculoConDisponibles\\GetCompraVehiculoConDisponiblesHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\CompraVehiculos\\Queries\\GetCompraVehiculoConDisponibles\\GetCompraVehiculoConDisponiblesHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\CompraVehiculos\\Queries\\GetCompraVehiculoConDisponibles\\GetCompraVehiculoConDisponiblesHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T18:58:29.401Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "GetCompraVehiculoConDisponiblesQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\CompraVehiculos\\Queries\\GetCompraVehiculoConDisponibles\\GetCompraVehiculoConDisponiblesQuery.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\CompraVehiculos\\Queries\\GetCompraVehiculoConDisponibles\\GetCompraVehiculoConDisponiblesQuery.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\CompraVehiculos\\Queries\\GetCompraVehiculoConDisponibles\\GetCompraVehiculoConDisponiblesQuery.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\CompraVehiculos\\Queries\\GetCompraVehiculoConDisponibles\\GetCompraVehiculoConDisponiblesQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T18:58:03.791Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CompraVehiculosController.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\CompraVehiculosController.cs",
+              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\CompraVehiculosController.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\CompraVehiculosController.cs",
+              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\CompraVehiculosController.cs",
+              "ViewState": "AgIAALoAAAAAAAAAAADwvw4BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T16:51:14.615Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ComprasController.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\ComprasController.cs",
+              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\ComprasController.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\ComprasController.cs",
+              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\ComprasController.cs",
+              "ViewState": "AgIAAEYBAAAAAAAAAEBVwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T16:12:11.967Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "GetComprasSinAsignarHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Compras\\Queries\\GetComprasSinAsignar\\GetComprasSinAsignarHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Compras\\Queries\\GetComprasSinAsignar\\GetComprasSinAsignarHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Compras\\Queries\\GetComprasSinAsignar\\GetComprasSinAsignarHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Compras\\Queries\\GetComprasSinAsignar\\GetComprasSinAsignarHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T16:11:39.696Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "GetComprasSinAsignarQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Compras\\Queries\\GetComprasSinAsignar\\GetComprasSinAsignarQuery.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Compras\\Queries\\GetComprasSinAsignar\\GetComprasSinAsignarQuery.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Compras\\Queries\\GetComprasSinAsignar\\GetComprasSinAsignarQuery.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Compras\\Queries\\GetComprasSinAsignar\\GetComprasSinAsignarQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T16:11:17.649Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "NegociacionDto.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
+              "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
+              "RelativeToolTip": "Miski.Shared\\DTOs\\Compras\\NegociacionDto.cs",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAswFAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-27T23:57:45.429Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CompletarNegociacionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionHandler.cs",
+              "ViewState": "AgIAAJMAAAAAAAAAAADwv9QAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-27T23:43:05.75Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "CompletarNegociacionCommand.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionCommand.cs",
               "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionCommand.cs",
@@ -128,12 +437,11 @@
               "RelativeToolTip": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\CompletarNegociacion\\CompletarNegociacionCommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T23:43:03.718Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-27T23:43:03.718Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "CreateLoteValidator.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Lotes\\Commands\\CreateLote\\CreateLoteValidator.cs",
               "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Lotes\\Commands\\CreateLote\\CreateLoteValidator.cs",
@@ -145,7 +453,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "CreateLoteHandler.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Lotes\\Commands\\CreateLote\\CreateLoteHandler.cs",
               "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Lotes\\Commands\\CreateLote\\CreateLoteHandler.cs",
@@ -157,20 +465,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "LlegadaPlantaController.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\LlegadaPlantaController.cs",
-              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\LlegadaPlantaController.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\LlegadaPlantaController.cs",
-              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\LlegadaPlantaController.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAqwA8AAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T22:58:55.794Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "GetLotesHandler.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Lotes\\Queries\\GetLotes\\GetLotesHandler.cs",
               "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Lotes\\Queries\\GetLotes\\GetLotesHandler.cs",
@@ -182,7 +477,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "CompraDto.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Shared\\DTOs\\Compras\\CompraDto.cs",
               "RelativeDocumentMoniker": "Miski.Shared\\DTOs\\Compras\\CompraDto.cs",
@@ -194,7 +489,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "UpdateLoteHandler.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Lotes\\Commands\\UpdateLote\\UpdateLoteHandler.cs",
               "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Lotes\\Commands\\UpdateLote\\UpdateLoteHandler.cs",
@@ -206,7 +501,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "Lote.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Lote.cs",
               "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Lote.cs",
@@ -218,7 +513,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "AprobarNegociacionContadoraHandler.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacionContadora\\AprobarNegociacionContadoraHandler.cs",
               "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacionContadora\\AprobarNegociacionContadoraHandler.cs",
@@ -230,7 +525,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "AprobarNegociacionContadoraCommand.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacionContadora\\AprobarNegociacionContadoraCommand.cs",
               "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\Negociaciones\\Commands\\AprobarNegociacionContadora\\AprobarNegociacionContadoraCommand.cs",
@@ -242,7 +537,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "TipoCambio.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\TipoCambio.cs",
               "RelativeDocumentMoniker": "Miski.Domain\\Entities\\TipoCambio.cs",
@@ -254,7 +549,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "Moneda.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Moneda.cs",
               "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Moneda.cs",
@@ -266,19 +561,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "MiskiDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
-              "RelativeDocumentMoniker": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
-              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Infrastructure\\Data\\MiskiDbContext.cs",
-              "RelativeToolTip": "Miski.Infrastructure\\Data\\MiskiDbContext.cs",
-              "ViewState": "AgIAAMUBAAAAAAAAAAAqwNABAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T22:33:58.059Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "Compra.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Domain\\Entities\\Compra.cs",
               "RelativeDocumentMoniker": "Miski.Domain\\Entities\\Compra.cs",
@@ -290,7 +573,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -303,8 +586,8 @@
           ]
         },
         {
-          "DockedHeight": 42,
-          "SelectedChildIndex": -1,
+          "DockedHeight": 258,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -325,6 +608,71 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "GetVehiculosConComprasYRecepcionesQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetVehiculosConComprasYRecepciones\\GetVehiculosConComprasYRecepcionesQuery.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetVehiculosConComprasYRecepciones\\GetVehiculosConComprasYRecepcionesQuery.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetVehiculosConComprasYRecepciones\\GetVehiculosConComprasYRecepcionesQuery.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetVehiculosConComprasYRecepciones\\GetVehiculosConComprasYRecepcionesQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-29T00:06:42.531Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "README_LLEGADAS_PLANTA.md",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\README_LLEGADAS_PLANTA.md",
+              "RelativeDocumentMoniker": "Miski.Api\\Controllers\\Compras\\README_LLEGADAS_PLANTA.md",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Api\\Controllers\\Compras\\README_LLEGADAS_PLANTA.md",
+              "RelativeToolTip": "Miski.Api\\Controllers\\Compras\\README_LLEGADAS_PLANTA.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-10-29T00:05:33.542Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "GetLlegadasPlantaHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadasPlanta\\GetLlegadasPlantaHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadasPlanta\\GetLlegadasPlantaHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadasPlanta\\GetLlegadasPlantaHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadasPlanta\\GetLlegadasPlantaHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-29T00:00:11.085Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "GetVehiculosConComprasYRecepcionesHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetVehiculosConComprasYRecepciones\\GetVehiculosConComprasYRecepcionesHandler.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetVehiculosConComprasYRecepciones\\GetVehiculosConComprasYRecepcionesHandler.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetVehiculosConComprasYRecepciones\\GetVehiculosConComprasYRecepcionesHandler.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetVehiculosConComprasYRecepciones\\GetVehiculosConComprasYRecepcionesHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-29T00:07:05.593Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "GetLlegadasPlantaQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadasPlanta\\GetLlegadasPlantaQuery.cs",
+              "RelativeDocumentMoniker": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadasPlanta\\GetLlegadasPlantaQuery.cs",
+              "ToolTip": "C:\\Users\\Rodolfo\\source\\repos\\Miski.Api\\Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadasPlanta\\GetLlegadasPlantaQuery.cs",
+              "RelativeToolTip": "Miski.Application\\Features\\Compras\\LlegadasPlanta\\Queries\\GetLlegadasPlanta\\GetLlegadasPlantaQuery.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:59:50.888Z",
+              "EditorCaption": ""
             }
           ]
         }

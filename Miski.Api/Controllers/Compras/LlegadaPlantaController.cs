@@ -1,7 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Miski.Application.Features.Compras.LlegadasPlanta.Commands.CreateLlegadaPlanta;
+using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetLlegadaPlantaById;
+using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetCompraVehiculoConLotes;
+using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetLlegadasPlanta;
 using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Compras;
 
 namespace Miski.Api.Controllers.Compras;
 
@@ -19,29 +24,42 @@ public class LlegadaPlantaController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene todas las llegadas a planta
+    /// Obtiene una llegada a planta por ID con detalles de lotes recibidos
     /// </summary>
-    [HttpGet]
-    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetLlegadasPlanta(
-        [FromQuery] int? compraId = null,
-        [FromQuery] string? estado = null,
-        [FromQuery] DateTime? fechaInicio = null,
-        [FromQuery] DateTime? fechaFin = null,
+    /// <remarks>
+    /// Retorna información de la llegada a planta incluyendo:
+    /// - Datos de la compra y usuario
+    /// - Detalles de cada lote recibido con:
+    ///   * Sacos asignados vs sacos recibidos
+    ///   * Peso asignado vs peso recibido
+    ///   * Diferencias calculadas
+    ///   * Observaciones
+    /// </remarks>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApiResponse<LlegadaPlantaDto>>> GetLlegadaPlantaById(
+        int id,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            var result = new List<object>();
-            
-            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+            var query = new GetLlegadaPlantaByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<LlegadaPlantaDto>.SuccessResult(
                 result,
-                "Llegadas a planta obtenidas exitosamente"
+                "Llegada a planta obtenida exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<LlegadaPlantaDto>.ErrorResult(
+                "Llegada a planta no encontrada",
+                ex.Message
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
+            return StatusCode(500, ApiResponse<LlegadaPlantaDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -49,24 +67,41 @@ public class LlegadaPlantaController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene una llegada a planta por ID
+    /// Obtiene las compras con sus lotes de un CompraVehiculo específico
     /// </summary>
-    [HttpGet("{id}")]
-    public async Task<ActionResult<ApiResponse<object>>> GetLlegadaPlantaById(
-        int id,
+    /// <remarks>
+    /// Retorna todas las compras asignadas a un vehículo con sus lotes, indicando:
+    /// - Sacos asignados y peso asignado de cada lote
+    /// - Si el lote ya fue recibido (YaRecibido = true/false)
+    /// - Información de recepción si existe (sacos recibidos, peso recibido, observaciones)
+    /// 
+    /// Útil para registrar llegadas a planta basándose en el vehículo que llega.
+    /// </remarks>
+    [HttpGet("por-vehiculo/{idCompraVehiculo}")]
+    public async Task<ActionResult<ApiResponse<CompraVehiculoConLotesDto>>> GetCompraVehiculoConLotes(
+        int idCompraVehiculo,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            return NotFound(ApiResponse<object>.ErrorResult(
-                "Llegada a planta no encontrada",
-                $"No se encontró una llegada a planta con ID {id}"
+            var query = new GetCompraVehiculoConLotesQuery(idCompraVehiculo);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<CompraVehiculoConLotesDto>.SuccessResult(
+                result,
+                "Compras con lotes obtenidas exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<CompraVehiculoConLotesDto>.ErrorResult(
+                "CompraVehiculo no encontrado",
+                ex.Message
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<CompraVehiculoConLotesDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -76,26 +111,82 @@ public class LlegadaPlantaController : ControllerBase
     /// <summary>
     /// Registra una nueva llegada a planta
     /// </summary>
+    /// <remarks>
+    /// Permite registrar la llegada de una compra a planta con los detalles de cada lote recibido.
+    /// 
+    /// Campos requeridos:
+    /// - IdCompra: ID de la compra que llega
+    /// - IdUsuario: ID del usuario que registra la llegada
+    /// - FLlegada: Fecha de llegada
+    /// - Detalles: Lista de lotes recibidos (mínimo 1)
+    /// 
+    /// Para cada detalle:
+    /// - IdLote: ID del lote recibido
+    /// - SacosRecibidos: Cantidad de sacos recibidos
+    /// - PesoRecibido: Peso recibido en kg
+    /// - Observaciones: Observaciones opcionales
+    /// 
+    /// Validaciones:
+    /// - La compra debe existir
+    /// - El usuario debe existir
+    /// - Todos los lotes deben existir y pertenecer a la compra
+    /// - No se permiten lotes duplicados en una misma llegada
+    /// 
+    /// Ejemplo de request:
+    /// {
+    ///   "idCompra": 1,
+    ///   "idUsuario": 5,
+    ///   "fLlegada": "2024-01-20T14:30:00",
+    ///   "observaciones": "Llegada sin contratiempos",
+    ///   "detalles": [
+    ///     {
+    ///       "idLote": 1,
+    ///       "sacosRecibidos": 30,
+    ///       "pesoRecibido": 1495.50,
+    ///       "observaciones": "Algunos sacos húmedos"
+    ///     },
+    ///     {
+    ///       "idLote": 2,
+    ///       "sacosRecibidos": 40,
+    ///       "pesoRecibido": 2000.00,
+    ///       "observaciones": null
+    ///     }
+    ///   ]
+    /// }
+    /// </remarks>
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<object>>> RegistrarLlegadaPlanta(
-        [FromBody] object request,
+    public async Task<ActionResult<ApiResponse<LlegadaPlantaDto>>> RegistrarLlegadaPlanta(
+        [FromBody] CreateLlegadaPlantaDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar command handler
+            var command = new CreateLlegadaPlantaCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
             return CreatedAtAction(
                 nameof(GetLlegadaPlantaById),
-                new { id = 1 },
-                ApiResponse<object>.SuccessResult(
-                    request,
+                new { id = result.IdLlegadaPlanta },
+                ApiResponse<LlegadaPlantaDto>.SuccessResult(
+                    result,
                     "Llegada a planta registrada exitosamente"
                 )
             );
         }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<LlegadaPlantaDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<LlegadaPlantaDto>.ErrorResult(
+                "Entidad relacionada no encontrada",
+                ex.Message
+            ));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
+            return StatusCode(500, ApiResponse<LlegadaPlantaDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
@@ -103,74 +194,46 @@ public class LlegadaPlantaController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene los detalles de una llegada a planta
+    /// Obtiene todas las llegadas a planta con filtros opcionales
     /// </summary>
-    [HttpGet("{id}/detalles")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetDetallesLlegadaPlanta(
-        int id,
+    /// <remarks>
+    /// Retorna todas las llegadas a planta con sus detalles, mostrando:
+    /// - Información de la compra y usuario que registró
+    /// - Detalles de cada lote con:
+    ///   * Sacos asignados (del lote original)
+    ///   * Sacos recibidos
+    ///   * Peso asignado (del lote original)
+    ///   * Peso recibido
+    ///   * Diferencias calculadas (asignado - recibido)
+    ///   * Observaciones
+    /// 
+    /// Permite filtrar por:
+    /// - idCompra: Filtrar por compra específica
+    /// - estado: Filtrar por estado (ej: REGISTRADO)
+    /// - fechaInicio: Filtrar llegadas desde esta fecha
+    /// - fechaFin: Filtrar llegadas hasta esta fecha
+    /// </remarks>
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<IEnumerable<LlegadaPlantaDto>>>> GetLlegadasPlanta(
+        [FromQuery] int? idCompra = null,
+        [FromQuery] string? estado = null,
+        [FromQuery] DateTime? fechaInicio = null,
+        [FromQuery] DateTime? fechaFin = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            // TODO: Implementar query handler
-            var result = new List<object>();
-            
-            return Ok(ApiResponse<IEnumerable<object>>.SuccessResult(
+            var query = new GetLlegadasPlantaQuery(idCompra, estado, fechaInicio, fechaFin);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<IEnumerable<LlegadaPlantaDto>>.SuccessResult(
                 result,
-                "Detalles de llegada a planta obtenidos exitosamente"
+                "Llegadas a planta obtenidas exitosamente"
             ));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<IEnumerable<object>>.ErrorResult(
-                "Error interno del servidor",
-                ex.Message
-            ));
-        }
-    }
-
-    /// <summary>
-    /// Procesa un lote en la llegada a planta
-    /// </summary>
-    [HttpPost("{llegadaId}/procesar-lote")]
-    public async Task<ActionResult<ApiResponse<object>>> ProcesarLote(
-        int llegadaId,
-        [FromBody] object request,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            // TODO: Implementar command handler
-            return Ok(ApiResponse<object>.SuccessResult(
-                request,
-                "Lote procesado exitosamente"
-            ));
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ApiResponse<object>.ErrorResult(
-                "Error interno del servidor",
-                ex.Message
-            ));
-        }
-    }
-
-    /// <summary>
-    /// Finaliza el procesamiento de una llegada a planta
-    /// </summary>
-    [HttpPut("{id}/finalizar")]
-    public async Task<ActionResult<ApiResponse>> FinalizarLlegadaPlanta(
-        int id,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            // TODO: Implementar command handler
-            return Ok(ApiResponse.SuccessResult("Llegada a planta finalizada exitosamente"));
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ApiResponse.ErrorResult(
+            return StatusCode(500, ApiResponse<IEnumerable<LlegadaPlantaDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));

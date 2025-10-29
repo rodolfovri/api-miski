@@ -13,7 +13,6 @@ public class Producto
 
     // Navigation properties
     public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
-    public virtual ICollection<LlegadaPlantaDetalle> LlegadaPlantaDetalles { get; set; } = new List<LlegadaPlantaDetalle>();
     public virtual CategoriaProducto CategoriaProducto { get; set; } = null!;
     public virtual ICollection<VariedadProducto> VariedadProductos { get; set; } = new List<VariedadProducto>();
     public virtual ICollection<TipoCalidadProducto> TipoCalidadProductos { get; set; } = new List<TipoCalidadProducto>();

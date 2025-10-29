@@ -560,37 +560,22 @@
     ]
   },
   {
-    "ContainingType": "Miski.Api.Controllers.Compras.LlegadaPlantaController",
-    "Method": "GetLlegadasPlanta",
-    "RelativePath": "api/compras/llegadas-planta",
+    "ContainingType": "Miski.Api.Controllers.Compras.CompraVehiculosController",
+    "Method": "GetCompraVehiculoConDisponibles",
+    "RelativePath": "api/compras/asignacion-vehiculos/{id}/con-disponibles",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "compraId",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "estado",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "fechaInicio",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "fechaFin",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.CompraVehiculoConDisponiblesDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -613,13 +598,57 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "System.Object",
+        "Type": "Miski.Shared.DTOs.Compras.CreateLlegadaPlantaDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.LlegadaPlantaDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.LlegadaPlantaController",
+    "Method": "GetLlegadasPlanta",
+    "RelativePath": "api/compras/llegadas-planta",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idCompra",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "estado",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "fechaInicio",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "fechaFin",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Compras.LlegadaPlantaDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -648,7 +677,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.LlegadaPlantaDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -663,84 +692,21 @@
   },
   {
     "ContainingType": "Miski.Api.Controllers.Compras.LlegadaPlantaController",
-    "Method": "GetDetallesLlegadaPlanta",
-    "RelativePath": "api/compras/llegadas-planta/{id}/detalles",
+    "Method": "GetCompraVehiculoConLotes",
+    "RelativePath": "api/compras/llegadas-planta/por-vehiculo/{idCompraVehiculo}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
+        "Name": "idCompraVehiculo",
         "Type": "System.Int32",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "Tags": [
-      "Compras"
-    ]
-  },
-  {
-    "ContainingType": "Miski.Api.Controllers.Compras.LlegadaPlantaController",
-    "Method": "FinalizarLlegadaPlanta",
-    "RelativePath": "api/compras/llegadas-planta/{id}/finalizar",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "Tags": [
-      "Compras"
-    ]
-  },
-  {
-    "ContainingType": "Miski.Api.Controllers.Compras.LlegadaPlantaController",
-    "Method": "ProcesarLote",
-    "RelativePath": "api/compras/llegadas-planta/{llegadaId}/procesar-lote",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "llegadaId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "request",
-        "Type": "System.Object",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[Miski.Shared.DTOs.Compras.CompraVehiculoConLotesDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1327,6 +1293,29 @@
     "ReturnTypes": [
       {
         "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Compras.NegociacionDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
+    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
+    "Method": "GetComprasSinAsignar",
+    "RelativePath": "api/compras/sin-asignar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[Miski.Shared.DTOs.Compras.CompraDto, Miski.Api, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

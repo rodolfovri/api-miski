@@ -5,6 +5,7 @@ using Miski.Application.Features.Compras.CompraVehiculos.Commands.CreateCompraVe
 using Miski.Application.Features.Compras.CompraVehiculos.Commands.UpdateCompraVehiculo;
 using Miski.Application.Features.Compras.CompraVehiculos.Queries.GetCompraVehiculos;
 using Miski.Application.Features.Compras.CompraVehiculos.Queries.GetCompraVehiculoById;
+using Miski.Application.Features.Compras.CompraVehiculos.Queries.GetCompraVehiculoConDisponibles;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Compras;
 
@@ -220,6 +221,47 @@ public class CompraVehiculosController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse<CompraVehiculoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene una asignación de compra a vehículo por ID con compras asignadas y disponibles
+    /// </summary>
+    /// <remarks>
+    /// Similar a GetCompraVehiculoById pero incluye:
+    /// - Compras asignadas a este CompraVehiculo (Asignado = true)
+    /// - Compras ACTIVAS sin asignar a ningún vehículo (Asignado = false)
+    /// 
+    /// Útil para gestionar qué compras están asignadas y cuáles están disponibles para asignar.
+    /// </remarks>
+    [HttpGet("{id}/con-disponibles")]
+    public async Task<ActionResult<ApiResponse<CompraVehiculoConDisponiblesDto>>> GetCompraVehiculoConDisponibles(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetCompraVehiculoConDisponiblesQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<CompraVehiculoConDisponiblesDto>.SuccessResult(
+                result,
+                "Asignación de compra a vehículo con compras disponibles obtenida exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<CompraVehiculoConDisponiblesDto>.ErrorResult(
+                "Asignación de compra a vehículo no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<CompraVehiculoConDisponiblesDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));

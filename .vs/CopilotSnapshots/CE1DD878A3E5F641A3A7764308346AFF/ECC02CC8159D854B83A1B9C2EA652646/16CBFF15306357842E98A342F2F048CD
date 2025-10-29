@@ -1,0 +1,47 @@
+﻿namespace Miski.Shared.DTOs.Compras;
+
+public class CompraVehiculoDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public DateTime FRegistro { get; set; }
+    
+    // Información adicional
+    public string? VehiculoPlaca { get; set; }
+    public string? VehiculoMarca { get; set; }
+    public string? VehiculoModelo { get; set; }
+    
+    // Lista de compras asignadas
+    public List<CompraVehiculoDetalleDto> Detalles { get; set; } = new List<CompraVehiculoDetalleDto>();
+}
+
+public class CompraVehiculoDetalleDto
+{
+    public int IdCompraVehiculoDetalle { get; set; }
+    public int IdCompraVehiculo { get; set; }
+    public int IdCompra { get; set; }
+    
+    // Información adicional de la compra
+    public string? CompraSerie { get; set; }
+    public DateTime? CompraFRegistro { get; set; }
+    public decimal? CompraMontoTotal { get; set; }
+    public string? CompraNegociacionId { get; set; }
+}
+
+// DTO para crear asignación de compras a vehículo
+public class CreateCompraVehiculoDto
+{
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public List<int> IdCompras { get; set; } = new List<int>();
+}
+
+// DTO para actualizar asignación de compras a vehículo
+public class UpdateCompraVehiculoDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public List<int> IdCompras { get; set; } = new List<int>();
+}

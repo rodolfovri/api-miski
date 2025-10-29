@@ -1,0 +1,133 @@
+using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.CompraVehiculos.Queries.GetCompraVehiculoConDisponibles;
+
+public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraVehiculoConDisponiblesQuery, CompraVehiculoConDisponiblesDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public GetCompraVehiculoConDisponiblesHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<CompraVehiculoConDisponiblesDto> Handle(GetCompraVehiculoConDisponiblesQuery request, CancellationToken cancellationToken)
+    {
+        // Obtener el CompraVehiculo
+        var compraVehiculo = await _unitOfWork.Repository<CompraVehiculo>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (compraVehiculo == null)
+            throw new NotFoundException("CompraVehiculo", request.Id);
+
+        // Cargar vehículo
+        compraVehiculo.Vehiculo = await _unitOfWork.Repository<Vehiculo>()
+            .GetByIdAsync(compraVehiculo.IdVehiculo, cancellationToken) ?? new Vehiculo();
+
+        // Obtener todos los detalles de este CompraVehiculo
+        var detallesAsignados = await _unitOfWork.Repository<CompraVehiculoDetalle>()
+            .GetAllAsync(cancellationToken);
+        
+        var detallesEsteVehiculo = detallesAsignados
+            .Where(d => d.IdCompraVehiculo == compraVehiculo.IdCompraVehiculo)
+            .ToList();
+
+        // Obtener todas las compras ACTIVAS
+        var todasLasCompras = await _unitOfWork.Repository<Compra>()
+            .GetAllAsync(cancellationToken);
+        
+        var comprasActivas = todasLasCompras.Where(c => c.Estado == "ACTIVO").ToList();
+
+        // Obtener IDs de compras asignadas a este vehículo
+        var idsComprasAsignadas = detallesEsteVehiculo.Select(d => d.IdCompra).ToList();
+
+        // Obtener IDs de compras asignadas a OTROS vehículos
+        var idsComprasAsignadasAOtros = detallesAsignados
+            .Where(d => d.IdCompraVehiculo != compraVehiculo.IdCompraVehiculo)
+            .Select(d => d.IdCompra)
+            .Distinct()
+            .ToList();
+
+        // Crear lista de detalles
+        var detalles = new List<CompraVehiculoDetalleDto>();
+
+        // 1. Agregar compras asignadas a este vehículo (Asignado = true)
+        foreach (var detalle in detallesEsteVehiculo)
+        {
+            var compra = comprasActivas.FirstOrDefault(c => c.IdCompra == detalle.IdCompra);
+            if (compra != null)
+            {
+                // Cargar negociación para obtener información adicional
+                var negociacion = await _unitOfWork.Repository<Negociacion>()
+                    .GetByIdAsync(compra.IdNegociacion, cancellationToken);
+
+                decimal? montoTotal = null;
+                if (negociacion != null)
+                {
+                    montoTotal = (negociacion.PesoTotal ?? 0) * (negociacion.PrecioUnitario ?? 0);
+                }
+
+                detalles.Add(new CompraVehiculoDetalleDto
+                {
+                    IdCompraVehiculoDetalle = detalle.IdCompraVehiculoDetalle,
+                    IdCompraVehiculo = detalle.IdCompraVehiculo,
+                    IdCompra = detalle.IdCompra,
+                    CompraSerie = compra.Serie,
+                    CompraFRegistro = compra.FRegistro,
+                    CompraMontoTotal = montoTotal,
+                    CompraNegociacionId = compra.IdNegociacion.ToString(),
+                    Asignado = true
+                });
+            }
+        }
+
+        // 2. Agregar compras ACTIVAS sin asignar (Asignado = false)
+        var comprasSinAsignar = comprasActivas
+            .Where(c => !idsComprasAsignadas.Contains(c.IdCompra) && !idsComprasAsignadasAOtros.Contains(c.IdCompra))
+            .ToList();
+
+        foreach (var compra in comprasSinAsignar)
+        {
+            // Cargar negociación para obtener información adicional
+            var negociacion = await _unitOfWork.Repository<Negociacion>()
+                .GetByIdAsync(compra.IdNegociacion, cancellationToken);
+
+            decimal? montoTotal = null;
+            if (negociacion != null)
+            {
+                montoTotal = (negociacion.PesoTotal ?? 0) * (negociacion.PrecioUnitario ?? 0);
+            }
+
+            detalles.Add(new CompraVehiculoDetalleDto
+            {
+                IdCompraVehiculoDetalle = 0,
+                IdCompraVehiculo = 0,
+                IdCompra = compra.IdCompra,
+                CompraSerie = compra.Serie,
+                CompraFRegistro = compra.FRegistro,
+                CompraMontoTotal = montoTotal,
+                CompraNegociacionId = compra.IdNegociacion.ToString(),
+                Asignado = false
+            });
+        }
+
+        // Crear el DTO de respuesta
+        var resultado = new CompraVehiculoConDisponiblesDto
+        {
+            IdCompraVehiculo = compraVehiculo.IdCompraVehiculo,
+            IdVehiculo = compraVehiculo.IdVehiculo,
+            GuiaRemision = compraVehiculo.GuiaRemision,
+            FRegistro = compraVehiculo.FRegistro,
+            VehiculoPlaca = compraVehiculo.Vehiculo.Placa,
+            VehiculoMarca = compraVehiculo.Vehiculo.Marca,
+            VehiculoModelo = compraVehiculo.Vehiculo.Modelo,
+            Detalles = detalles.OrderByDescending(d => d.Asignado).ThenByDescending(d => d.CompraFRegistro).ToList()
+        };
+
+        return resultado;
+    }
+}

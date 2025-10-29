@@ -27,6 +27,26 @@ public class CompraVehiculoDetalleDto
     public DateTime? CompraFRegistro { get; set; }
     public decimal? CompraMontoTotal { get; set; }
     public string? CompraNegociacionId { get; set; }
+    
+    // Indica si la compra está asignada al CompraVehiculo (true) o está disponible (false)
+    public bool Asignado { get; set; }
+}
+
+// DTO extendido que incluye compras asignadas y disponibles
+public class CompraVehiculoConDisponiblesDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public DateTime FRegistro { get; set; }
+    
+    // Información adicional
+    public string? VehiculoPlaca { get; set; }
+    public string? VehiculoMarca { get; set; }
+    public string? VehiculoModelo { get; set; }
+    
+    // Lista de compras (asignadas y disponibles)
+    public List<CompraVehiculoDetalleDto> Detalles { get; set; } = new List<CompraVehiculoDetalleDto>();
 }
 
 // DTO para crear asignación de compras a vehículo

@@ -247,9 +247,6 @@ namespace Miski.Api.Migrations
                     b.Property<int>("IdLote")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdProductoFinal")
-                        .HasColumnType("int");
-
                     b.Property<string>("Observaciones")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -266,8 +263,6 @@ namespace Miski.Api.Migrations
                     b.HasIndex("IdLlegadaPlanta");
 
                     b.HasIndex("IdLote");
-
-                    b.HasIndex("IdProductoFinal");
 
                     b.ToTable("LlegadaPlantaDetalle", (string)null);
                 });
@@ -1288,18 +1283,9 @@ namespace Miski.Api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_LlegadaDetalle_Lote");
 
-                    b.HasOne("Miski.Domain.Entities.Producto", "ProductoFinal")
-                        .WithMany("LlegadaPlantaDetalles")
-                        .HasForeignKey("IdProductoFinal")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_LlegadaDetalle_Producto");
-
                     b.Navigation("LlegadaPlanta");
 
                     b.Navigation("Lote");
-
-                    b.Navigation("ProductoFinal");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Lote", b =>
@@ -1722,8 +1708,6 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Producto", b =>
                 {
-                    b.Navigation("LlegadaPlantaDetalles");
-
                     b.Navigation("Stocks");
 
                     b.Navigation("TipoCalidadProductos");

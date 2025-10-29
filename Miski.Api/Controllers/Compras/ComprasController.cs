@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Compras.Compras.Queries.GetCompras;
 using Miski.Application.Features.Compras.Compras.Queries.GetCompraById;
+using Miski.Application.Features.Compras.Compras.Queries.GetComprasSinAsignar;
 using Miski.Application.Features.Compras.Lotes.Commands.CreateLote;
 using Miski.Application.Features.Compras.Lotes.Commands.UpdateLote;
 using Miski.Application.Features.Compras.Lotes.Commands.DeleteLote;
@@ -52,6 +53,43 @@ public class ComprasController : ControllerBase
             return Ok(ApiResponse<IEnumerable<CompraDto>>.SuccessResult(
                 result,
                 "Compras obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<CompraDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene compras ACTIVAS sin asignar a vehículos
+    /// </summary>
+    /// <remarks>
+    /// Retorna solo las compras que:
+    /// - Tienen estado "ACTIVO"
+    /// - NO están asignadas a ningún vehículo (no tienen registro en CompraVehiculoDetalle)
+    /// 
+    /// Incluye automáticamente:
+    /// - Información del proveedor y comisionista de la negociación
+    /// - Lista de lotes asociados a cada compra
+    /// 
+    /// Este endpoint es útil para listar las compras disponibles para asignar a vehículos.
+    /// </remarks>
+    [HttpGet("sin-asignar")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<CompraDto>>>> GetComprasSinAsignar(
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetComprasSinAsignarQuery();
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<CompraDto>>.SuccessResult(
+                result,
+                "Compras sin asignar obtenidas exitosamente"
             ));
         }
         catch (Exception ex)
