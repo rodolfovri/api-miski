@@ -6,6 +6,9 @@ public class LlegadaPlantaDto
     public int IdLlegadaPlanta { get; set; }
     public int IdCompra { get; set; }
     public int IdUsuario { get; set; }
+    public int IdLote { get; set; }
+    public decimal SacosRecibidos { get; set; }
+    public decimal PesoRecibido { get; set; }
     public DateTime? FLlegada { get; set; }
     public string? Observaciones { get; set; }
     public string? Estado { get; set; }
@@ -13,48 +16,40 @@ public class LlegadaPlantaDto
     // Información adicional
     public string? CompraSerie { get; set; }
     public string? UsuarioNombre { get; set; }
-    
-    // Detalles de la llegada
-    public List<LlegadaPlantaDetalleDto> Detalles { get; set; } = new List<LlegadaPlantaDetalleDto>();
-}
-
-// DTO para LlegadaPlantaDetalle
-public class LlegadaPlantaDetalleDto
-{
-    public int IdLlegadaDetalle { get; set; }
-    public int IdLlegadaPlanta { get; set; }
-    public int IdLote { get; set; }
-    public int SacosRecibidos { get; set; }
-    public decimal PesoRecibido { get; set; }
-    public string? Observaciones { get; set; }
-    
-    // Información adicional del lote
     public string? LoteCodigo { get; set; }
-    public int SacosAsignados { get; set; }  // Sacos originales del lote
-    public decimal PesoAsignado { get; set; }  // Peso original del lote
-    public int DiferenciaSacos { get; set; }  // SacosAsignados - SacosRecibidos
-    public decimal DiferenciaPeso { get; set; }  // PesoAsignado - PesoRecibido
+    
+    // Datos del lote original
+    public int SacosAsignados { get; set; }
+    public decimal PesoAsignado { get; set; }
+    public int DiferenciaSacos { get; set; }
+    public decimal DiferenciaPeso { get; set; }
 }
 
-// DTO para crear LlegadaPlanta
+// DTO para crear LlegadaPlanta (ACTUALIZADO para recibir múltiples lotes)
 public class CreateLlegadaPlantaDto
 {
-    public int IdCompra { get; set; }
+    public int IdCompraVehiculo { get; set; }
     public int IdUsuario { get; set; }
-    public DateTime? FLlegada { get; set; }
-    public string? Observaciones { get; set; }
-    
-    // Detalles de lotes recibidos
-    public List<CreateLlegadaPlantaDetalleDto> Detalles { get; set; } = new List<CreateLlegadaPlantaDetalleDto>();
+    public List<LlegadaPlantaDetalleInputDto> Detalles { get; set; } = new List<LlegadaPlantaDetalleInputDto>();
 }
 
-// DTO para detalle de creación
-public class CreateLlegadaPlantaDetalleDto
+// DTO para el detalle de cada lote recibido
+public class LlegadaPlantaDetalleInputDto
 {
+    public int IdCompra { get; set; }
     public int IdLote { get; set; }
-    public int SacosRecibidos { get; set; }
+    public decimal SacosRecibidos { get; set; }
     public decimal PesoRecibido { get; set; }
     public string? Observaciones { get; set; }
+}
+
+// DTO para respuesta de creación múltiple
+public class CreateLlegadaPlantaResponseDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int TotalLotesRecibidos { get; set; }
+    public DateTime FLlegada { get; set; }
+    public List<LlegadaPlantaDto> LlegadasRegistradas { get; set; } = new List<LlegadaPlantaDto>();
 }
 
 // DTO para compras con lotes por CompraVehiculo
@@ -94,9 +89,81 @@ public class LoteConRecepcionDto
     public decimal PesoAsignado { get; set; }
     
     // Información de recepción (si ya fue recibido)
-    public int? IdLlegadaDetalle { get; set; }
-    public int? SacosRecibidos { get; set; }
+    public int? IdLlegadaPlanta { get; set; }
+    public decimal? SacosRecibidos { get; set; }
     public decimal? PesoRecibido { get; set; }
+    public int? DiferenciaSacos { get; set; }
+    public decimal? DiferenciaPeso { get; set; }
     public string? Observaciones { get; set; }
-    public bool YaRecibido { get; set; }  // true si ya tiene registro en LlegadaPlantaDetalle
+    public bool YaRecibido { get; set; }
+}
+
+// DTO para reporte completo de vehículos con compras y recepciones
+public class VehiculoConComprasYRecepcionesDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public DateTime FRegistro { get; set; }
+    
+    // Información del vehículo
+    public string? VehiculoPlaca { get; set; }
+    public string? VehiculoMarca { get; set; }
+    public string? VehiculoModelo { get; set; }
+    
+    // Compras asignadas a este vehículo con detalles de recepción
+    public List<CompraConRecepcionDetalladaDto> Compras { get; set; } = new List<CompraConRecepcionDetalladaDto>();
+}
+
+// DTO para compra con recepción detallada
+public class CompraConRecepcionDetalladaDto
+{
+    public int IdCompra { get; set; }
+    public string? Serie { get; set; }
+    public DateTime? FRegistro { get; set; }
+    public string? Estado { get; set; }
+    
+    // Lotes con detalles de recepción
+    public List<LoteConRecepcionDetalladoDto> Lotes { get; set; } = new List<LoteConRecepcionDetalladoDto>();
+}
+
+// DTO para lote con recepción detallada
+public class LoteConRecepcionDetalladoDto
+{
+    public int IdLote { get; set; }
+    public string? Codigo { get; set; }
+    public int SacosAsignados { get; set; }
+    public decimal PesoAsignado { get; set; }
+    
+    // Datos de recepción en planta
+    public int? IdLlegadaPlanta { get; set; }
+    public decimal? SacosRecibidos { get; set; }
+    public decimal? PesoRecibido { get; set; }
+    public int? DiferenciaSacos { get; set; }
+    public decimal? DiferenciaPeso { get; set; }
+    public string? ObservacionesRecepcion { get; set; }
+    public bool YaRecibido { get; set; }
+}
+
+// DTO NUEVO para el reporte de vehículos con compras ACTIVAS
+public class CompraVehiculoResumenDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public string? VehiculoPlaca { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public DateTime FRegistro { get; set; }
+    
+    public List<CompraDetalleDto> Detalles { get; set; } = new List<CompraDetalleDto>();
+}
+
+// DTO NUEVO para detalle de compra con lote
+public class CompraDetalleDto
+{
+    public int IdCompra { get; set; }
+    public string? CodigoLote { get; set; }
+    public int SacosEnviados { get; set; }
+    public decimal PesoEnviado { get; set; }
+    public decimal? SacosRecibidos { get; set; }
+    public decimal? PesoRecibido { get; set; }
+    public string? EstadoCompra { get; set; }
 }

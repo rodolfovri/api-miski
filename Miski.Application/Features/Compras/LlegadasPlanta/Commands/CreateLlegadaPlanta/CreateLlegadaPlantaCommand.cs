@@ -3,4 +3,4 @@ using Miski.Shared.DTOs.Compras;
 
 namespace Miski.Application.Features.Compras.LlegadasPlanta.Commands.CreateLlegadaPlanta;
 
-public record CreateLlegadaPlantaCommand(CreateLlegadaPlantaDto Data) : IRequest<LlegadaPlantaDto>;
+public record CreateLlegadaPlantaCommand(CreateLlegadaPlantaDto Data) : IRequest<CreateLlegadaPlantaResponseDto>;

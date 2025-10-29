@@ -27,5 +27,9 @@ public class CreateLoteValidator : AbstractValidator<CreateLoteCommand>
             .MaximumLength(50)
             .WithMessage("El código no puede exceder 50 caracteres")
             .When(x => !string.IsNullOrEmpty(x.Lote.Codigo));
+
+        RuleFor(x => x.Lote.MontoTotal)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("El monto total debe ser mayor o igual a 0");
     }
 }

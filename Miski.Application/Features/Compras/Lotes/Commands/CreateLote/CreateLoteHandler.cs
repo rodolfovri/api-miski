@@ -39,6 +39,7 @@ public class CreateLoteHandler : IRequestHandler<CreateLoteCommand, LoteDto>
             }
         }
 
+        // Crear el lote
         var lote = new Lote
         {
             IdCompra = dto.IdCompra,
@@ -48,6 +49,11 @@ public class CreateLoteHandler : IRequestHandler<CreateLoteCommand, LoteDto>
         };
 
         await _unitOfWork.Repository<Lote>().AddAsync(lote, cancellationToken);
+
+        // Actualizar el MontoTotal en la Compra
+        compra.MontoTotal = dto.MontoTotal;
+        await _unitOfWork.Repository<Compra>().UpdateAsync(compra, cancellationToken);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<LoteDto>(lote);

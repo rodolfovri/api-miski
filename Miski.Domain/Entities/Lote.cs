@@ -9,5 +9,5 @@ public class Lote
     public string? Codigo { get; set; }
     // Navigation properties
     public virtual Compra Compra { get; set; } = null!;
-    public virtual ICollection<LlegadaPlantaDetalle> LlegadaPlantaDetalles { get; set; } = new List<LlegadaPlantaDetalle>();
+    public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
 }

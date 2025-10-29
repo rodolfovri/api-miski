@@ -42,8 +42,8 @@ public class GetCompraVehiculoConLotesHandler : IRequestHandler<GetCompraVehicul
         // Obtener todos los lotes
         var todosLosLotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
 
-        // Obtener todos los detalles de llegada a planta
-        var todosLosDetallesLlegada = await _unitOfWork.Repository<LlegadaPlantaDetalle>()
+        // Obtener todas las llegadas a planta
+        var todasLasLlegadas = await _unitOfWork.Repository<LlegadaPlanta>()
             .GetAllAsync(cancellationToken);
 
         // Crear lista de compras con lotes
@@ -63,9 +63,18 @@ public class GetCompraVehiculoConLotesHandler : IRequestHandler<GetCompraVehicul
 
                 foreach (var lote in lotesDeCompra)
                 {
-                    // Buscar si este lote ya tiene registro en LlegadaPlantaDetalle
-                    var detalleRecepcion = todosLosDetallesLlegada
-                        .FirstOrDefault(dll => dll.IdLote == lote.IdLote);
+                    // Buscar si este lote ya tiene registro en LlegadaPlanta
+                    var llegadaPlanta = todasLasLlegadas
+                        .FirstOrDefault(lp => lp.IdLote == lote.IdLote);
+
+                    int? diferenciaSacos = null;
+                    decimal? diferenciaPeso = null;
+
+                    if (llegadaPlanta != null)
+                    {
+                        diferenciaSacos = lote.Sacos - (int)llegadaPlanta.SacosRecibidos;
+                        diferenciaPeso = lote.Peso - (decimal)llegadaPlanta.PesoRecibido;
+                    }
 
                     lotesDto.Add(new LoteConRecepcionDto
                     {
@@ -73,11 +82,13 @@ public class GetCompraVehiculoConLotesHandler : IRequestHandler<GetCompraVehicul
                         Codigo = lote.Codigo,
                         SacosAsignados = lote.Sacos,
                         PesoAsignado = lote.Peso,
-                        IdLlegadaDetalle = detalleRecepcion?.IdLlegadaDetalle,
-                        SacosRecibidos = detalleRecepcion?.SacosRecibidos,
-                        PesoRecibido = detalleRecepcion?.PesoRecibido,
-                        Observaciones = detalleRecepcion?.Observaciones,
-                        YaRecibido = detalleRecepcion != null
+                        IdLlegadaPlanta = llegadaPlanta?.IdLlegadaPlanta,
+                        SacosRecibidos = llegadaPlanta != null ? (decimal)llegadaPlanta.SacosRecibidos : null,
+                        PesoRecibido = llegadaPlanta != null ? (decimal)llegadaPlanta.PesoRecibido : null,
+                        DiferenciaSacos = diferenciaSacos,
+                        DiferenciaPeso = diferenciaPeso,
+                        Observaciones = llegadaPlanta?.Observaciones,
+                        YaRecibido = llegadaPlanta != null
                     });
                 }
 

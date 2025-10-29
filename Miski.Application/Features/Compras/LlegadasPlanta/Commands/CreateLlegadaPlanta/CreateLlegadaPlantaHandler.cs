@@ -7,7 +7,7 @@ using Miski.Shared.Exceptions;
 
 namespace Miski.Application.Features.Compras.LlegadasPlanta.Commands.CreateLlegadaPlanta;
 
-public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCommand, LlegadaPlantaDto>
+public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCommand, CreateLlegadaPlantaResponseDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<CreateLlegadaPlantaDto> _validator;
@@ -18,7 +18,7 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
         _validator = validator;
     }
 
-    public async Task<LlegadaPlantaDto> Handle(CreateLlegadaPlantaCommand request, CancellationToken cancellationToken)
+    public async Task<CreateLlegadaPlantaResponseDto> Handle(CreateLlegadaPlantaCommand request, CancellationToken cancellationToken)
     {
         // Validar el DTO
         var validationResult = await _validator.ValidateAsync(request.Data, cancellationToken);
@@ -30,12 +30,12 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
             throw new Shared.Exceptions.ValidationException(errors);
         }
 
-        // Verificar que la compra existe
-        var compra = await _unitOfWork.Repository<Compra>()
-            .GetByIdAsync(request.Data.IdCompra, cancellationToken);
+        // Verificar que el CompraVehiculo existe
+        var compraVehiculo = await _unitOfWork.Repository<CompraVehiculo>()
+            .GetByIdAsync(request.Data.IdCompraVehiculo, cancellationToken);
 
-        if (compra == null)
-            throw new NotFoundException("Compra", request.Data.IdCompra);
+        if (compraVehiculo == null)
+            throw new NotFoundException("CompraVehiculo", request.Data.IdCompraVehiculo);
 
         // Verificar que el usuario existe
         var usuario = await _unitOfWork.Repository<Persona>()
@@ -44,107 +44,105 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
         if (usuario == null)
             throw new NotFoundException("Usuario", request.Data.IdUsuario);
 
-        // Verificar que todos los lotes existen y pertenecen a la compra
+        // Obtener todos los lotes para validaciones
         var todosLosLotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
-        var idsLotes = request.Data.Detalles.Select(d => d.IdLote).ToList();
+        var todasLasCompras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
+        var llegadasExistentes = await _unitOfWork.Repository<LlegadaPlanta>().GetAllAsync(cancellationToken);
 
-        foreach (var idLote in idsLotes)
+        // Validar cada detalle
+        foreach (var detalle in request.Data.Detalles)
         {
-            var lote = todosLosLotes.FirstOrDefault(l => l.IdLote == idLote);
-            if (lote == null)
-                throw new NotFoundException("Lote", idLote);
+            // Verificar que la compra existe
+            var compra = todasLasCompras.FirstOrDefault(c => c.IdCompra == detalle.IdCompra);
+            if (compra == null)
+                throw new NotFoundException("Compra", detalle.IdCompra);
 
-            if (lote.IdCompra != request.Data.IdCompra)
+            // Verificar que el lote existe y pertenece a la compra
+            var lote = todosLosLotes.FirstOrDefault(l => l.IdLote == detalle.IdLote);
+            if (lote == null)
+                throw new NotFoundException("Lote", detalle.IdLote);
+
+            if (lote.IdCompra != detalle.IdCompra)
             {
                 var errors = new Dictionary<string, string[]>
                 {
-                    { "Lote", new[] { $"El lote con ID {idLote} no pertenece a la compra especificada" } }
+                    { "Lote", new[] { $"El lote con ID {detalle.IdLote} no pertenece a la compra {detalle.IdCompra}" } }
+                };
+                throw new Shared.Exceptions.ValidationException(errors);
+            }
+
+            // Verificar que el lote no haya sido registrado previamente
+            var loteYaRegistrado = llegadasExistentes.Any(lp => lp.IdLote == detalle.IdLote);
+            if (loteYaRegistrado)
+            {
+                var errors = new Dictionary<string, string[]>
+                {
+                    { "Lote", new[] { $"El lote con ID {detalle.IdLote} ya ha sido registrado en una llegada a planta" } }
                 };
                 throw new Shared.Exceptions.ValidationException(errors);
             }
         }
 
-        // Verificar que no haya duplicados en los lotes
-        var lotesUnicos = idsLotes.Distinct().ToList();
-        if (lotesUnicos.Count != idsLotes.Count)
-        {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Detalles", new[] { "No se pueden registrar lotes duplicados en una misma llegada" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
-        }
+        // Fecha de llegada automática
+        var fechaLlegada = DateTime.Now;
 
-        // Crear la llegada a planta
-        var llegadaPlanta = new LlegadaPlanta
-        {
-            IdCompra = request.Data.IdCompra,
-            IdUsuario = request.Data.IdUsuario,
-            FLlegada = request.Data.FLlegada,
-            Observaciones = request.Data.Observaciones,
-            Estado = "REGISTRADO"
-        };
+        var llegadasRegistradas = new List<LlegadaPlantaDto>();
 
-        await _unitOfWork.Repository<LlegadaPlanta>().AddAsync(llegadaPlanta, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        // Crear los detalles
-        var detalles = new List<LlegadaPlantaDetalle>();
-
+        // Crear las llegadas a planta para cada detalle
         foreach (var detalleDto in request.Data.Detalles)
         {
-            var detalle = new LlegadaPlantaDetalle
+            var lote = todosLosLotes.First(l => l.IdLote == detalleDto.IdLote);
+            var compra = todasLasCompras.First(c => c.IdCompra == detalleDto.IdCompra);
+
+            // Crear la llegada a planta
+            var llegadaPlanta = new LlegadaPlanta
             {
-                IdLlegadaPlanta = llegadaPlanta.IdLlegadaPlanta,
+                IdCompra = detalleDto.IdCompra,
+                IdUsuario = request.Data.IdUsuario,
                 IdLote = detalleDto.IdLote,
-                SacosRecibidos = detalleDto.SacosRecibidos,
-                PesoRecibido = detalleDto.PesoRecibido,
-                Observaciones = detalleDto.Observaciones
+                SacosRecibidos = (double)detalleDto.SacosRecibidos,
+                PesoRecibido = (double)detalleDto.PesoRecibido,
+                FLlegada = fechaLlegada,  // Fecha automática
+                Observaciones = detalleDto.Observaciones,
+                Estado = "REGISTRADO"
             };
 
-            await _unitOfWork.Repository<LlegadaPlantaDetalle>().AddAsync(detalle, cancellationToken);
-            detalles.Add(detalle);
-        }
+            await _unitOfWork.Repository<LlegadaPlanta>().AddAsync(llegadaPlanta, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+            // Calcular diferencias
+            int diferenciaSacos = lote.Sacos - (int)llegadaPlanta.SacosRecibidos;
+            decimal diferenciaPeso = lote.Peso - (decimal)llegadaPlanta.PesoRecibido;
+
+            // Agregar a la respuesta
+            llegadasRegistradas.Add(new LlegadaPlantaDto
+            {
+                IdLlegadaPlanta = llegadaPlanta.IdLlegadaPlanta,
+                IdCompra = llegadaPlanta.IdCompra,
+                IdUsuario = llegadaPlanta.IdUsuario,
+                IdLote = llegadaPlanta.IdLote,
+                SacosRecibidos = (decimal)llegadaPlanta.SacosRecibidos,
+                PesoRecibido = (decimal)llegadaPlanta.PesoRecibido,
+                FLlegada = llegadaPlanta.FLlegada,
+                Observaciones = llegadaPlanta.Observaciones,
+                Estado = llegadaPlanta.Estado,
+                CompraSerie = compra.Serie,
+                UsuarioNombre = $"{usuario.Nombres} {usuario.Apellidos}",
+                LoteCodigo = lote.Codigo,
+                SacosAsignados = lote.Sacos,
+                PesoAsignado = lote.Peso,
+                DiferenciaSacos = diferenciaSacos,
+                DiferenciaPeso = diferenciaPeso
+            });
+        }
 
         // Construir el DTO de respuesta
-        var detallesDto = new List<LlegadaPlantaDetalleDto>();
-
-        foreach (var detalle in detalles)
+        var resultado = new CreateLlegadaPlantaResponseDto
         {
-            var lote = todosLosLotes.FirstOrDefault(l => l.IdLote == detalle.IdLote);
-            
-            if (lote != null)
-            {
-                detallesDto.Add(new LlegadaPlantaDetalleDto
-                {
-                    IdLlegadaDetalle = detalle.IdLlegadaDetalle,
-                    IdLlegadaPlanta = detalle.IdLlegadaPlanta,
-                    IdLote = detalle.IdLote,
-                    SacosRecibidos = detalle.SacosRecibidos,
-                    PesoRecibido = detalle.PesoRecibido,
-                    Observaciones = detalle.Observaciones,
-                    LoteCodigo = lote.Codigo,
-                    SacosAsignados = lote.Sacos,
-                    PesoAsignado = lote.Peso,
-                    DiferenciaSacos = lote.Sacos - detalle.SacosRecibidos,
-                    DiferenciaPeso = lote.Peso - detalle.PesoRecibido
-                });
-            }
-        }
-
-        var resultado = new LlegadaPlantaDto
-        {
-            IdLlegadaPlanta = llegadaPlanta.IdLlegadaPlanta,
-            IdCompra = llegadaPlanta.IdCompra,
-            IdUsuario = llegadaPlanta.IdUsuario,
-            FLlegada = llegadaPlanta.FLlegada,
-            Observaciones = llegadaPlanta.Observaciones,
-            Estado = llegadaPlanta.Estado,
-            CompraSerie = compra.Serie,
-            UsuarioNombre = $"{usuario.Nombres} {usuario.Apellidos}",
-            Detalles = detallesDto
+            IdCompraVehiculo = request.Data.IdCompraVehiculo,
+            TotalLotesRecibidos = llegadasRegistradas.Count,
+            FLlegada = fechaLlegada,
+            LlegadasRegistradas = llegadasRegistradas
         };
 
         return resultado;

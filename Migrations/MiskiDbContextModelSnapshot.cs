@@ -212,9 +212,14 @@ namespace Miski.Api.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime?>("FLlegada")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<int>("IdCompra")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdLote")
                         .HasColumnType("int");
 
                     b.Property<int>("IdUsuario")
@@ -224,47 +229,23 @@ namespace Miski.Api.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<double>("PesoRecibido")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("float(18)");
+
+                    b.Property<double>("SacosRecibidos")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("float(18)");
+
                     b.HasKey("IdLlegadaPlanta");
 
                     b.HasIndex("IdCompra");
 
+                    b.HasIndex("IdLote");
+
                     b.HasIndex("IdUsuario");
 
                     b.ToTable("LlegadaPlanta", (string)null);
-                });
-
-            modelBuilder.Entity("Miski.Domain.Entities.LlegadaPlantaDetalle", b =>
-                {
-                    b.Property<int>("IdLlegadaDetalle")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLlegadaDetalle"));
-
-                    b.Property<int>("IdLlegadaPlanta")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdLote")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Observaciones")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<decimal>("PesoRecibido")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("SacosRecibidos")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdLlegadaDetalle");
-
-                    b.HasIndex("IdLlegadaPlanta");
-
-                    b.HasIndex("IdLote");
-
-                    b.ToTable("LlegadaPlantaDetalle", (string)null);
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Lote", b =>
@@ -1255,6 +1236,13 @@ namespace Miski.Api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_LlegadaPlanta_Compra");
 
+                    b.HasOne("Miski.Domain.Entities.Lote", "Lote")
+                        .WithMany("LlegadasPlanta")
+                        .HasForeignKey("IdLote")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_LlegadaPlanta_Lote");
+
                     b.HasOne("Miski.Domain.Entities.Persona", "Usuario")
                         .WithMany("LlegadasPlanta")
                         .HasForeignKey("IdUsuario")
@@ -1264,28 +1252,9 @@ namespace Miski.Api.Migrations
 
                     b.Navigation("Compra");
 
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Miski.Domain.Entities.LlegadaPlantaDetalle", b =>
-                {
-                    b.HasOne("Miski.Domain.Entities.LlegadaPlanta", "LlegadaPlanta")
-                        .WithMany("LlegadaPlantaDetalles")
-                        .HasForeignKey("IdLlegadaPlanta")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_LlegadaDetalle_Llegada");
-
-                    b.HasOne("Miski.Domain.Entities.Lote", "Lote")
-                        .WithMany("LlegadaPlantaDetalles")
-                        .HasForeignKey("IdLote")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_LlegadaDetalle_Lote");
-
-                    b.Navigation("LlegadaPlanta");
-
                     b.Navigation("Lote");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Lote", b =>
@@ -1660,14 +1629,9 @@ namespace Miski.Api.Migrations
                     b.Navigation("CompraVehiculoDetalles");
                 });
 
-            modelBuilder.Entity("Miski.Domain.Entities.LlegadaPlanta", b =>
-                {
-                    b.Navigation("LlegadaPlantaDetalles");
-                });
-
             modelBuilder.Entity("Miski.Domain.Entities.Lote", b =>
                 {
-                    b.Navigation("LlegadaPlantaDetalles");
+                    b.Navigation("LlegadasPlanta");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Modulo", b =>

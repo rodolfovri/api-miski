@@ -205,6 +205,29 @@ public class ComprasController : ControllerBase
     /// <summary>
     /// Crea un nuevo lote para una compra
     /// </summary>
+    /// <remarks>
+    /// Crea un nuevo lote y actualiza el MontoTotal de la compra asociada.
+    /// 
+    /// Campos requeridos:
+    /// - IdCompra: ID de la compra a la que pertenece el lote
+    /// - Peso: Peso del lote en kg (mayor a 0, máximo 10,000)
+    /// - Sacos: Cantidad de sacos (mayor a 0, máximo 500)
+    /// - MontoTotal: Monto total que se actualizará en la compra
+    /// 
+    /// Campos opcionales:
+    /// - Codigo: Código único del lote (máximo 50 caracteres, no puede estar duplicado en la misma compra)
+    /// 
+    /// Ejemplo de request:
+    /// {
+    ///   "idCompra": 1,
+    ///   "peso": 1500.50,
+    ///   "sacos": 30,
+    ///   "codigo": "LOTE-2024-001",
+    ///   "montoTotal": 8250.00
+    /// }
+    /// 
+    /// NOTA: El MontoTotal proporcionado se actualizará en la tabla Compra.
+    /// </remarks>
     [HttpPost("lotes")]
     public async Task<ActionResult<ApiResponse<LoteDto>>> CreateLote(
         [FromBody] CreateLoteDto request,

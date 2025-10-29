@@ -7,17 +7,13 @@ public class CreateLlegadaPlantaValidator : AbstractValidator<CreateLlegadaPlant
 {
     public CreateLlegadaPlantaValidator()
     {
-        RuleFor(x => x.IdCompra)
+        RuleFor(x => x.IdCompraVehiculo)
             .GreaterThan(0)
-            .WithMessage("El ID de la compra es obligatorio");
+            .WithMessage("El ID del CompraVehiculo es obligatorio");
 
         RuleFor(x => x.IdUsuario)
             .GreaterThan(0)
             .WithMessage("El ID del usuario es obligatorio");
-
-        RuleFor(x => x.FLlegada)
-            .NotNull()
-            .WithMessage("La fecha de llegada es obligatoria");
 
         RuleFor(x => x.Detalles)
             .NotEmpty()
@@ -25,6 +21,10 @@ public class CreateLlegadaPlantaValidator : AbstractValidator<CreateLlegadaPlant
 
         RuleForEach(x => x.Detalles).ChildRules(detalle =>
         {
+            detalle.RuleFor(d => d.IdCompra)
+                .GreaterThan(0)
+                .WithMessage("El ID de la compra es obligatorio");
+
             detalle.RuleFor(d => d.IdLote)
                 .GreaterThan(0)
                 .WithMessage("El ID del lote es obligatorio");

@@ -32,41 +32,18 @@ public class GetLlegadaPlantaByIdHandler : IRequestHandler<GetLlegadaPlantaByIdQ
         var usuario = await _unitOfWork.Repository<Persona>()
             .GetByIdAsync(llegadaPlanta.IdUsuario, cancellationToken);
 
-        // Obtener los detalles de la llegada
-        var detalles = await _unitOfWork.Repository<LlegadaPlantaDetalle>()
-            .GetAllAsync(cancellationToken);
-        
-        var detallesLlegada = detalles
-            .Where(d => d.IdLlegadaPlanta == llegadaPlanta.IdLlegadaPlanta)
-            .ToList();
+        // Cargar el lote
+        var lote = await _unitOfWork.Repository<Lote>()
+            .GetByIdAsync(llegadaPlanta.IdLote, cancellationToken);
 
-        // Obtener todos los lotes para cargar información
-        var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
+        // Calcular diferencias
+        int diferenciaSacos = 0;
+        decimal diferenciaPeso = 0;
 
-        // Crear lista de detalles DTO
-        var detallesDto = new List<LlegadaPlantaDetalleDto>();
-
-        foreach (var detalle in detallesLlegada)
+        if (lote != null)
         {
-            var lote = lotes.FirstOrDefault(l => l.IdLote == detalle.IdLote);
-            
-            if (lote != null)
-            {
-                detallesDto.Add(new LlegadaPlantaDetalleDto
-                {
-                    IdLlegadaDetalle = detalle.IdLlegadaDetalle,
-                    IdLlegadaPlanta = detalle.IdLlegadaPlanta,
-                    IdLote = detalle.IdLote,
-                    SacosRecibidos = detalle.SacosRecibidos,
-                    PesoRecibido = detalle.PesoRecibido,
-                    Observaciones = detalle.Observaciones,
-                    LoteCodigo = lote.Codigo,
-                    SacosAsignados = lote.Sacos,
-                    PesoAsignado = lote.Peso,
-                    DiferenciaSacos = lote.Sacos - detalle.SacosRecibidos,
-                    DiferenciaPeso = lote.Peso - detalle.PesoRecibido
-                });
-            }
+            diferenciaSacos = lote.Sacos - (int)llegadaPlanta.SacosRecibidos;
+            diferenciaPeso = lote.Peso - (decimal)llegadaPlanta.PesoRecibido;
         }
 
         // Crear el DTO de respuesta
@@ -75,12 +52,19 @@ public class GetLlegadaPlantaByIdHandler : IRequestHandler<GetLlegadaPlantaByIdQ
             IdLlegadaPlanta = llegadaPlanta.IdLlegadaPlanta,
             IdCompra = llegadaPlanta.IdCompra,
             IdUsuario = llegadaPlanta.IdUsuario,
+            IdLote = llegadaPlanta.IdLote,
+            SacosRecibidos = (decimal)llegadaPlanta.SacosRecibidos,
+            PesoRecibido = (decimal)llegadaPlanta.PesoRecibido,
             FLlegada = llegadaPlanta.FLlegada,
             Observaciones = llegadaPlanta.Observaciones,
             Estado = llegadaPlanta.Estado,
             CompraSerie = compra?.Serie,
             UsuarioNombre = usuario != null ? $"{usuario.Nombres} {usuario.Apellidos}" : null,
-            Detalles = detallesDto
+            LoteCodigo = lote?.Codigo,
+            SacosAsignados = lote?.Sacos ?? 0,
+            PesoAsignado = lote?.Peso ?? 0,
+            DiferenciaSacos = diferenciaSacos,
+            DiferenciaPeso = diferenciaPeso
         };
 
         return resultado;

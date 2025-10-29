@@ -1,0 +1,88 @@
+﻿using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetLlegadaPlantaById;
+
+public class GetLlegadaPlantaByIdHandler : IRequestHandler<GetLlegadaPlantaByIdQuery, LlegadaPlantaDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public GetLlegadaPlantaByIdHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<LlegadaPlantaDto> Handle(GetLlegadaPlantaByIdQuery request, CancellationToken cancellationToken)
+    {
+        // Obtener la llegada a planta
+        var llegadaPlanta = await _unitOfWork.Repository<LlegadaPlanta>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (llegadaPlanta == null)
+            throw new NotFoundException("LlegadaPlanta", request.Id);
+
+        // Cargar la compra
+        var compra = await _unitOfWork.Repository<Compra>()
+            .GetByIdAsync(llegadaPlanta.IdCompra, cancellationToken);
+
+        // Cargar el usuario
+        var usuario = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(llegadaPlanta.IdUsuario, cancellationToken);
+
+        // Obtener los detalles de la llegada
+        var detalles = await _unitOfWork.Repository<LlegadaPlantaDetalle>()
+            .GetAllAsync(cancellationToken);
+        
+        var detallesLlegada = detalles
+            .Where(d => d.IdLlegadaPlanta == llegadaPlanta.IdLlegadaPlanta)
+            .ToList();
+
+        // Obtener todos los lotes para cargar información
+        var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
+
+        // Crear lista de detalles DTO
+        var detallesDto = new List<LlegadaPlantaDetalleDto>();
+
+        foreach (var detalle in detallesLlegada)
+        {
+            var lote = lotes.FirstOrDefault(l => l.IdLote == detalle.IdLote);
+            
+            if (lote != null)
+            {
+                detallesDto.Add(new LlegadaPlantaDetalleDto
+                {
+                    IdLlegadaDetalle = detalle.IdLlegadaDetalle,
+                    IdLlegadaPlanta = detalle.IdLlegadaPlanta,
+                    IdLote = detalle.IdLote,
+                    SacosRecibidos = detalle.SacosRecibidos,
+                    PesoRecibido = detalle.PesoRecibido,
+                    Observaciones = detalle.Observaciones,
+                    LoteCodigo = lote.Codigo,
+                    SacosAsignados = lote.Sacos,
+                    PesoAsignado = lote.Peso,
+                    DiferenciaSacos = lote.Sacos - detalle.SacosRecibidos,
+                    DiferenciaPeso = lote.Peso - detalle.PesoRecibido
+                });
+            }
+        }
+
+        // Crear el DTO de respuesta
+        var resultado = new LlegadaPlantaDto
+        {
+            IdLlegadaPlanta = llegadaPlanta.IdLlegadaPlanta,
+            IdCompra = llegadaPlanta.IdCompra,
+            IdUsuario = llegadaPlanta.IdUsuario,
+            FLlegada = llegadaPlanta.FLlegada,
+            Observaciones = llegadaPlanta.Observaciones,
+            Estado = llegadaPlanta.Estado,
+            CompraSerie = compra?.Serie,
+            UsuarioNombre = usuario != null ? $"{usuario.Nombres} {usuario.Apellidos}" : null,
+            Detalles = detallesDto
+        };
+
+        return resultado;
+    }
+}

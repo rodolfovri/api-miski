@@ -36,6 +36,7 @@ public class CreateLoteDto
     public decimal Peso { get; set; }
     public int Sacos { get; set; }
     public string? Codigo { get; set; }
+    public decimal MontoTotal { get; set; }  // Monto total que se seteará en la Compra
 }
 
 public class UpdateLoteDto

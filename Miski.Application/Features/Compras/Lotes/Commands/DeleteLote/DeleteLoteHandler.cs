@@ -23,8 +23,8 @@ public class DeleteLoteHandler : IRequestHandler<DeleteLoteCommand, Unit>
             throw new NotFoundException("Lote", request.Id);
 
         // Validar que el lote no tenga llegadas de planta asociadas
-        var llegadaDetalles = await _unitOfWork.Repository<LlegadaPlantaDetalle>().GetAllAsync(cancellationToken);
-        if (llegadaDetalles.Any(ld => ld.IdLote == request.Id))
+        var llegadasPlanta = await _unitOfWork.Repository<LlegadaPlanta>().GetAllAsync(cancellationToken);
+        if (llegadasPlanta.Any(lp => lp.IdLote == request.Id))
         {
             throw new ValidationException("No se puede eliminar el lote porque tiene llegadas de planta asociadas");
         }

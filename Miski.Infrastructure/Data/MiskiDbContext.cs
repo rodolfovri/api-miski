@@ -27,7 +27,6 @@ public class MiskiDbContext : DbContext
     public DbSet<Compra> Compras { get; set; }
     public DbSet<Lote> Lotes { get; set; }
     public DbSet<LlegadaPlanta> LlegadasPlanta { get; set; }
-    public DbSet<LlegadaPlantaDetalle> LlegadaPlantaDetalles { get; set; }
     public DbSet<TrackingPersona> TrackingPersonas { get; set; }
     public DbSet<CompraVehiculo> CompraVehiculos { get; set; }
     public DbSet<Modulo> Modulos { get; set; }
@@ -478,6 +477,9 @@ public class MiskiDbContext : DbContext
             entity.HasKey(e => e.IdLlegadaPlanta);
             entity.Property(e => e.Observaciones).HasMaxLength(255);
             entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.FLlegada).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.SacosRecibidos).HasPrecision(18, 2).IsRequired();
+            entity.Property(e => e.PesoRecibido).HasPrecision(18, 2).IsRequired();
 
             entity.HasOne(d => d.Compra)
                 .WithMany(p => p.LlegadasPlanta)
@@ -491,29 +493,13 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_LlegadaPlanta_Ingeniero");
 
-            entity.ToTable("LlegadaPlanta");
-        });
-
-        // LlegadaPlantaDetalle configuration
-        modelBuilder.Entity<LlegadaPlantaDetalle>(entity =>
-        {
-            entity.HasKey(e => e.IdLlegadaDetalle);
-            entity.Property(e => e.PesoRecibido).HasPrecision(18, 2).IsRequired();
-            entity.Property(e => e.Observaciones).HasMaxLength(255);
-
-            entity.HasOne(d => d.LlegadaPlanta)
-                .WithMany(p => p.LlegadaPlantaDetalles)
-                .HasForeignKey(d => d.IdLlegadaPlanta)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_LlegadaDetalle_Llegada");
-
             entity.HasOne(d => d.Lote)
-                .WithMany(p => p.LlegadaPlantaDetalles)
+                .WithMany(p => p.LlegadasPlanta)
                 .HasForeignKey(d => d.IdLote)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_LlegadaDetalle_Lote");
+                .HasConstraintName("FK_LlegadaPlanta_Lote");
 
-            entity.ToTable("LlegadaPlantaDetalle");
+            entity.ToTable("LlegadaPlanta");
         });
 
         // TrackingPersona configuration
