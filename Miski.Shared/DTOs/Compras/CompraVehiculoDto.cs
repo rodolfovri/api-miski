@@ -3,11 +3,14 @@ namespace Miski.Shared.DTOs.Compras;
 public class CompraVehiculoDto
 {
     public int IdCompraVehiculo { get; set; }
+    public int IdPersona { get; set; }
     public int IdVehiculo { get; set; }
     public string GuiaRemision { get; set; } = string.Empty;
+    public string? Estado { get; set; }
     public DateTime FRegistro { get; set; }
     
     // Información adicional
+    public string? PersonaNombre { get; set; }
     public string? VehiculoPlaca { get; set; }
     public string? VehiculoMarca { get; set; }
     public string? VehiculoModelo { get; set; }
@@ -36,11 +39,14 @@ public class CompraVehiculoDetalleDto
 public class CompraVehiculoConDisponiblesDto
 {
     public int IdCompraVehiculo { get; set; }
+    public int IdPersona { get; set; }
     public int IdVehiculo { get; set; }
     public string GuiaRemision { get; set; } = string.Empty;
+    public string? Estado { get; set; }
     public DateTime FRegistro { get; set; }
     
     // Información adicional
+    public string? PersonaNombre { get; set; }
     public string? VehiculoPlaca { get; set; }
     public string? VehiculoMarca { get; set; }
     public string? VehiculoModelo { get; set; }
@@ -52,6 +58,7 @@ public class CompraVehiculoConDisponiblesDto
 // DTO para crear asignación de compras a vehículo
 public class CreateCompraVehiculoDto
 {
+    public int IdPersona { get; set; }
     public int IdVehiculo { get; set; }
     public string GuiaRemision { get; set; } = string.Empty;
     public List<int> IdCompras { get; set; } = new List<int>();
@@ -61,6 +68,7 @@ public class CreateCompraVehiculoDto
 public class UpdateCompraVehiculoDto
 {
     public int IdCompraVehiculo { get; set; }
+    public int IdPersona { get; set; }
     public int IdVehiculo { get; set; }
     public string GuiaRemision { get; set; } = string.Empty;
     public List<int> IdCompras { get; set; } = new List<int>();

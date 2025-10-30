@@ -22,6 +22,13 @@ public class CreateCompraVehiculoHandler : IRequestHandler<CreateCompraVehiculoC
     {
         var dto = request.CompraVehiculo;
 
+        // Validar que la persona existe
+        var persona = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(dto.IdPersona, cancellationToken);
+        
+        if (persona == null)
+            throw new NotFoundException("Persona", dto.IdPersona);
+
         // Validar que el vehículo existe
         var vehiculo = await _unitOfWork.Repository<Vehiculo>()
             .GetByIdAsync(dto.IdVehiculo, cancellationToken);
@@ -63,8 +70,10 @@ public class CreateCompraVehiculoHandler : IRequestHandler<CreateCompraVehiculoC
         // Crear el registro de CompraVehiculo
         var compraVehiculo = new CompraVehiculo
         {
+            IdPersona = dto.IdPersona,
             IdVehiculo = dto.IdVehiculo,
             GuiaRemision = dto.GuiaRemision.ToUpper().Trim(),
+            Estado = "ACTIVO",
             FRegistro = DateTime.Now
         };
 
@@ -88,6 +97,7 @@ public class CreateCompraVehiculoHandler : IRequestHandler<CreateCompraVehiculoC
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // Cargar relaciones para el DTO
+        compraVehiculo.Persona = persona;
         compraVehiculo.Vehiculo = vehiculo;
         compraVehiculo.CompraVehiculoDetalles = detalles;
 

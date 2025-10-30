@@ -156,6 +156,10 @@ namespace Miski.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCompraVehiculo"));
 
+                    b.Property<string>("Estado")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<DateTime>("FRegistro")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -166,10 +170,15 @@ namespace Miski.Api.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("IdPersona")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdVehiculo")
                         .HasColumnType("int");
 
                     b.HasKey("IdCompraVehiculo");
+
+                    b.HasIndex("IdPersona");
 
                     b.HasIndex("IdVehiculo");
 
@@ -370,6 +379,9 @@ namespace Miski.Api.Migrations
                     b.Property<DateTime?>("FAdelanto")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("FAnulacion")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("FAprobacionContadora")
                         .HasColumnType("datetime2");
 
@@ -407,6 +419,9 @@ namespace Miski.Api.Migrations
                     b.Property<int?>("IdTipoDocumento")
                         .HasColumnType("int");
 
+                    b.Property<int?>("IdUsuarioAnulacion")
+                        .HasColumnType("int");
+
                     b.Property<int?>("IdVariedadProducto")
                         .HasColumnType("int");
 
@@ -417,6 +432,10 @@ namespace Miski.Api.Migrations
                     b.Property<decimal?>("MontoTotalPago")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("MotivoAnulacion")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("NroCuentaBancaria")
                         .HasMaxLength(20)
@@ -486,6 +505,8 @@ namespace Miski.Api.Migrations
                     b.HasIndex("IdComisionista");
 
                     b.HasIndex("IdTipoDocumento");
+
+                    b.HasIndex("IdUsuarioAnulacion");
 
                     b.HasIndex("IdVariedadProducto");
 
@@ -1196,12 +1217,21 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.CompraVehiculo", b =>
                 {
+                    b.HasOne("Miski.Domain.Entities.Persona", "Persona")
+                        .WithMany("CompraVehiculos")
+                        .HasForeignKey("IdPersona")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_CompraVehiculo_Persona");
+
                     b.HasOne("Miski.Domain.Entities.Vehiculo", "Vehiculo")
                         .WithMany("CompraVehiculos")
                         .HasForeignKey("IdVehiculo")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_CompraVehiculo_Vehiculo");
+
+                    b.Navigation("Persona");
 
                     b.Navigation("Vehiculo");
                 });
@@ -1243,7 +1273,7 @@ namespace Miski.Api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_LlegadaPlanta_Lote");
 
-                    b.HasOne("Miski.Domain.Entities.Persona", "Usuario")
+                    b.HasOne("Miski.Domain.Entities.Usuario", "Usuario")
                         .WithMany("LlegadasPlanta")
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1302,6 +1332,12 @@ namespace Miski.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_Negociacion_TipoDocumento");
 
+                    b.HasOne("Miski.Domain.Entities.Usuario", "UsuarioAnulacion")
+                        .WithMany()
+                        .HasForeignKey("IdUsuarioAnulacion")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_Negociacion_UsuarioAnulacion");
+
                     b.HasOne("Miski.Domain.Entities.VariedadProducto", "VariedadProducto")
                         .WithMany("Negociaciones")
                         .HasForeignKey("IdVariedadProducto")
@@ -1309,7 +1345,7 @@ namespace Miski.Api.Migrations
                         .HasConstraintName("FK_Negociacion_VariedadProducto");
 
                     b.HasOne("Miski.Domain.Entities.Persona", "Proveedor")
-                        .WithMany("NegociacionesProveedor")
+                        .WithMany()
                         .HasForeignKey("ProveedorIdPersona");
 
                     b.HasOne("Miski.Domain.Entities.Usuario", "RechazadoPorUsuarioContadora")
@@ -1339,6 +1375,8 @@ namespace Miski.Api.Migrations
                     b.Navigation("RechazadoPorUsuarioIngeniero");
 
                     b.Navigation("TipoDocumento");
+
+                    b.Navigation("UsuarioAnulacion");
 
                     b.Navigation("VariedadProducto");
                 });
@@ -1655,11 +1693,9 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Persona", b =>
                 {
-                    b.Navigation("LlegadasPlanta");
+                    b.Navigation("CompraVehiculos");
 
                     b.Navigation("NegociacionesComisionista");
-
-                    b.Navigation("NegociacionesProveedor");
 
                     b.Navigation("PersonaCategorias");
 
@@ -1724,6 +1760,8 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Usuario", b =>
                 {
+                    b.Navigation("LlegadasPlanta");
+
                     b.Navigation("TipoCambios");
 
                     b.Navigation("UsuarioRoles");

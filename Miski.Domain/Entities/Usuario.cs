@@ -15,4 +15,5 @@ public class Usuario
     public virtual Persona? Persona { get; set; }
     public virtual Collection<TipoCambio> TipoCambios { get; set; } = new Collection<TipoCambio>();
     public virtual Collection<UsuarioRol> UsuarioRoles { get; set; } = new Collection<UsuarioRol>();
+    public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
 }

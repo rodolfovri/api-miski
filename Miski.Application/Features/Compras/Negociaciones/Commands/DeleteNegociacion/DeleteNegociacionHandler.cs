@@ -22,23 +22,44 @@ public class DeleteNegociacionHandler : IRequestHandler<DeleteNegociacionCommand
         if (negociacion == null)
             throw new NotFoundException("Negociacion", request.Id);
 
-        // Validar que no tenga compras asociadas
-        var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
-        if (compras.Any(c => c.IdNegociacion == request.Id))
+        // Validar que el motivo de anulación no esté vacío
+        if (string.IsNullOrWhiteSpace(request.MotivoAnulacion))
         {
-            throw new ValidationException("No se puede eliminar la negociación porque tiene compras asociadas");
+            throw new ValidationException("El motivo de anulación es obligatorio");
         }
 
-        // Validar que no esté aprobada
-        if (negociacion.EstadoAprobacionIngeniero == "APROBADO" || negociacion.Estado == "APROBADO")
+        // Validar los estados permitidos para anulación
+        bool puedeAnular = false;
+
+        // Caso 1: Estado EN PROCESO y EstadoAprobacionIngeniero PENDIENTE
+        if (negociacion.Estado == "EN PROCESO" && negociacion.EstadoAprobacionIngeniero == "PENDIENTE")
         {
-            throw new ValidationException("No se puede eliminar una negociación que ya ha sido aprobada");
+            puedeAnular = true;
+        }
+        // Caso 2: Estado APROBADO y EstadoAprobacionIngeniero APROBADO
+        else if (negociacion.Estado == "APROBADO" && negociacion.EstadoAprobacionIngeniero == "APROBADO")
+        {
+            puedeAnular = true;
+        }
+        // Caso 3: Estado EN REVISIÓN y EstadoAprobacionContadora PENDIENTE
+        else if (negociacion.Estado == "EN REVISIÓN" && negociacion.EstadoAprobacionContadora == "PENDIENTE")
+        {
+            puedeAnular = true;
         }
 
-        // TODO: Eliminar fotos del almacenamiento si las hubiera
+        if (!puedeAnular)
+        {
+            throw new ValidationException("No se puede anular la negociación en su estado actual. Solo se pueden anular negociaciones en estados: EN PROCESO (Pendiente de ingeniero), APROBADO (Aprobado por ingeniero) o EN REVISIÓN (Pendiente de contadora)");
+        }
 
-        // Cambiar estado a ANULADO
+        // Anular la negociación
         negociacion.Estado = "ANULADO";
+        negociacion.EstadoAprobacionIngeniero = "ANULADO";
+        negociacion.EstadoAprobacionContadora = "ANULADO";
+        negociacion.IdUsuarioAnulacion = request.IdUsuarioAnulacion;
+        negociacion.MotivoAnulacion = request.MotivoAnulacion;
+        negociacion.FAnulacion = DateTime.Now;
+
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

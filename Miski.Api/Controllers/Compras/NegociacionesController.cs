@@ -201,23 +201,29 @@ public class NegociacionesController : ControllerBase
     }
 
     /// <summary>
-    /// Elimina (inactiva) una negociación
+    /// Anula una negociación
     /// </summary>
     /// <remarks>
-    /// NOTA: No se puede eliminar una negociación que tiene compras asociadas.
-    /// El registro no se elimina físicamente, solo se marca como INACTIVO.
+    /// NOTA: Solo se pueden anular negociaciones en los siguientes estados:
+    /// 1. Estado EN PROCESO y EstadoAprobacionIngeniero PENDIENTE
+    /// 2. Estado APROBADO y EstadoAprobacionIngeniero APROBADO
+    /// 3. Estado EN REVISIÓN y EstadoAprobacionContadora PENDIENTE
+    /// 
+    /// Los campos Estado, EstadoAprobacionIngeniero y EstadoAprobacionContadora se cambiarán a ANULADO.
+    /// Se debe proporcionar IdUsuarioAnulacion y MotivoAnulacion.
     /// </remarks>
     [HttpDelete("{id}")]
     public async Task<ActionResult<ApiResponse>> DeleteNegociacion(
         int id,
+        [FromBody] AnularNegociacionDto request,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var command = new DeleteNegociacionCommand(id);
+            var command = new DeleteNegociacionCommand(id, request.IdUsuarioAnulacion, request.MotivoAnulacion);
             await _mediator.Send(command, cancellationToken);
 
-            return Ok(ApiResponse.SuccessResult("Negociación eliminada exitosamente"));
+            return Ok(ApiResponse.SuccessResult("Negociación anulada exitosamente"));
         }
         catch (Shared.Exceptions.NotFoundException ex)
         {

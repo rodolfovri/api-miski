@@ -7,6 +7,10 @@ public class CreateCompraVehiculoValidator : AbstractValidator<CreateCompraVehic
 {
     public CreateCompraVehiculoValidator()
     {
+        RuleFor(x => x.IdPersona)
+            .GreaterThan(0)
+            .WithMessage("Debe seleccionar una persona válida");
+
         RuleFor(x => x.IdVehiculo)
             .GreaterThan(0)
             .WithMessage("Debe seleccionar un vehículo válido");

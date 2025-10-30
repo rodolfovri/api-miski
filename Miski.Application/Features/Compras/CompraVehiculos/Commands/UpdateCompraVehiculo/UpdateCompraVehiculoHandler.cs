@@ -29,6 +29,19 @@ public class UpdateCompraVehiculoHandler : IRequestHandler<UpdateCompraVehiculoC
         if (compraVehiculo == null)
             throw new NotFoundException("CompraVehiculo", request.Id);
 
+        // Validar que no esté en estado ENTREGADO
+        if (compraVehiculo.Estado == "ENTREGADO")
+        {
+            throw new ValidationException("No se puede editar una asignación de compra a vehículo que ya ha sido entregada y recepcionada en planta");
+        }
+
+        // Validar que la persona existe
+        var persona = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(dto.IdPersona, cancellationToken);
+        
+        if (persona == null)
+            throw new NotFoundException("Persona", dto.IdPersona);
+
         // Validar que el vehículo existe
         var vehiculo = await _unitOfWork.Repository<Vehiculo>()
             .GetByIdAsync(dto.IdVehiculo, cancellationToken);
@@ -74,6 +87,7 @@ public class UpdateCompraVehiculoHandler : IRequestHandler<UpdateCompraVehiculoC
             throw new ValidationException($"La guía de remisión '{dto.GuiaRemision}' ya está registrada");
 
         // Actualizar la cabecera
+        compraVehiculo.IdPersona = dto.IdPersona;
         compraVehiculo.IdVehiculo = dto.IdVehiculo;
         compraVehiculo.GuiaRemision = dto.GuiaRemision.ToUpper().Trim();
 
@@ -111,6 +125,7 @@ public class UpdateCompraVehiculoHandler : IRequestHandler<UpdateCompraVehiculoC
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // Cargar relaciones para el DTO
+        compraVehiculo.Persona = persona;
         compraVehiculo.Vehiculo = vehiculo;
         compraVehiculo.CompraVehiculoDetalles = nuevosDetalles;
 

@@ -2,4 +2,4 @@ using MediatR;
 
 namespace Miski.Application.Features.Compras.Negociaciones.Commands.DeleteNegociacion;
 
-public record DeleteNegociacionCommand(int Id) : IRequest<Unit>;
+public record DeleteNegociacionCommand(int Id, int IdUsuarioAnulacion, string MotivoAnulacion) : IRequest<Unit>;

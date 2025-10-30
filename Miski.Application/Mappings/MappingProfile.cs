@@ -140,6 +140,8 @@ public class MappingProfile : Profile
 
         // Mapeos para Compras - CompraVehiculo
         CreateMap<CompraVehiculo, Miski.Shared.DTOs.Compras.CompraVehiculoDto>()
+            .ForMember(dest => dest.PersonaNombre, opt => opt.MapFrom(src => 
+                src.Persona != null ? $"{src.Persona.Nombres} {src.Persona.Apellidos}" : string.Empty))
             .ForMember(dest => dest.VehiculoPlaca, opt => opt.MapFrom(src => 
                 src.Vehiculo != null ? src.Vehiculo.Placa : string.Empty))
             .ForMember(dest => dest.VehiculoMarca, opt => opt.MapFrom(src => 

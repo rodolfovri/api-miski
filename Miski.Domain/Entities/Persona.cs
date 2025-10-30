@@ -18,8 +18,7 @@ public class Persona
     public virtual Usuario? Usuario { get; set; }
     public virtual ICollection<PersonaCategoria> PersonaCategorias { get; set; } = new List<PersonaCategoria>();
     public virtual ICollection<PersonaUbicacion> PersonaUbicaciones { get; set; } = new List<PersonaUbicacion>();
-    public virtual ICollection<Negociacion> NegociacionesProveedor { get; set; } = new List<Negociacion>();
     public virtual ICollection<Negociacion> NegociacionesComisionista { get; set; } = new List<Negociacion>();
-    public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
     public virtual ICollection<TrackingPersona> TrackingPersonas { get; set; } = new List<TrackingPersona>();
+    public virtual ICollection<CompraVehiculo> CompraVehiculos { get; set; } = new List<CompraVehiculo>();
 }

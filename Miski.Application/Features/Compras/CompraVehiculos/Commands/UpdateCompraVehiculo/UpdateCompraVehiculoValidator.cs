@@ -11,6 +11,10 @@ public class UpdateCompraVehiculoValidator : AbstractValidator<UpdateCompraVehic
             .GreaterThan(0)
             .WithMessage("El ID de la asignación debe ser válido");
 
+        RuleFor(x => x.IdPersona)
+            .GreaterThan(0)
+            .WithMessage("Debe seleccionar una persona válida");
+
         RuleFor(x => x.IdVehiculo)
             .GreaterThan(0)
             .WithMessage("Debe seleccionar un vehículo válido");

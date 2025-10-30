@@ -119,3 +119,10 @@ public class RechazarNegociacionContadoraDto
     public int IdNegociacion { get; set; }
     public int RechazadoPorContadora { get; set; }
 }
+
+// DTO para anular negociación
+public class AnularNegociacionDto
+{
+    public int IdUsuarioAnulacion { get; set; }
+    public string MotivoAnulacion { get; set; } = string.Empty;
+}

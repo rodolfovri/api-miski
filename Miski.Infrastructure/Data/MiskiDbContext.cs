@@ -335,6 +335,7 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.EstadoAprobacionContadora).HasMaxLength(20);
             entity.Property(e => e.Observacion).HasMaxLength(255);
             entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.MotivoAnulacion).HasMaxLength(200);
 
             entity.HasOne(d => d.Comisionista)
                 .WithMany(p => p.NegociacionesComisionista)
@@ -386,6 +387,13 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Negociacion_Banco");
 
+            entity.HasOne(d => d.UsuarioAnulacion)
+                .WithMany()
+                .HasForeignKey(d => d.IdUsuarioAnulacion)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Negociacion_UsuarioAnulacion");
+
             entity.ToTable("Negociacion");
         });
 
@@ -428,12 +436,19 @@ public class MiskiDbContext : DbContext
             entity.HasKey(e => e.IdCompraVehiculo);
             entity.Property(e => e.GuiaRemision).HasMaxLength(50).IsRequired();
             entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.Estado).HasMaxLength(20);
 
             entity.HasOne(d => d.Vehiculo)
                 .WithMany(p => p.CompraVehiculos)
                 .HasForeignKey(d => d.IdVehiculo)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_CompraVehiculo_Vehiculo");
+
+            entity.HasOne(d => d.Persona)
+                .WithMany(p => p.CompraVehiculos)
+                .HasForeignKey(d => d.IdPersona)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_CompraVehiculo_Persona");
             entity.ToTable("CompraVehiculo");
         });
 

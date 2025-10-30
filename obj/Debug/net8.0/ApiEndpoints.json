@@ -1035,6 +1035,11 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Miski.Shared.DTOs.Compras.AnularNegociacionDto",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [

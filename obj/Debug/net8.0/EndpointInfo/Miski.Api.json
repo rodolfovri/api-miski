@@ -2474,6 +2474,25 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnularNegociacionDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnularNegociacionDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnularNegociacionDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -6402,6 +6421,20 @@
   },
   "components": {
     "schemas": {
+      "AnularNegociacionDto": {
+        "type": "object",
+        "properties": {
+          "idUsuarioAnulacion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "motivoAnulacion": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ApiResponse": {
         "type": "object",
         "properties": {
@@ -7008,6 +7041,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "idPersona": {
+            "type": "integer",
+            "format": "int32"
+          },
           "idVehiculo": {
             "type": "integer",
             "format": "int32"
@@ -7016,9 +7053,17 @@
             "type": "string",
             "nullable": true
           },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
           "fRegistro": {
             "type": "string",
             "format": "date-time"
+          },
+          "personaNombre": {
+            "type": "string",
+            "nullable": true
           },
           "vehiculoPlaca": {
             "type": "string",
@@ -7167,6 +7212,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "idPersona": {
+            "type": "integer",
+            "format": "int32"
+          },
           "idVehiculo": {
             "type": "integer",
             "format": "int32"
@@ -7175,9 +7224,17 @@
             "type": "string",
             "nullable": true
           },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
           "fRegistro": {
             "type": "string",
             "format": "date-time"
+          },
+          "personaNombre": {
+            "type": "string",
+            "nullable": true
           },
           "vehiculoPlaca": {
             "type": "string",
@@ -7340,6 +7397,10 @@
       "CreateCompraVehiculoDto": {
         "type": "object",
         "properties": {
+          "idPersona": {
+            "type": "integer",
+            "format": "int32"
+          },
           "idVehiculo": {
             "type": "integer",
             "format": "int32"
@@ -9384,6 +9445,10 @@
         "type": "object",
         "properties": {
           "idCompraVehiculo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idPersona": {
             "type": "integer",
             "format": "int32"
           },

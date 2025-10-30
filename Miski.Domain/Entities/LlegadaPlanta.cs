@@ -14,6 +14,6 @@ public class LlegadaPlanta
 
     // Navigation properties
     public virtual Compra Compra { get; set; } = null!;
-    public virtual Persona Usuario { get; set; } = null!;
+    public virtual Usuario Usuario { get; set; } = null!;
     public virtual Lote Lote { get; set; } = null!;
 }

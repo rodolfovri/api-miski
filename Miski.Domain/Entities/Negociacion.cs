@@ -31,6 +31,9 @@ public class Negociacion
     public int? AprobadaPorContadora { get; set; }
     public int? RechazadoPorIngeniero { get; set; }
     public int? RechazadoPorContadora { get; set; }
+    public int? IdUsuarioAnulacion { get; set; }
+    public string? MotivoAnulacion { get; set; }
+    public DateTime? FAnulacion { get; set; }
     public DateTime? FAprobacionIngeniero { get; set; }
     public DateTime? FAprobacionContadora { get; set; }
     public DateTime? FRechazoIngeniero { get; set; }
@@ -48,5 +51,6 @@ public class Negociacion
     public virtual VariedadProducto? VariedadProducto { get; set; }
     public virtual TipoDocumento? TipoDocumento { get; set; }
     public virtual Banco? Banco { get; set; }
+    public virtual Usuario? UsuarioAnulacion { get; set; }
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 }
