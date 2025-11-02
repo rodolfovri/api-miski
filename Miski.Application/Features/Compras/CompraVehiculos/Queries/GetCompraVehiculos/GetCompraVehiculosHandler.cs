@@ -39,6 +39,10 @@ public class GetCompraVehiculosHandler : IRequestHandler<GetCompraVehiculosQuery
         
         foreach (var compraVehiculo in comprasVehiculosList)
         {
+            // Cargar persona
+            compraVehiculo.Persona = await _unitOfWork.Repository<Persona>()
+                .GetByIdAsync(compraVehiculo.IdPersona, cancellationToken) ?? new Persona();
+
             // Cargar vehículo
             compraVehiculo.Vehiculo = await _unitOfWork.Repository<Vehiculo>()
                 .GetByIdAsync(compraVehiculo.IdVehiculo, cancellationToken) ?? new Vehiculo();
@@ -51,11 +55,21 @@ public class GetCompraVehiculosHandler : IRequestHandler<GetCompraVehiculosQuery
                 .Where(d => d.IdCompraVehiculo == compraVehiculo.IdCompraVehiculo)
                 .ToList();
 
-            // Cargar compras en los detalles
+            // Cargar compras y lotes en los detalles
             foreach (var detalle in compraVehiculo.CompraVehiculoDetalles)
             {
                 detalle.Compra = await _unitOfWork.Repository<Compra>()
                     .GetByIdAsync(detalle.IdCompra, cancellationToken) ?? new Compra();
+                
+                // Cargar lotes de la compra
+                if (detalle.Compra != null)
+                {
+                    var lotes = await _unitOfWork.Repository<Lote>()
+                        .GetAllAsync(cancellationToken);
+                    detalle.Compra.Lotes = lotes
+                        .Where(l => l.IdCompra == detalle.Compra.IdCompra)
+                        .ToList();
+                }
             }
         }
 

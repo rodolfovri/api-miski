@@ -8,6 +8,7 @@ public class CompraDto
     public DateTime? FRegistro { get; set; }
     public DateTime? FEmision { get; set; }
     public string? Estado { get; set; }
+    public string? EstadoRecepcion { get; set; }
     
     // Información de la negociación asociada
     public string? ProveedorNombre { get; set; }
@@ -28,6 +29,8 @@ public class LoteDto
     public decimal Peso { get; set; }
     public int Sacos { get; set; }
     public string? Codigo { get; set; }
+    public decimal? Comision { get; set; }
+    public string? Observacion { get; set; }
 }
 
 public class CreateLoteDto
@@ -37,6 +40,8 @@ public class CreateLoteDto
     public int Sacos { get; set; }
     public string? Codigo { get; set; }
     public decimal MontoTotal { get; set; }  // Monto total que se seteará en la Compra
+    public decimal? Comision { get; set; }
+    public string? Observacion { get; set; }
 }
 
 public class UpdateLoteDto
@@ -46,4 +51,6 @@ public class UpdateLoteDto
     public decimal Peso { get; set; }
     public int Sacos { get; set; }
     public string? Codigo { get; set; }
+    public decimal? Comision { get; set; }
+    public string? Observacion { get; set; }
 }

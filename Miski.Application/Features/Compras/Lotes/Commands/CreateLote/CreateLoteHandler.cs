@@ -46,6 +46,8 @@ public class CreateLoteHandler : IRequestHandler<CreateLoteCommand, LoteDto>
             Peso = dto.Peso,
             Sacos = dto.Sacos,
             Codigo = dto.Codigo,
+            Comision = dto.Comision,
+            Observacion = dto.Observacion
         };
 
         await _unitOfWork.Repository<Lote>().AddAsync(lote, cancellationToken);

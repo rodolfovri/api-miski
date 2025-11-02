@@ -13,6 +13,7 @@ public class Compra
     public decimal? IGV { get; set; }
     public string? Observacion { get; set; }
     public string? Estado { get; set; }
+    public string? EstadoRecepcion { get; set; }
 
     // Navigation properties
     public virtual Negociacion Negociacion { get; set; } = null!;

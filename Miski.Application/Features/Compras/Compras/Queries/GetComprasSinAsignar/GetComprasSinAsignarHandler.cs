@@ -50,6 +50,13 @@ public class GetComprasSinAsignarHandler : IRequestHandler<GetComprasSinAsignarQ
             // Cargar negociación
             var negociacion = negociaciones.FirstOrDefault(n => n.IdNegociacion == compra.IdNegociacion);
             
+            // Cargar lotes asociados a esta compra
+            var lotesCompra = lotes.Where(l => l.IdCompra == compra.IdCompra).ToList();
+            
+            // Calcular PesoTotal y SacosTotales desde los lotes
+            var pesoTotal = lotesCompra.Sum(l => l.Peso);
+            var sacosTotales = lotesCompra.Sum(l => l.Sacos);
+            
             var compraDto = new CompraDto
             {
                 IdCompra = compra.IdCompra,
@@ -57,7 +64,12 @@ public class GetComprasSinAsignarHandler : IRequestHandler<GetComprasSinAsignarQ
                 Serie = compra.Serie,
                 FRegistro = compra.FRegistro,
                 FEmision = compra.FEmision,
-                Estado = compra.Estado
+                Estado = compra.Estado,
+                EstadoRecepcion = compra.EstadoRecepcion,
+                MontoTotal = compra.MontoTotal ?? 0, // MontoTotal de Compra
+                PesoTotal = pesoTotal, // PesoTotal desde Lotes
+                SacosTotales = sacosTotales, // SacosTotales desde Lotes
+                PrecioUnitario = negociacion?.PrecioUnitario ?? 0 // PrecioUnitario desde Negociacion
             };
 
             // Si existe la negociación, cargar información
@@ -79,15 +91,9 @@ public class GetComprasSinAsignarHandler : IRequestHandler<GetComprasSinAsignarQ
                 {
                     compraDto.ComisionistaNombre = $"{comisionista.Nombres} {comisionista.Apellidos}";
                 }
-
-                compraDto.PesoTotal = negociacion.PesoTotal ?? 0;
-                compraDto.SacosTotales = negociacion.SacosTotales ?? 0;
-                compraDto.PrecioUnitario = negociacion.PrecioUnitario ?? 0;
-                compraDto.MontoTotal = (negociacion.PesoTotal ?? 0) * (negociacion.PrecioUnitario ?? 0);
             }
 
-            // Cargar lotes asociados a esta compra
-            var lotesCompra = lotes.Where(l => l.IdCompra == compra.IdCompra).ToList();
+            // Cargar lotes en el DTO
             compraDto.Lotes = lotesCompra.Select(l => _mapper.Map<LoteDto>(l)).ToList();
 
             comprasDto.Add(compraDto);

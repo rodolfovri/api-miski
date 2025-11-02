@@ -106,6 +106,10 @@ namespace Miski.Api.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("EstadoRecepcion")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<DateTime?>("FEmision")
                         .HasColumnType("datetime2");
 
@@ -231,6 +235,9 @@ namespace Miski.Api.Migrations
                     b.Property<int>("IdLote")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdUbicacion")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
@@ -252,6 +259,8 @@ namespace Miski.Api.Migrations
 
                     b.HasIndex("IdLote");
 
+                    b.HasIndex("IdUbicacion");
+
                     b.HasIndex("IdUsuario");
 
                     b.ToTable("LlegadaPlanta", (string)null);
@@ -269,8 +278,16 @@ namespace Miski.Api.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<decimal?>("Comision")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("IdCompra")
                         .HasColumnType("int");
+
+                    b.Property<string>("Observacion")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("Peso")
                         .HasPrecision(18, 2)
@@ -1273,6 +1290,13 @@ namespace Miski.Api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_LlegadaPlanta_Lote");
 
+                    b.HasOne("Miski.Domain.Entities.Ubicacion", "Ubicacion")
+                        .WithMany("LlegadasPlanta")
+                        .HasForeignKey("IdUbicacion")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_LlegadaPlanta_Ubicacion");
+
                     b.HasOne("Miski.Domain.Entities.Usuario", "Usuario")
                         .WithMany("LlegadasPlanta")
                         .HasForeignKey("IdUsuario")
@@ -1283,6 +1307,8 @@ namespace Miski.Api.Migrations
                     b.Navigation("Compra");
 
                     b.Navigation("Lote");
+
+                    b.Navigation("Ubicacion");
 
                     b.Navigation("Usuario");
                 });
@@ -1748,6 +1774,8 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Ubicacion", b =>
                 {
+                    b.Navigation("LlegadasPlanta");
+
                     b.Navigation("PersonaUbicaciones");
 
                     b.Navigation("Stocks");

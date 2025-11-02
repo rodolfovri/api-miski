@@ -102,6 +102,38 @@ public class UpdateCompraVehiculoHandler : IRequestHandler<UpdateCompraVehiculoC
             .Where(d => d.IdCompraVehiculo == compraVehiculo.IdCompraVehiculo)
             .ToList();
 
+        // Obtener IDs de compras que se están quitando
+        var idsComprasAnteriores = detallesAEliminar.Select(d => d.IdCompra).ToList();
+        var idsComprasNuevas = dto.IdCompras.ToList();
+        var idsComprasQuitadas = idsComprasAnteriores.Except(idsComprasNuevas).ToList();
+
+        // Validar que las compras que se quitan no tengan llegadas a planta registradas
+        var todasLasLlegadas = await _unitOfWork.Repository<LlegadaPlanta>()
+            .GetAllAsync(cancellationToken);
+
+        foreach (var idCompraQuitada in idsComprasQuitadas)
+        {
+            var tieneLlegadas = todasLasLlegadas.Any(lp => lp.IdCompra == idCompraQuitada);
+            if (tieneLlegadas)
+            {
+                throw new ValidationException($"No se puede quitar la compra con ID {idCompraQuitada} porque ya tiene llegadas a planta registradas");
+            }
+        }
+
+        // Actualizar EstadoRecepcion de las compras que se quitan a NULL
+        foreach (var idCompraQuitada in idsComprasQuitadas)
+        {
+            var compraQuitada = await _unitOfWork.Repository<Compra>()
+                .GetByIdAsync(idCompraQuitada, cancellationToken);
+            
+            if (compraQuitada != null)
+            {
+                compraQuitada.EstadoRecepcion = null;
+                await _unitOfWork.Repository<Compra>().UpdateAsync(compraQuitada, cancellationToken);
+            }
+        }
+
+        // Eliminar los detalles
         foreach (var detalle in detallesAEliminar)
         {
             await _unitOfWork.Repository<CompraVehiculoDetalle>().DeleteAsync(detalle, cancellationToken);
@@ -120,6 +152,17 @@ public class UpdateCompraVehiculoHandler : IRequestHandler<UpdateCompraVehiculoC
 
             await _unitOfWork.Repository<CompraVehiculoDetalle>().AddAsync(detalle, cancellationToken);
             nuevosDetalles.Add(detalle);
+        }
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Actualizar EstadoRecepcion de las compras nuevas a PENDIENTE
+        var idsComprasAgregadas = idsComprasNuevas.Except(idsComprasAnteriores).ToList();
+        foreach (var idCompraAgregada in idsComprasAgregadas)
+        {
+            var compraAgregada = compras.First(c => c.IdCompra == idCompraAgregada);
+            compraAgregada.EstadoRecepcion = "PENDIENTE";
+            await _unitOfWork.Repository<Compra>().UpdateAsync(compraAgregada, cancellationToken);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

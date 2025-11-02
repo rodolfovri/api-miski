@@ -1,0 +1,140 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.CompraVehiculos.Commands.UpdateCompraVehiculo;
+
+public class UpdateCompraVehiculoHandler : IRequestHandler<UpdateCompraVehiculoCommand, CompraVehiculoDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public UpdateCompraVehiculoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<CompraVehiculoDto> Handle(UpdateCompraVehiculoCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.CompraVehiculo;
+
+        // Validar que la asignación existe
+        var compraVehiculo = await _unitOfWork.Repository<CompraVehiculo>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (compraVehiculo == null)
+            throw new NotFoundException("CompraVehiculo", request.Id);
+
+        // Validar que no esté en estado ENTREGADO
+        if (compraVehiculo.Estado == "ENTREGADO")
+        {
+            throw new ValidationException("No se puede editar una asignación de compra a vehículo que ya ha sido entregada y recepcionada en planta");
+        }
+
+        // Validar que la persona existe
+        var persona = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(dto.IdPersona, cancellationToken);
+        
+        if (persona == null)
+            throw new NotFoundException("Persona", dto.IdPersona);
+
+        // Validar que el vehículo existe
+        var vehiculo = await _unitOfWork.Repository<Vehiculo>()
+            .GetByIdAsync(dto.IdVehiculo, cancellationToken);
+        
+        if (vehiculo == null)
+            throw new NotFoundException("Vehiculo", dto.IdVehiculo);
+
+        // Validar que todas las compras existen y están activas
+        var compras = new List<Compra>();
+        foreach (var idCompra in dto.IdCompras)
+        {
+            var compra = await _unitOfWork.Repository<Compra>()
+                .GetByIdAsync(idCompra, cancellationToken);
+            
+            if (compra == null)
+                throw new NotFoundException("Compra", idCompra);
+
+            if (compra.Estado != "ACTIVO")
+                throw new ValidationException($"La compra con ID {idCompra} no está en estado ACTIVO");
+
+            // Validar que la compra no esté asignada a OTRO vehículo (permitir si está en este mismo)
+            var comprasVehiculoDetalles = await _unitOfWork.Repository<CompraVehiculoDetalle>()
+                .GetAllAsync(cancellationToken);
+            
+            var yaAsignada = comprasVehiculoDetalles
+                .Any(cvd => cvd.IdCompra == idCompra && cvd.IdCompraVehiculo != compraVehiculo.IdCompraVehiculo);
+            
+            if (yaAsignada)
+                throw new ValidationException($"La compra con ID {idCompra} ya está asignada a otro vehículo");
+
+            compras.Add(compra);
+        }
+
+        // Validar que la guía de remisión no esté duplicada (excepto la actual)
+        var comprasVehiculos = await _unitOfWork.Repository<CompraVehiculo>()
+            .GetAllAsync(cancellationToken);
+        
+        var guiaDuplicada = comprasVehiculos
+            .Any(cv => cv.GuiaRemision.ToUpper() == dto.GuiaRemision.ToUpper() 
+                    && cv.IdCompraVehiculo != compraVehiculo.IdCompraVehiculo);
+        
+        if (guiaDuplicada)
+            throw new ValidationException($"La guía de remisión '{dto.GuiaRemision}' ya está registrada");
+
+        // Actualizar la cabecera
+        compraVehiculo.IdPersona = dto.IdPersona;
+        compraVehiculo.IdVehiculo = dto.IdVehiculo;
+        compraVehiculo.GuiaRemision = dto.GuiaRemision.ToUpper().Trim();
+
+        await _unitOfWork.Repository<CompraVehiculo>().UpdateAsync(compraVehiculo, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Eliminar los detalles anteriores
+        var detallesAnteriores = await _unitOfWork.Repository<CompraVehiculoDetalle>()
+            .GetAllAsync(cancellationToken);
+        
+        var detallesAEliminar = detallesAnteriores
+            .Where(d => d.IdCompraVehiculo == compraVehiculo.IdCompraVehiculo)
+            .ToList();
+
+        foreach (var detalle in detallesAEliminar)
+        {
+            await _unitOfWork.Repository<CompraVehiculoDetalle>().DeleteAsync(detalle, cancellationToken);
+        }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Crear los nuevos detalles
+        var nuevosDetalles = new List<CompraVehiculoDetalle>();
+        foreach (var idCompra in dto.IdCompras)
+        {
+            var detalle = new CompraVehiculoDetalle
+            {
+                IdCompraVehiculo = compraVehiculo.IdCompraVehiculo,
+                IdCompra = idCompra
+            };
+
+            await _unitOfWork.Repository<CompraVehiculoDetalle>().AddAsync(detalle, cancellationToken);
+            nuevosDetalles.Add(detalle);
+        }
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones para el DTO
+        compraVehiculo.Persona = persona;
+        compraVehiculo.Vehiculo = vehiculo;
+        compraVehiculo.CompraVehiculoDetalles = nuevosDetalles;
+
+        // Cargar las compras en los detalles
+        foreach (var detalle in nuevosDetalles)
+        {
+            detalle.Compra = compras.First(c => c.IdCompra == detalle.IdCompra);
+        }
+
+        return _mapper.Map<CompraVehiculoDto>(compraVehiculo);
+    }
+}

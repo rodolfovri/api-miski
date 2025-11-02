@@ -15,6 +15,10 @@ public class CreateLlegadaPlantaValidator : AbstractValidator<CreateLlegadaPlant
             .GreaterThan(0)
             .WithMessage("El ID del usuario es obligatorio");
 
+        RuleFor(x => x.IdUbicacion)
+            .GreaterThan(0)
+            .WithMessage("El ID de la ubicación es obligatorio");
+
         RuleFor(x => x.Detalles)
             .NotEmpty()
             .WithMessage("Debe incluir al menos un detalle de lote recibido");

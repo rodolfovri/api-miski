@@ -35,13 +35,35 @@ public class UpdateLoteHandler : IRequestHandler<UpdateLoteCommand, LoteDto>
         if (compra == null)
             throw new NotFoundException("Compra", dto.IdCompra);
 
+        // Validar el EstadoRecepcion de la compra asociada al lote
+        if (!string.IsNullOrEmpty(compra.EstadoRecepcion))
+        {
+            if (compra.EstadoRecepcion == "PENDIENTE")
+            {
+                var errors = new Dictionary<string, string[]>
+                {
+                    { "Lote", new[] { "No se puede editar el lote porque la compra ya está asignada a un vehículo" } }
+                };
+                throw new Shared.Exceptions.ValidationException(errors);
+            }
+
+            if (compra.EstadoRecepcion == "RECEPCIONADO")
+            {
+                var errors = new Dictionary<string, string[]>
+                {
+                    { "Lote", new[] { "No se puede editar el lote porque la compra ya ha sido recepcionada en planta" } }
+                };
+                throw new Shared.Exceptions.ValidationException(errors);
+            }
+        }
+
         // Validar que el código no esté duplicado (excepto el mismo lote)
         if (!string.IsNullOrEmpty(dto.Codigo))
         {
             var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
             if (lotes.Any(l => l.IdCompra == dto.IdCompra && l.Codigo == dto.Codigo && l.IdLote != request.Id))
             {
-                throw new ValidationException($"Ya existe otro lote con el código {dto.Codigo} en esta compra");
+                throw new Shared.Exceptions.ValidationException($"Ya existe otro lote con el código {dto.Codigo} en esta compra");
             }
         }
 
@@ -50,6 +72,8 @@ public class UpdateLoteHandler : IRequestHandler<UpdateLoteCommand, LoteDto>
         lote.Peso = dto.Peso;
         lote.Sacos = dto.Sacos;
         lote.Codigo = dto.Codigo;
+        lote.Comision = dto.Comision;
+        lote.Observacion = dto.Observacion;
 
         await _unitOfWork.Repository<Lote>().UpdateAsync(lote, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

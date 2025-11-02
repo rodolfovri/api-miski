@@ -158,7 +158,15 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CompraMontoTotal, opt => opt.MapFrom(src => 
                 src.Compra != null ? src.Compra.MontoTotal : null))
             .ForMember(dest => dest.CompraNegociacionId, opt => opt.MapFrom(src => 
-                src.Compra != null ? src.Compra.IdNegociacion.ToString() : string.Empty));
+                src.Compra != null ? src.Compra.IdNegociacion.ToString() : string.Empty))
+            .ForMember(dest => dest.IdLote, opt => opt.MapFrom(src => 
+                src.Compra != null && src.Compra.Lotes.Any() ? src.Compra.Lotes.First().IdLote : (int?)null))
+            .ForMember(dest => dest.LoteCodigo, opt => opt.MapFrom(src => 
+                src.Compra != null && src.Compra.Lotes.Any() ? src.Compra.Lotes.First().Codigo : null))
+            .ForMember(dest => dest.LotePeso, opt => opt.MapFrom(src => 
+                src.Compra != null && src.Compra.Lotes.Any() ? src.Compra.Lotes.First().Peso : (decimal?)null))
+            .ForMember(dest => dest.LoteSacos, opt => opt.MapFrom(src => 
+                src.Compra != null && src.Compra.Lotes.Any() ? src.Compra.Lotes.First().Sacos : (int?)null));
     }
 }
 

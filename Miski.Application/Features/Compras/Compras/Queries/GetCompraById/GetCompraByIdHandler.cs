@@ -30,6 +30,14 @@ public class GetCompraByIdHandler : IRequestHandler<GetCompraByIdQuery, CompraDt
         var negociacion = await _unitOfWork.Repository<Negociacion>()
             .GetByIdAsync(compra.IdNegociacion, cancellationToken);
 
+        // Cargar lotes asociados a esta compra
+        var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
+        var lotesCompra = lotes.Where(l => l.IdCompra == compra.IdCompra).ToList();
+        
+        // Calcular PesoTotal y SacosTotales desde los lotes
+        var pesoTotal = lotesCompra.Sum(l => l.Peso);
+        var sacosTotales = lotesCompra.Sum(l => l.Sacos);
+
         var compraDto = new CompraDto
         {
             IdCompra = compra.IdCompra,
@@ -37,7 +45,12 @@ public class GetCompraByIdHandler : IRequestHandler<GetCompraByIdQuery, CompraDt
             Serie = compra.Serie,
             FRegistro = compra.FRegistro,
             FEmision = compra.FEmision,
-            Estado = compra.Estado
+            Estado = compra.Estado,
+            EstadoRecepcion = compra.EstadoRecepcion,
+            MontoTotal = compra.MontoTotal ?? 0, // MontoTotal de Compra
+            PesoTotal = pesoTotal, // PesoTotal desde Lotes
+            SacosTotales = sacosTotales, // SacosTotales desde Lotes
+            PrecioUnitario = negociacion?.PrecioUnitario ?? 0 // PrecioUnitario desde Negociacion
         };
 
         if (negociacion != null)
@@ -62,16 +75,9 @@ public class GetCompraByIdHandler : IRequestHandler<GetCompraByIdQuery, CompraDt
             {
                 compraDto.ComisionistaNombre = $"{comisionista.Nombres} {comisionista.Apellidos}";
             }
-
-            compraDto.PesoTotal = negociacion.PesoTotal ?? 0;
-            compraDto.SacosTotales = negociacion.SacosTotales ?? 0;
-            compraDto.PrecioUnitario = negociacion.PrecioUnitario ?? 0;
-            compraDto.MontoTotal = (negociacion.PesoTotal ?? 0) * (negociacion.PrecioUnitario ?? 0);
         }
 
-        // Cargar lotes
-        var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
-        var lotesCompra = lotes.Where(l => l.IdCompra == compra.IdCompra).ToList();
+        // Cargar lotes en el DTO
         compraDto.Lotes = lotesCompra.Select(l => _mapper.Map<LoteDto>(l)).ToList();
 
         return compraDto;

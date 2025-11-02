@@ -7,6 +7,7 @@ public class LlegadaPlantaDto
     public int IdCompra { get; set; }
     public int IdUsuario { get; set; }
     public int IdLote { get; set; }
+    public int IdUbicacion { get; set; }
     public decimal SacosRecibidos { get; set; }
     public decimal PesoRecibido { get; set; }
     public DateTime? FLlegada { get; set; }
@@ -17,6 +18,7 @@ public class LlegadaPlantaDto
     public string? CompraSerie { get; set; }
     public string? UsuarioNombre { get; set; }
     public string? LoteCodigo { get; set; }
+    public string? UbicacionNombre { get; set; }
     
     // Datos del lote original
     public int SacosAsignados { get; set; }
@@ -30,6 +32,7 @@ public class CreateLlegadaPlantaDto
 {
     public int IdCompraVehiculo { get; set; }
     public int IdUsuario { get; set; }
+    public int IdUbicacion { get; set; }
     public List<LlegadaPlantaDetalleInputDto> Detalles { get; set; } = new List<LlegadaPlantaDetalleInputDto>();
 }
 
@@ -102,9 +105,14 @@ public class LoteConRecepcionDto
 public class VehiculoConComprasYRecepcionesDto
 {
     public int IdCompraVehiculo { get; set; }
+    public int IdPersona { get; set; }
     public int IdVehiculo { get; set; }
     public string GuiaRemision { get; set; } = string.Empty;
     public DateTime FRegistro { get; set; }
+    public string? Estado { get; set; }
+    
+    // Información de la persona
+    public string? PersonaNombre { get; set; }
     
     // Información del vehículo
     public string? VehiculoPlaca { get; set; }
@@ -141,7 +149,7 @@ public class LoteConRecepcionDetalladoDto
     public decimal? PesoRecibido { get; set; }
     public int? DiferenciaSacos { get; set; }
     public decimal? DiferenciaPeso { get; set; }
-    public string? ObservacionesRecepcion { get; set; }
+    public string? Observaciones { get; set; }
     public bool YaRecibido { get; set; }
 }
 

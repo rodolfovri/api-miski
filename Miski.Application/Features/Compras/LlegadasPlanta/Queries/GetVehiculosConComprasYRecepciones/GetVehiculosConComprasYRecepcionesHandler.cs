@@ -37,6 +37,7 @@ public class GetVehiculosConComprasYRecepcionesHandler : IRequestHandler<GetVehi
 
         // Obtener todas las entidades necesarias
         var todosLosVehiculos = await _unitOfWork.Repository<Vehiculo>().GetAllAsync(cancellationToken);
+        var todasLasPersonas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
         var todosLosDetallesCV = await _unitOfWork.Repository<CompraVehiculoDetalle>().GetAllAsync(cancellationToken);
         var todasLasCompras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
         var todosLosLotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
@@ -48,6 +49,9 @@ public class GetVehiculosConComprasYRecepcionesHandler : IRequestHandler<GetVehi
         {
             // Obtener el vehículo
             var vehiculo = todosLosVehiculos.FirstOrDefault(v => v.IdVehiculo == compraVehiculo.IdVehiculo);
+
+            // Obtener la persona
+            var persona = todasLasPersonas.FirstOrDefault(p => p.IdPersona == compraVehiculo.IdPersona);
 
             // Obtener las compras asignadas a este vehículo
             var detallesCV = todosLosDetallesCV
@@ -93,7 +97,7 @@ public class GetVehiculosConComprasYRecepcionesHandler : IRequestHandler<GetVehi
                             PesoRecibido = llegadaPlanta != null ? (decimal)llegadaPlanta.PesoRecibido : null,
                             DiferenciaSacos = diferenciaSacos,
                             DiferenciaPeso = diferenciaPeso,
-                            ObservacionesRecepcion = llegadaPlanta?.Observaciones,
+                            Observaciones = llegadaPlanta?.Observaciones,
                             YaRecibido = llegadaPlanta != null
                         });
                     }
@@ -112,9 +116,12 @@ public class GetVehiculosConComprasYRecepcionesHandler : IRequestHandler<GetVehi
             resultado.Add(new VehiculoConComprasYRecepcionesDto
             {
                 IdCompraVehiculo = compraVehiculo.IdCompraVehiculo,
+                IdPersona = compraVehiculo.IdPersona,
                 IdVehiculo = compraVehiculo.IdVehiculo,
                 GuiaRemision = compraVehiculo.GuiaRemision,
                 FRegistro = compraVehiculo.FRegistro,
+                Estado = compraVehiculo.Estado,
+                PersonaNombre = persona != null ? $"{persona.Nombres} {persona.Apellidos}" : string.Empty,
                 VehiculoPlaca = vehiculo?.Placa,
                 VehiculoMarca = vehiculo?.Marca,
                 VehiculoModelo = vehiculo?.Modelo,

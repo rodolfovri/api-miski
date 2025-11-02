@@ -96,6 +96,15 @@ public class CreateCompraVehiculoHandler : IRequestHandler<CreateCompraVehiculoC
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        // Actualizar el EstadoRecepcion de las compras a PENDIENTE
+        foreach (var compra in compras)
+        {
+            compra.EstadoRecepcion = "PENDIENTE";
+            await _unitOfWork.Repository<Compra>().UpdateAsync(compra, cancellationToken);
+        }
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
         // Cargar relaciones para el DTO
         compraVehiculo.Persona = persona;
         compraVehiculo.Vehiculo = vehiculo;

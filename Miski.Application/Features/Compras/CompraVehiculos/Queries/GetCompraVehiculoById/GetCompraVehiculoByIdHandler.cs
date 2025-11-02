@@ -26,6 +26,10 @@ public class GetCompraVehiculoByIdHandler : IRequestHandler<GetCompraVehiculoByI
         if (compraVehiculo == null)
             throw new NotFoundException("CompraVehiculo", request.Id);
 
+        // Cargar persona
+        compraVehiculo.Persona = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(compraVehiculo.IdPersona, cancellationToken) ?? new Persona();
+
         // Cargar vehículo
         compraVehiculo.Vehiculo = await _unitOfWork.Repository<Vehiculo>()
             .GetByIdAsync(compraVehiculo.IdVehiculo, cancellationToken) ?? new Vehiculo();
@@ -43,6 +47,16 @@ public class GetCompraVehiculoByIdHandler : IRequestHandler<GetCompraVehiculoByI
         {
             detalle.Compra = await _unitOfWork.Repository<Compra>()
                 .GetByIdAsync(detalle.IdCompra, cancellationToken) ?? new Compra();
+            
+            // Cargar lotes de la compra
+            if (detalle.Compra != null)
+            {
+                var lotes = await _unitOfWork.Repository<Lote>()
+                    .GetAllAsync(cancellationToken);
+                detalle.Compra.Lotes = lotes
+                    .Where(l => l.IdCompra == detalle.Compra.IdCompra)
+                    .ToList();
+            }
         }
 
         return _mapper.Map<CompraVehiculoDto>(compraVehiculo);

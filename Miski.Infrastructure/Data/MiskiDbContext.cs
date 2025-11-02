@@ -403,6 +403,7 @@ public class MiskiDbContext : DbContext
             entity.HasKey(e => e.IdCompra);
             entity.Property(e => e.Serie).HasMaxLength(20);
             entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.EstadoRecepcion).HasMaxLength(20);
             entity.Property(e => e.MontoTotal).HasPrecision(18, 2);
             entity.Property(e => e.IGV).HasPrecision(18, 2);
             entity.Property(e => e.Observacion).HasMaxLength(200);
@@ -476,6 +477,8 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Peso).HasPrecision(18, 2).IsRequired();
             entity.Property(e => e.Sacos).IsRequired();
             entity.Property(e => e.Codigo).HasMaxLength(50);
+            entity.Property(e => e.Comision).HasPrecision(18, 2);
+            entity.Property(e => e.Observacion).HasMaxLength(200);
 
             entity.HasOne(d => d.Compra)
                 .WithMany(p => p.Lotes)
@@ -513,6 +516,12 @@ public class MiskiDbContext : DbContext
                 .HasForeignKey(d => d.IdLote)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_LlegadaPlanta_Lote");
+
+            entity.HasOne(d => d.Ubicacion)
+                .WithMany(p => p.LlegadasPlanta)
+                .HasForeignKey(d => d.IdUbicacion)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_LlegadaPlanta_Ubicacion");
 
             entity.ToTable("LlegadaPlanta");
         });

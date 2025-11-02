@@ -31,5 +31,15 @@ public class CreateLoteValidator : AbstractValidator<CreateLoteCommand>
         RuleFor(x => x.Lote.MontoTotal)
             .GreaterThanOrEqualTo(0)
             .WithMessage("El monto total debe ser mayor o igual a 0");
+
+        RuleFor(x => x.Lote.Comision)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("La comisión debe ser mayor o igual a 0")
+            .When(x => x.Lote.Comision.HasValue);
+
+        RuleFor(x => x.Lote.Observacion)
+            .MaximumLength(200)
+            .WithMessage("La observación no puede exceder 200 caracteres")
+            .When(x => !string.IsNullOrEmpty(x.Lote.Observacion));
     }
 }

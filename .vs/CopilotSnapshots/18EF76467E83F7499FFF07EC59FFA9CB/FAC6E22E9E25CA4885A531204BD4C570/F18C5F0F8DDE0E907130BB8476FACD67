@@ -1,0 +1,75 @@
+﻿namespace Miski.Shared.DTOs.Compras;
+
+public class CompraVehiculoDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int IdPersona { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public string? Estado { get; set; }
+    public DateTime FRegistro { get; set; }
+    
+    // Información adicional
+    public string? PersonaNombre { get; set; }
+    public string? VehiculoPlaca { get; set; }
+    public string? VehiculoMarca { get; set; }
+    public string? VehiculoModelo { get; set; }
+    
+    // Lista de compras asignadas
+    public List<CompraVehiculoDetalleDto> Detalles { get; set; } = new List<CompraVehiculoDetalleDto>();
+}
+
+public class CompraVehiculoDetalleDto
+{
+    public int IdCompraVehiculoDetalle { get; set; }
+    public int IdCompraVehiculo { get; set; }
+    public int IdCompra { get; set; }
+    
+    // Información adicional de la compra
+    public string? CompraSerie { get; set; }
+    public DateTime? CompraFRegistro { get; set; }
+    public decimal? CompraMontoTotal { get; set; }
+    public string? CompraNegociacionId { get; set; }
+    
+    // Indica si la compra está asignada al CompraVehiculo (true) o está disponible (false)
+    public bool Asignado { get; set; }
+}
+
+// DTO extendido que incluye compras asignadas y disponibles
+public class CompraVehiculoConDisponiblesDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int IdPersona { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public string? Estado { get; set; }
+    public DateTime FRegistro { get; set; }
+    
+    // Información adicional
+    public string? PersonaNombre { get; set; }
+    public string? VehiculoPlaca { get; set; }
+    public string? VehiculoMarca { get; set; }
+    public string? VehiculoModelo { get; set; }
+    
+    // Lista de compras (asignadas y disponibles)
+    public List<CompraVehiculoDetalleDto> Detalles { get; set; } = new List<CompraVehiculoDetalleDto>();
+}
+
+// DTO para crear asignación de compras a vehículo
+public class CreateCompraVehiculoDto
+{
+    public int IdPersona { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public List<int> IdCompras { get; set; } = new List<int>();
+}
+
+// DTO para actualizar asignación de compras a vehículo
+public class UpdateCompraVehiculoDto
+{
+    public int IdCompraVehiculo { get; set; }
+    public int IdPersona { get; set; }
+    public int IdVehiculo { get; set; }
+    public string GuiaRemision { get; set; } = string.Empty;
+    public List<int> IdCompras { get; set; } = new List<int>();
+}

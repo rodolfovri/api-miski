@@ -7,6 +7,8 @@ public class Lote
     public decimal Peso { get; set; }
     public int Sacos { get; set; }
     public string? Codigo { get; set; }
+    public decimal? Comision { get; set; }
+    public string? Observacion { get; set; }
     // Navigation properties
     public virtual Compra Compra { get; set; } = null!;
     public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();

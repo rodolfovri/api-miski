@@ -24,6 +24,10 @@ public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraV
         if (compraVehiculo == null)
             throw new NotFoundException("CompraVehiculo", request.Id);
 
+        // Cargar persona
+        compraVehiculo.Persona = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(compraVehiculo.IdPersona, cancellationToken) ?? new Persona();
+
         // Cargar vehículo
         compraVehiculo.Vehiculo = await _unitOfWork.Repository<Vehiculo>()
             .GetByIdAsync(compraVehiculo.IdVehiculo, cancellationToken) ?? new Vehiculo();
@@ -41,6 +45,10 @@ public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraV
             .GetAllAsync(cancellationToken);
         
         var comprasActivas = todasLasCompras.Where(c => c.Estado == "ACTIVO").ToList();
+
+        // Cargar todos los lotes una sola vez
+        var todosLosLotes = await _unitOfWork.Repository<Lote>()
+            .GetAllAsync(cancellationToken);
 
         // Obtener IDs de compras asignadas a este vehículo
         var idsComprasAsignadas = detallesEsteVehiculo.Select(d => d.IdCompra).ToList();
@@ -71,6 +79,9 @@ public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraV
                     montoTotal = (negociacion.PesoTotal ?? 0) * (negociacion.PrecioUnitario ?? 0);
                 }
 
+                // Obtener el lote de esta compra
+                var lote = todosLosLotes.FirstOrDefault(l => l.IdCompra == compra.IdCompra);
+
                 detalles.Add(new CompraVehiculoDetalleDto
                 {
                     IdCompraVehiculoDetalle = detalle.IdCompraVehiculoDetalle,
@@ -80,6 +91,10 @@ public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraV
                     CompraFRegistro = compra.FRegistro,
                     CompraMontoTotal = montoTotal,
                     CompraNegociacionId = compra.IdNegociacion.ToString(),
+                    IdLote = lote?.IdLote,
+                    LoteCodigo = lote?.Codigo,
+                    LotePeso = lote?.Peso,
+                    LoteSacos = lote?.Sacos,
                     Asignado = true
                 });
             }
@@ -102,6 +117,9 @@ public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraV
                 montoTotal = (negociacion.PesoTotal ?? 0) * (negociacion.PrecioUnitario ?? 0);
             }
 
+            // Obtener el lote de esta compra
+            var lote = todosLosLotes.FirstOrDefault(l => l.IdCompra == compra.IdCompra);
+
             detalles.Add(new CompraVehiculoDetalleDto
             {
                 IdCompraVehiculoDetalle = 0,
@@ -111,6 +129,10 @@ public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraV
                 CompraFRegistro = compra.FRegistro,
                 CompraMontoTotal = montoTotal,
                 CompraNegociacionId = compra.IdNegociacion.ToString(),
+                IdLote = lote?.IdLote,
+                LoteCodigo = lote?.Codigo,
+                LotePeso = lote?.Peso,
+                LoteSacos = lote?.Sacos,
                 Asignado = false
             });
         }
@@ -119,9 +141,12 @@ public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraV
         var resultado = new CompraVehiculoConDisponiblesDto
         {
             IdCompraVehiculo = compraVehiculo.IdCompraVehiculo,
+            IdPersona = compraVehiculo.IdPersona,
             IdVehiculo = compraVehiculo.IdVehiculo,
             GuiaRemision = compraVehiculo.GuiaRemision,
+            Estado = compraVehiculo.Estado,
             FRegistro = compraVehiculo.FRegistro,
+            PersonaNombre = $"{compraVehiculo.Persona.Nombres} {compraVehiculo.Persona.Apellidos}",
             VehiculoPlaca = compraVehiculo.Vehiculo.Placa,
             VehiculoMarca = compraVehiculo.Vehiculo.Marca,
             VehiculoModelo = compraVehiculo.Vehiculo.Modelo,

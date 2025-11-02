@@ -31,6 +31,12 @@ public class CompraVehiculoDetalleDto
     public decimal? CompraMontoTotal { get; set; }
     public string? CompraNegociacionId { get; set; }
     
+    // Información del lote asociado a la compra
+    public int? IdLote { get; set; }
+    public string? LoteCodigo { get; set; }
+    public decimal? LotePeso { get; set; }
+    public int? LoteSacos { get; set; }
+    
     // Indica si la compra está asignada al CompraVehiculo (true) o está disponible (false)
     public bool Asignado { get; set; }
 }
