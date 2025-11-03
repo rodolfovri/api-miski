@@ -12,7 +12,6 @@ public class Producto
     public DateTime FRegistro { get; set; } = DateTime.Now;
 
     // Navigation properties
-    public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
     public virtual CategoriaProducto CategoriaProducto { get; set; } = null!;
     public virtual ICollection<VariedadProducto> VariedadProductos { get; set; } = new List<VariedadProducto>();
     public virtual ICollection<TipoCalidadProducto> TipoCalidadProductos { get; set; } = new List<TipoCalidadProducto>();

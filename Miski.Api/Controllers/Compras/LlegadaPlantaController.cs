@@ -2,7 +2,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Compras.LlegadasPlanta.Commands.CreateLlegadaPlanta;
+using Miski.Application.Features.Compras.LlegadasPlanta.Commands.AnularLlegadaPlanta;
 using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetLlegadaPlantaById;
+using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetLlegadasPlanta;
 using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetCompraVehiculoConLotes;
 using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetComprasVehiculosActivos;
 using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetVehiculosConComprasYRecepciones;
@@ -264,6 +266,139 @@ public class LlegadaPlantaController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse<IEnumerable<VehiculoConComprasYRecepcionesDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Anula una llegada a planta registrada
+    /// </summary>
+    /// <remarks>
+    /// Anula una llegada a planta y revierte todas las acciones realizadas:
+    /// 
+    /// Acciones que se ejecutan:
+    /// 1. ? Cambia el Estado de LlegadaPlanta a "ANULADO"
+    /// 2. ? Cambia el Estado de Compra a "ANULADO"
+    /// 3. ? Cambia el EstadoRecepcion de Compra a "ANULADO"
+    /// 4. ? Registra datos de anulación en Compra:
+    ///    - IdUsuarioAnulacion
+    ///    - MotivoAnulacion
+    ///    - FAnulacion (fecha automática)
+    /// 5. ? Revierte el stock (resta el peso recibido)
+    /// 
+    /// Validaciones implementadas:
+    /// - ? La LlegadaPlanta debe existir
+    /// - ? La LlegadaPlanta NO debe estar ya anulada
+    /// - ? El usuario que anula debe existir
+    /// - ? La Compra debe existir
+    /// - ? La Negociación debe tener IdVariedadProducto
+    /// - ? Debe existir Stock para revertir
+    /// - ? El Stock debe ser suficiente (no puede quedar negativo)
+    /// 
+    /// Ejemplo de validación de stock:
+    /// - Stock actual: 5,000 kg
+    /// - Peso a revertir: 7,500 kg
+    /// - ? ERROR: Stock insuficiente (quedaría en -2,500 kg)
+    /// 
+    /// Ejemplo de validación correcta:
+    /// - Stock actual: 10,000 kg
+    /// - Peso a revertir: 7,500 kg
+    /// - ? OK: Stock resultante: 2,500 kg
+    /// 
+    /// Request body ejemplo:
+    /// {
+    ///   "idUsuarioAnulacion": 5,
+    ///   "motivoAnulacion": "Error en el registro de peso"
+    /// }
+    /// </remarks>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse>> AnularLlegadaPlanta(
+        int id,
+        [FromBody] AnularLlegadaPlantaDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new AnularLlegadaPlantaCommand(id, request.IdUsuarioAnulacion, request.MotivoAnulacion);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Llegada a planta anulada exitosamente. Stock revertido y compra anulada"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Entidad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene todas las llegadas a planta registradas con filtros opcionales
+    /// </summary>
+    /// <remarks>
+    /// Retorna todas las llegadas a planta con información completa incluyendo:
+    /// 
+    /// **Información de la llegada:**
+    /// - Usuario que recepcionó (UsuarioNombre)
+    /// - Peso y sacos recibidos
+    /// - Fecha de llegada
+    /// - Observaciones de recepción
+    /// - Estado de la llegada
+    /// 
+    /// **Información del lote:**
+    /// - Código del lote
+    /// - Sacos asignados vs sacos recibidos
+    /// - Peso asignado vs peso recibido
+    /// - Diferencias calculadas (DiferenciaSacos, DiferenciaPeso)
+    /// 
+    /// **Información de anulación (si aplica):**
+    /// - Usuario que anuló (UsuarioAnulacionNombre)
+    /// - Motivo de anulación (MotivoAnulacion)
+    /// - Fecha de anulación (FAnulacion)
+    /// 
+    /// **Filtros disponibles:**
+    /// - idCompra: Filtrar por compra específica
+    /// - estado: Filtrar por estado (RECEPCIONADO, ANULADO)
+    /// - fechaInicio: Llegadas desde esta fecha
+    /// - fechaFin: Llegadas hasta esta fecha
+    /// 
+    /// **Nota:** La relación es 1 a 1 entre Compra y Lote, mostrando una fila por llegada.
+    /// </remarks>
+    [HttpGet("todas")]
+    public async Task<ActionResult<ApiResponse<List<LlegadaPlantaDto>>>> GetTodasLasLlegadasPlanta(
+        [FromQuery] int? idCompra = null,
+        [FromQuery] string? estado = null,
+        [FromQuery] DateTime? fechaInicio = null,
+        [FromQuery] DateTime? fechaFin = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetLlegadasPlantaQuery(idCompra, estado, fechaInicio, fechaFin);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<List<LlegadaPlantaDto>>.SuccessResult(
+                result,
+                "Llegadas a planta obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<List<LlegadaPlantaDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));

@@ -44,11 +44,14 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
         // Obtener todas las compras
         var todasLasCompras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
 
-        // Obtener todos los usuarios
+        // Obtener todos los usuarios (personas)
         var todasLasPersonas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
 
         // Obtener todos los lotes
         var todosLosLotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
+
+        // Obtener todas las ubicaciones
+        var todasLasUbicaciones = await _unitOfWork.Repository<Ubicacion>().GetAllAsync(cancellationToken);
 
         // Construir los DTOs
         var resultado = new List<LlegadaPlantaDto>();
@@ -58,11 +61,21 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
             // Buscar la compra
             var compra = todasLasCompras.FirstOrDefault(c => c.IdCompra == llegada.IdCompra);
 
-            // Buscar el usuario
+            // Buscar el usuario que recepcionó
             var usuario = todasLasPersonas.FirstOrDefault(p => p.IdPersona == llegada.IdUsuario);
 
             // Buscar el lote
             var lote = todosLosLotes.FirstOrDefault(l => l.IdLote == llegada.IdLote);
+
+            // Buscar la ubicación
+            var ubicacion = todasLasUbicaciones.FirstOrDefault(u => u.IdUbicacion == llegada.IdUbicacion);
+
+            // Buscar el usuario que anuló (si existe)
+            Persona? usuarioAnulacion = null;
+            if (compra?.IdUsuarioAnulacion.HasValue == true)
+            {
+                usuarioAnulacion = todasLasPersonas.FirstOrDefault(p => p.IdPersona == compra.IdUsuarioAnulacion.Value);
+            }
 
             // Calcular diferencias
             int diferenciaSacos = 0;
@@ -80,6 +93,7 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
                 IdCompra = llegada.IdCompra,
                 IdUsuario = llegada.IdUsuario,
                 IdLote = llegada.IdLote,
+                IdUbicacion = llegada.IdUbicacion,
                 SacosRecibidos = (decimal)llegada.SacosRecibidos,
                 PesoRecibido = (decimal)llegada.PesoRecibido,
                 FLlegada = llegada.FLlegada,
@@ -88,10 +102,16 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
                 CompraSerie = compra?.Serie,
                 UsuarioNombre = usuario != null ? $"{usuario.Nombres} {usuario.Apellidos}" : null,
                 LoteCodigo = lote?.Codigo,
+                UbicacionNombre = ubicacion?.Nombre,
                 SacosAsignados = lote?.Sacos ?? 0,
                 PesoAsignado = lote?.Peso ?? 0,
                 DiferenciaSacos = diferenciaSacos,
-                DiferenciaPeso = diferenciaPeso
+                DiferenciaPeso = diferenciaPeso,
+                // Datos de anulación de la Compra
+                IdUsuarioAnulacion = compra?.IdUsuarioAnulacion,
+                UsuarioAnulacionNombre = usuarioAnulacion != null ? $"{usuarioAnulacion.Nombres} {usuarioAnulacion.Apellidos}" : null,
+                MotivoAnulacion = compra?.MotivoAnulacion,
+                FAnulacion = compra?.FAnulacion
             });
         }
 

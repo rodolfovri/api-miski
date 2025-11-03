@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Compras.Compras.Queries.GetCompras;
 using Miski.Application.Features.Compras.Compras.Queries.GetCompraById;
 using Miski.Application.Features.Compras.Compras.Queries.GetComprasSinAsignar;
+using Miski.Application.Features.Compras.Compras.Commands.AnularCompra;
 using Miski.Application.Features.Compras.Lotes.Commands.CreateLote;
 using Miski.Application.Features.Compras.Lotes.Commands.UpdateLote;
 using Miski.Application.Features.Compras.Lotes.Commands.DeleteLote;
@@ -336,6 +337,62 @@ public class ComprasController : ControllerBase
         {
             return NotFound(ApiResponse.ErrorResult(
                 "Lote no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Anula una compra
+    /// </summary>
+    /// <remarks>
+    /// Anula una compra cambiando su estado a "ANULADO" y registrando el motivo y el usuario que realizó la anulación.
+    /// 
+    /// Validaciones:
+    /// - La compra debe existir
+    /// - La compra no debe estar ya anulada
+    /// - La compra NO debe tener un vehículo asignado (no debe existir en CompraVehiculoDetalle)
+    /// - El usuario debe existir
+    /// - El motivo es obligatorio (máximo 200 caracteres)
+    /// 
+    /// Campos requeridos:
+    /// - idUsuarioAnulacion: ID del usuario que anula la compra
+    /// - motivoAnulacion: Motivo de la anulación
+    /// 
+    /// Ejemplo de request:
+    /// {
+    ///   "idUsuarioAnulacion": 5,
+    ///   "motivoAnulacion": "Error en la carga de datos, duplicado"
+    /// }
+    /// </remarks>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse>> AnularCompra(
+        int id,
+        [FromBody] AnularCompraDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new AnularCompraCommand(id, request.IdUsuarioAnulacion, request.MotivoAnulacion);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Compra anulada exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Entidad no encontrada",
                 ex.Message
             ));
         }

@@ -1,0 +1,13 @@
+﻿using FluentValidation;
+
+namespace Miski.Application.Features.Compras.CompraVehiculos.Commands.EliminarCompraDeVehiculo;
+
+public class EliminarCompraDeVehiculoValidator : AbstractValidator<EliminarCompraDeVehiculoCommand>
+{
+    public EliminarCompraDeVehiculoValidator()
+    {
+        RuleFor(x => x.IdCompraVehiculoDetalle)
+            .GreaterThan(0)
+            .WithMessage("El ID del CompraVehiculoDetalle es obligatorio");
+    }
+}

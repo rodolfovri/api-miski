@@ -26,11 +26,6 @@ public class DeleteProductoHandler : IRequestHandler<DeleteProductoCommand, Unit
         if (producto.Estado == "INACTIVO")
             throw new ValidationException("El producto ya está inactivo");
 
-        // Validar que el producto no tenga relaciones activas
-        var stocks = await _unitOfWork.Repository<Stock>().GetAllAsync(cancellationToken);
-        if (stocks.Any(s => s.IdProducto == request.Id))
-            throw new ValidationException("No se puede eliminar el producto porque tiene stock asociado");
-
         // Validar que no tenga variedades con negociaciones
         var variedades = await _unitOfWork.Repository<VariedadProducto>().GetAllAsync(cancellationToken);
         var variedadesProducto = variedades.Where(v => v.IdProducto == request.Id).ToList();

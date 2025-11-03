@@ -1194,6 +1194,71 @@
             "Bearer": [ ]
           }
         ]
+      },
+      "delete": {
+        "tags": [
+          "Compras"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnularCompraDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnularCompraDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnularCompraDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/compras/lotes": {
@@ -1732,6 +1797,54 @@
         ]
       }
     },
+    "/api/compras/asignacion-vehiculos/detalles/{idCompraVehiculoDetalle}": {
+      "delete": {
+        "tags": [
+          "CompraVehiculos"
+        ],
+        "parameters": [
+          {
+            "name": "idCompraVehiculoDetalle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
     "/api/compras/llegadas-planta": {
       "get": {
         "tags": [
@@ -1869,6 +1982,71 @@
             "Bearer": [ ]
           }
         ]
+      },
+      "delete": {
+        "tags": [
+          "LlegadaPlanta"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnularLlegadaPlantaDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnularLlegadaPlantaDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnularLlegadaPlantaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/api/compras/llegadas-planta/por-vehiculo/{idCompraVehiculo}": {
@@ -1959,6 +2137,76 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VehiculoConComprasYRecepcionesDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/llegadas-planta/todas": {
+      "get": {
+        "tags": [
+          "LlegadaPlanta"
+        ],
+        "parameters": [
+          {
+            "name": "idCompra",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fechaInicio",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "fechaFin",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoListApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoListApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LlegadaPlantaDtoListApiResponse"
                 }
               }
             }
@@ -6421,6 +6669,34 @@
   },
   "components": {
     "schemas": {
+      "AnularCompraDto": {
+        "type": "object",
+        "properties": {
+          "idUsuarioAnulacion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "motivoAnulacion": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AnularLlegadaPlantaDto": {
+        "type": "object",
+        "properties": {
+          "idUsuarioAnulacion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "motivoAnulacion": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "AnularNegociacionDto": {
         "type": "object",
         "properties": {
@@ -6975,6 +7251,14 @@
             "format": "double"
           },
           "sacosTotales": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "negociacionPesoTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "negociacionSacosTotales": {
             "type": "integer",
             "format": "int32"
           },
@@ -7825,6 +8109,24 @@
           "diferenciaPeso": {
             "type": "number",
             "format": "double"
+          },
+          "idUsuarioAnulacion": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "usuarioAnulacionNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "motivoAnulacion": {
+            "type": "string",
+            "nullable": true
+          },
+          "fAnulacion": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -7841,6 +8143,29 @@
           },
           "data": {
             "$ref": "#/components/schemas/LlegadaPlantaDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LlegadaPlantaDtoListApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LlegadaPlantaDto"
+            },
+            "nullable": true
           },
           "errors": {
             "nullable": true

@@ -13,8 +13,15 @@ public class CompraDto
     // Información de la negociación asociada
     public string? ProveedorNombre { get; set; }
     public string? ComisionistaNombre { get; set; }
+    
+    // Totales calculados desde los Lotes
     public decimal PesoTotal { get; set; }
     public int SacosTotales { get; set; }
+    
+    // Totales originales desde la Negociación
+    public decimal NegociacionPesoTotal { get; set; }
+    public int NegociacionSacosTotales { get; set; }
+    
     public decimal PrecioUnitario { get; set; }
     public decimal MontoTotal { get; set; }
     
@@ -53,4 +60,10 @@ public class UpdateLoteDto
     public string? Codigo { get; set; }
     public decimal? Comision { get; set; }
     public string? Observacion { get; set; }
+}
+
+public class AnularCompraDto
+{
+    public int IdUsuarioAnulacion { get; set; }
+    public string MotivoAnulacion { get; set; } = string.Empty;
 }

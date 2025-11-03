@@ -1,0 +1,5 @@
+using MediatR;
+
+namespace Miski.Application.Features.Compras.CompraVehiculos.Commands.EliminarCompraDeVehiculo;
+
+public record EliminarCompraDeVehiculoCommand(int IdCompraVehiculoDetalle) : IRequest<Unit>;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Compras.CompraVehiculos.Commands.CreateCompraVehiculo;
 using Miski.Application.Features.Compras.CompraVehiculos.Commands.UpdateCompraVehiculo;
+using Miski.Application.Features.Compras.CompraVehiculos.Commands.EliminarCompraDeVehiculo;
 using Miski.Application.Features.Compras.CompraVehiculos.Queries.GetCompraVehiculos;
 using Miski.Application.Features.Compras.CompraVehiculos.Queries.GetCompraVehiculoById;
 using Miski.Application.Features.Compras.CompraVehiculos.Queries.GetCompraVehiculoConDisponibles;
@@ -262,6 +263,62 @@ public class CompraVehiculosController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse<CompraVehiculoConDisponiblesDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Elimina una compra asociada a un vehículo
+    /// </summary>
+    /// <remarks>
+    /// Elimina la asociación (CompraVehiculoDetalle) entre una compra y un vehículo.
+    /// 
+    /// Este endpoint es útil cuando:
+    /// - Necesitas anular una compra que ya está asignada a un vehículo
+    /// - Primero debes eliminar la asociación, luego puedes anular la compra
+    /// 
+    /// Validaciones implementadas:
+    /// 1. ? El CompraVehiculoDetalle debe existir
+    /// 2. ? El CompraVehiculo asociado debe estar en estado "ACTIVO" (no "ENTREGADO")
+    /// 3. ? La Compra NO debe tener EstadoRecepcion = "RECEPCIONADO"
+    /// 4. ? La Compra NO debe tener llegadas a planta registradas
+    /// 
+    /// Después de eliminar:
+    /// - Se elimina el CompraVehiculoDetalle
+    /// - Se actualiza Compra.EstadoRecepcion = null
+    /// 
+    /// Flujo recomendado para anular una compra:
+    /// 1. DELETE /api/compras/asignacion-vehiculos/detalles/{idCompraVehiculoDetalle}
+    /// 2. DELETE /api/compras/{idCompra} (anular la compra)
+    /// </remarks>
+    [HttpDelete("detalles/{idCompraVehiculoDetalle}")]
+    public async Task<ActionResult<ApiResponse>> EliminarCompraDeVehiculo(
+        int idCompraVehiculoDetalle,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new EliminarCompraDeVehiculoCommand(idCompraVehiculoDetalle);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Compra desasociada del vehículo exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Entidad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));

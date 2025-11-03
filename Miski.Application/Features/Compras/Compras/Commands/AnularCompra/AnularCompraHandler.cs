@@ -1,0 +1,69 @@
+using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.Compras.Commands.AnularCompra;
+
+public class AnularCompraHandler : IRequestHandler<AnularCompraCommand, Unit>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public AnularCompraHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<Unit> Handle(AnularCompraCommand request, CancellationToken cancellationToken)
+    {
+        // Verificar que la compra existe
+        var compra = await _unitOfWork.Repository<Compra>()
+            .GetByIdAsync(request.IdCompra, cancellationToken);
+
+        if (compra == null)
+            throw new NotFoundException("Compra", request.IdCompra);
+
+        // Verificar que la compra no esté ya anulada
+        if (compra.Estado == "ANULADO")
+        {
+            var errors = new Dictionary<string, string[]>
+            {
+                { "Compra", new[] { "La compra ya está anulada" } }
+            };
+            throw new Shared.Exceptions.ValidationException(errors);
+        }
+
+        // Verificar que el usuario existe
+        var usuario = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(request.IdUsuarioAnulacion, cancellationToken);
+
+        if (usuario == null)
+            throw new NotFoundException("Usuario", request.IdUsuarioAnulacion);
+
+        // Validar que la compra no tenga un vehículo asignado
+        var compraVehiculoDetalles = await _unitOfWork.Repository<CompraVehiculoDetalle>()
+            .GetAllAsync(cancellationToken);
+
+        var tieneVehiculoAsignado = compraVehiculoDetalles.Any(cvd => cvd.IdCompra == request.IdCompra);
+
+        if (tieneVehiculoAsignado)
+        {
+            var errors = new Dictionary<string, string[]>
+            {
+                { "Compra", new[] { "No se puede anular la compra porque ya tiene un vehículo asignado" } }
+            };
+            throw new Shared.Exceptions.ValidationException(errors);
+        }
+
+        // Anular la compra
+        compra.Estado = "ANULADO";
+        compra.IdUsuarioAnulacion = request.IdUsuarioAnulacion;
+        compra.MotivoAnulacion = request.MotivoAnulacion;
+        compra.FAnulacion = DateTime.Now;
+
+        await _unitOfWork.Repository<Compra>().UpdateAsync(compra, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
+    }
+}

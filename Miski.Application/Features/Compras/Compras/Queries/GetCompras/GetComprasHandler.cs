@@ -58,10 +58,17 @@ public class GetComprasHandler : IRequestHandler<GetComprasQuery, List<CompraDto
                 FEmision = compra.FEmision,
                 Estado = compra.Estado,
                 EstadoRecepcion = compra.EstadoRecepcion,
-                MontoTotal = compra.MontoTotal ?? 0, // MontoTotal de Compra
-                PesoTotal = pesoTotal, // PesoTotal desde Lotes
-                SacosTotales = sacosTotales, // SacosTotales desde Lotes
-                PrecioUnitario = negociacion?.PrecioUnitario ?? 0 // PrecioUnitario sigue siendo de Negociacion
+                MontoTotal = compra.MontoTotal ?? 0,
+                
+                // Totales calculados desde los Lotes
+                PesoTotal = pesoTotal,
+                SacosTotales = sacosTotales,
+                
+                // Totales originales desde la Negociación
+                NegociacionPesoTotal = negociacion?.PesoTotal ?? 0,
+                NegociacionSacosTotales = negociacion?.SacosTotales ?? 0,
+                
+                PrecioUnitario = negociacion?.PrecioUnitario ?? 0
             };
 
             // Si existe la negociación, cargar información

@@ -298,11 +298,11 @@ public class MiskiDbContext : DbContext
             entity.HasKey(e => e.IdStock);
             entity.Property(e => e.CantidadKg).HasPrecision(18, 2);
 
-            entity.HasOne(d => d.Producto)
+            entity.HasOne(d => d.VariedadProducto)
                 .WithMany(p => p.Stocks)
-                .HasForeignKey(d => d.IdProducto)
+                .HasForeignKey(d => d.IdVariedadProducto)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Stock_Producto");
+                .HasConstraintName("FK_Stock_VariedadProducto");
 
             entity.HasOne(d => d.Planta)
                 .WithMany(p => p.Stocks)
@@ -402,11 +402,13 @@ public class MiskiDbContext : DbContext
         {
             entity.HasKey(e => e.IdCompra);
             entity.Property(e => e.Serie).HasMaxLength(20);
+            entity.Property(e => e.Correlativo).HasMaxLength(20);
             entity.Property(e => e.Estado).HasMaxLength(20);
             entity.Property(e => e.EstadoRecepcion).HasMaxLength(20);
             entity.Property(e => e.MontoTotal).HasPrecision(18, 2);
             entity.Property(e => e.IGV).HasPrecision(18, 2);
             entity.Property(e => e.Observacion).HasMaxLength(200);
+            entity.Property(e => e.MotivoAnulacion).HasMaxLength(200);
 
             entity.HasOne(d => d.Negociacion)
                 .WithMany(p => p.Compras)
@@ -427,6 +429,13 @@ public class MiskiDbContext : DbContext
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Compra_TipoCambio");
+
+            entity.HasOne(d => d.UsuarioAnulacion)
+                .WithMany()
+                .HasForeignKey(d => d.IdUsuarioAnulacion)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Compra_UsuarioAnulacion");
 
             entity.ToTable("Compra");
         });

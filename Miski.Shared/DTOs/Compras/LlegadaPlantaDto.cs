@@ -25,6 +25,19 @@ public class LlegadaPlantaDto
     public decimal PesoAsignado { get; set; }
     public int DiferenciaSacos { get; set; }
     public decimal DiferenciaPeso { get; set; }
+    
+    // Datos de anulación de la Compra
+    public int? IdUsuarioAnulacion { get; set; }
+    public string? UsuarioAnulacionNombre { get; set; }
+    public string? MotivoAnulacion { get; set; }
+    public DateTime? FAnulacion { get; set; }
+}
+
+// DTO para anular llegada a planta (request body)
+public class AnularLlegadaPlantaDto
+{
+    public int IdUsuarioAnulacion { get; set; }
+    public string MotivoAnulacion { get; set; } = string.Empty;
 }
 
 // DTO para crear LlegadaPlanta (ACTUALIZADO para recibir múltiples lotes)

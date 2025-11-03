@@ -102,6 +102,10 @@ namespace Miski.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCompra"));
 
+                    b.Property<string>("Correlativo")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("Estado")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -109,6 +113,9 @@ namespace Miski.Api.Migrations
                     b.Property<string>("EstadoRecepcion")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("FAnulacion")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("FEmision")
                         .HasColumnType("datetime2");
@@ -129,9 +136,16 @@ namespace Miski.Api.Migrations
                     b.Property<int?>("IdTipoCambio")
                         .HasColumnType("int");
 
+                    b.Property<int?>("IdUsuarioAnulacion")
+                        .HasColumnType("int");
+
                     b.Property<decimal?>("MontoTotal")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("MotivoAnulacion")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Observacion")
                         .HasMaxLength(200)
@@ -148,6 +162,8 @@ namespace Miski.Api.Migrations
                     b.HasIndex("IdNegociacion");
 
                     b.HasIndex("IdTipoCambio");
+
+                    b.HasIndex("IdUsuarioAnulacion");
 
                     b.ToTable("Compra", (string)null);
                 });
@@ -763,20 +779,17 @@ namespace Miski.Api.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("CantidadSacos")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdPlanta")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdProducto")
+                    b.Property<int>("IdVariedadProducto")
                         .HasColumnType("int");
 
                     b.HasKey("IdStock");
 
                     b.HasIndex("IdPlanta");
 
-                    b.HasIndex("IdProducto");
+                    b.HasIndex("IdVariedadProducto");
 
                     b.ToTable("Stock", (string)null);
                 });
@@ -1225,11 +1238,19 @@ namespace Miski.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_Compra_TipoCambio");
 
+                    b.HasOne("Miski.Domain.Entities.Usuario", "UsuarioAnulacion")
+                        .WithMany()
+                        .HasForeignKey("IdUsuarioAnulacion")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_Compra_UsuarioAnulacion");
+
                     b.Navigation("Moneda");
 
                     b.Navigation("Negociacion");
 
                     b.Navigation("TipoCambio");
+
+                    b.Navigation("UsuarioAnulacion");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.CompraVehiculo", b =>
@@ -1518,16 +1539,16 @@ namespace Miski.Api.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Stock_Ubicacion");
 
-                    b.HasOne("Miski.Domain.Entities.Producto", "Producto")
+                    b.HasOne("Miski.Domain.Entities.VariedadProducto", "VariedadProducto")
                         .WithMany("Stocks")
-                        .HasForeignKey("IdProducto")
+                        .HasForeignKey("IdVariedadProducto")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("FK_Stock_Producto");
+                        .HasConstraintName("FK_Stock_VariedadProducto");
 
                     b.Navigation("Planta");
 
-                    b.Navigation("Producto");
+                    b.Navigation("VariedadProducto");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.SubModulo", b =>
@@ -1734,8 +1755,6 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Producto", b =>
                 {
-                    b.Navigation("Stocks");
-
                     b.Navigation("TipoCalidadProductos");
 
                     b.Navigation("VariedadProductos");
@@ -1798,6 +1817,8 @@ namespace Miski.Api.Migrations
             modelBuilder.Entity("Miski.Domain.Entities.VariedadProducto", b =>
                 {
                     b.Navigation("Negociaciones");
+
+                    b.Navigation("Stocks");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.Vehiculo", b =>

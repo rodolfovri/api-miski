@@ -1,0 +1,407 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Miski.Application.Features.Compras.LlegadasPlanta.Commands.CreateLlegadaPlanta;
+using Miski.Application.Features.Compras.LlegadasPlanta.Commands.AnularLlegadaPlanta;
+using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetLlegadaPlantaById;
+using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetLlegadasPlanta;
+using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetCompraVehiculoConLotes;
+using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetComprasVehiculosActivos;
+using Miski.Application.Features.Compras.LlegadasPlanta.Queries.GetVehiculosConComprasYRecepciones;
+using Miski.Shared.DTOs.Base;
+using Miski.Shared.DTOs.Compras;
+
+namespace Miski.Api.Controllers.Compras;
+
+[ApiController]
+[Route("api/compras/llegadas-planta")]
+[Tags("Compras")]
+[Authorize]
+public class LlegadaPlantaController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public LlegadaPlantaController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    /// <summary>
+    /// Obtiene todos los vehículos con sus compras ACTIVAS y detalles de lotes
+    /// </summary>
+    /// <remarks>
+    /// Retorna todos los CompraVehiculo que tienen compras con estado "ACTIVO", mostrando:
+    /// - Información del vehículo (placa, guía de remisión, fecha de registro)
+    /// - Detalles de cada compra con sus lotes:
+    ///   * Código del lote
+    ///   * Sacos enviados (del lote original)
+    ///   * Peso enviado (del lote original)
+    ///   * Sacos recibidos (si ya llegó a planta)
+    ///   * Peso recibido (si ya llegó a planta)
+    ///   * Estado de la compra
+    /// 
+    /// Relación: CompraVehiculo (1) ? (N) CompraVehiculoDetalle ? (1) Compra ? (N) Lote
+    /// 
+    /// Solo se incluyen compras con estado "ACTIVO".
+    /// </remarks>
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<IEnumerable<CompraVehiculoResumenDto>>>> GetComprasVehiculosActivos(
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetComprasVehiculosActivosQuery();
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<IEnumerable<CompraVehiculoResumenDto>>.SuccessResult(
+                result,
+                "Compras de vehículos obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<CompraVehiculoResumenDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene una llegada a planta por ID con detalles de lotes recibidos
+    /// </summary>
+    /// <remarks>
+    /// Retorna información de la llegada a planta incluyendo:
+    /// - Datos de la compra y usuario
+    /// - Detalles de cada lote recibido con:
+    ///   * Sacos asignados vs sacos recibidos
+    ///   * Peso asignado vs peso recibido
+    ///   * Diferencias calculadas
+    ///   * Observaciones
+    /// </remarks>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApiResponse<LlegadaPlantaDto>>> GetLlegadaPlantaById(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetLlegadaPlantaByIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<LlegadaPlantaDto>.SuccessResult(
+                result,
+                "Llegada a planta obtenida exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<LlegadaPlantaDto>.ErrorResult(
+                "Llegada a planta no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<LlegadaPlantaDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene las compras con sus lotes de un CompraVehiculo específico
+    /// </summary>
+    /// <remarks>
+    /// Retorna todas las compras asignadas a un vehículo con sus lotes, indicando:
+    /// - Sacos asignados y peso asignado de cada lote
+    /// - Si el lote ya fue recibido (YaRecibido = true/false)
+    /// - Información de recepción si existe (sacos recibidos, peso recibido, observaciones)
+    /// 
+    /// Útil para registrar llegadas a planta basándose en el vehículo que llega.
+    /// </remarks>
+    [HttpGet("por-vehiculo/{idCompraVehiculo}")]
+    public async Task<ActionResult<ApiResponse<CompraVehiculoConLotesDto>>> GetCompraVehiculoConLotes(
+        int idCompraVehiculo,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetCompraVehiculoConLotesQuery(idCompraVehiculo);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<CompraVehiculoConLotesDto>.SuccessResult(
+                result,
+                "Compras con lotes obtenidas exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<CompraVehiculoConLotesDto>.ErrorResult(
+                "CompraVehiculo no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<CompraVehiculoConLotesDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Registra una nueva llegada a planta
+    /// </summary>
+    /// <remarks>
+    /// Permite registrar la llegada de un lote de una compra a planta.
+    /// 
+    /// Campos requeridos:
+    /// - IdCompra: ID de la compra que llega
+    /// - IdUsuario: ID del usuario que registra la llegada
+    /// - IdLote: ID del lote recibido
+    /// - SacosRecibidos: Cantidad de sacos recibidos
+    /// - PesoRecibido: Peso recibido en kg
+    /// - FLlegada: Fecha de llegada
+    /// 
+    /// Validaciones:
+    /// - La compra debe existir
+    /// - El usuario debe existir
+    /// - El lote debe existir y pertenecer a la compra
+    /// - El lote no debe estar registrado previamente
+    /// 
+    /// Ejemplo de request:
+    /// {
+    ///   "idCompra": 1,
+    ///   "idUsuario": 5,
+    ///   "idLote": 1,
+    ///   "sacosRecibidos": 30,
+    ///   "pesoRecibido": 1495.50,
+    ///   "fLlegada": "2024-01-20T14:30:00",
+    ///   "observaciones": "Algunos sacos húmedos"
+    /// }
+    /// </remarks>
+    [HttpPost]
+    public async Task<ActionResult<ApiResponse<CreateLlegadaPlantaResponseDto>>> RegistrarLlegadaPlanta(
+        [FromBody] CreateLlegadaPlantaDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new CreateLlegadaPlantaCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<CreateLlegadaPlantaResponseDto>.SuccessResult(
+                result,
+                "Llegadas a planta registradas exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<CreateLlegadaPlantaResponseDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<CreateLlegadaPlantaResponseDto>.ErrorResult(
+                "Entidad relacionada no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<CreateLlegadaPlantaResponseDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene todos los vehículos con sus compras asignadas y detalles de recepción en planta
+    /// </summary>
+    /// <remarks>
+    /// Retorna un reporte completo que hace match entre:
+    /// - CompraVehiculo (vehículos con asignaciones)
+    /// - CompraVehiculoDetalle (compras asignadas a cada vehículo)
+    /// - LlegadaPlanta (registro de llegada de la compra)
+    /// 
+    /// Para cada vehículo muestra:
+    /// - Información del vehículo y guía de remisión
+    /// - Compras asignadas con:
+    ///   * Para cada lote:
+    ///     - Sacos asignados vs sacos recibidos
+    ///     - Peso asignado vs peso recibido
+    ///     - Diferencias calculadas
+    ///     - Observaciones de recepción
+    ///     - Estado de recepción (YaRecibido)
+    /// 
+    /// Permite filtrar por:
+    /// - idCompraVehiculo: Ver un vehículo específico
+    /// - idVehiculo: Ver todas las asignaciones de un vehículo
+    /// 
+    /// Útil para:
+    /// - Ver qué compras van en cada vehículo
+    /// - Verificar qué se ha recibido y qué falta
+    /// - Control de diferencias entre lo enviado y lo recibido
+    /// - Trazabilidad completa del proceso
+    /// </remarks>
+    [HttpGet("vehiculos-con-recepciones")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<VehiculoConComprasYRecepcionesDto>>>> GetVehiculosConComprasYRecepciones(
+        [FromQuery] int? idCompraVehiculo = null,
+        [FromQuery] int? idVehiculo = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetVehiculosConComprasYRecepcionesQuery(idCompraVehiculo, idVehiculo);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<IEnumerable<VehiculoConComprasYRecepcionesDto>>.SuccessResult(
+                result,
+                "Vehículos con compras y recepciones obtenidos exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<VehiculoConComprasYRecepcionesDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Anula una llegada a planta registrada
+    /// </summary>
+    /// <remarks>
+    /// Anula una llegada a planta y revierte todas las acciones realizadas:
+    /// 
+    /// Acciones que se ejecutan:
+    /// 1. ✅ Cambia el Estado de LlegadaPlanta a "ANULADO"
+    /// 2. ✅ Cambia el Estado de Compra a "ANULADO"
+    /// 3. ✅ Cambia el EstadoRecepcion de Compra a "ANULADO"
+    /// 4. ✅ Registra datos de anulación en Compra:
+    ///    - IdUsuarioAnulacion
+    ///    - MotivoAnulacion
+    ///    - FAnulacion (fecha automática)
+    /// 5. ✅ Revierte el stock (resta el peso recibido)
+    /// 
+    /// Validaciones implementadas:
+    /// - ✅ La LlegadaPlanta debe existir
+    /// - ✅ La LlegadaPlanta NO debe estar ya anulada
+    /// - ✅ El usuario que anula debe existir
+    /// - ✅ La Compra debe existir
+    /// - ✅ La Negociación debe tener IdVariedadProducto
+    /// - ✅ Debe existir Stock para revertir
+    /// - ✅ El Stock debe ser suficiente (no puede quedar negativo)
+    /// 
+    /// Ejemplo de validación de stock:
+    /// - Stock actual: 5,000 kg
+    /// - Peso a revertir: 7,500 kg
+    /// - ❌ ERROR: Stock insuficiente (quedaría en -2,500 kg)
+    /// 
+    /// Ejemplo de validación correcta:
+    /// - Stock actual: 10,000 kg
+    /// - Peso a revertir: 7,500 kg
+    /// - ✅ OK: Stock resultante: 2,500 kg
+    /// 
+    /// Request body ejemplo:
+    /// {
+    ///   "idUsuarioAnulacion": 5,
+    ///   "motivoAnulacion": "Error en el registro de peso"
+    /// }
+    /// </remarks>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse>> AnularLlegadaPlanta(
+        int id,
+        [FromBody] AnularLlegadaPlantaDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new AnularLlegadaPlantaCommand(id, request.IdUsuarioAnulacion, request.MotivoAnulacion);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Llegada a planta anulada exitosamente. Stock revertido y compra anulada"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Entidad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene todas las llegadas a planta registradas con filtros opcionales
+    /// </summary>
+    /// <remarks>
+    /// Retorna todas las llegadas a planta con información completa incluyendo:
+    /// 
+    /// **Información de la llegada:**
+    /// - Usuario que recepcionó (UsuarioNombre)
+    /// - Peso y sacos recibidos
+    /// - Fecha de llegada
+    /// - Observaciones de recepción
+    /// - Estado de la llegada
+    /// 
+    /// **Información del lote:**
+    /// - Código del lote
+    /// - Sacos asignados vs sacos recibidos
+    /// - Peso asignado vs peso recibido
+    /// - Diferencias calculadas (DiferenciaSacos, DiferenciaPeso)
+    /// 
+    /// **Información de anulación (si aplica):**
+    /// - Usuario que anuló (UsuarioAnulacionNombre)
+    /// - Motivo de anulación (MotivoAnulacion)
+    /// - Fecha de anulación (FAnulacion)
+    /// 
+    /// **Filtros disponibles:**
+    /// - idCompra: Filtrar por compra específica
+    /// - estado: Filtrar por estado (RECEPCIONADO, ANULADO)
+    /// - fechaInicio: Llegadas desde esta fecha
+    /// - fechaFin: Llegadas hasta esta fecha
+    /// 
+    /// **Nota:** La relación es 1 a 1 entre Compra y Lote, mostrando una fila por llegada.
+    /// </remarks>
+    [HttpGet("todas")]
+    public async Task<ActionResult<ApiResponse<List<LlegadaPlantaDto>>>> GetTodasLasLlegadasPlanta(
+        [FromQuery] int? idCompra = null,
+        [FromQuery] string? estado = null,
+        [FromQuery] DateTime? fechaInicio = null,
+        [FromQuery] DateTime? fechaFin = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetLlegadasPlantaQuery(idCompra, estado, fechaInicio, fechaFin);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<List<LlegadaPlantaDto>>.SuccessResult(
+                result,
+                "Llegadas a planta obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<List<LlegadaPlantaDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+}
