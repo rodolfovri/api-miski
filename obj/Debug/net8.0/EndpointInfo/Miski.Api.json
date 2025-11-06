@@ -1528,6 +1528,54 @@
         ]
       }
     },
+    "/api/compras/{id}/parcial": {
+      "patch": {
+        "tags": [
+          "Compras"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
     "/api/compras/asignacion-vehiculos": {
       "get": {
         "tags": [
@@ -6068,6 +6116,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "idUbicacion",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -7238,6 +7294,10 @@
             "type": "string",
             "nullable": true
           },
+          "esParcial": {
+            "type": "string",
+            "nullable": true
+          },
           "proveedorNombre": {
             "type": "string",
             "nullable": true
@@ -7738,10 +7798,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "idUbicacion": {
-            "type": "integer",
-            "format": "int32"
-          },
           "detalles": {
             "type": "array",
             "items": {
@@ -8019,6 +8075,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "idUbicacion": {
+            "type": "integer",
+            "format": "int32"
+          },
           "sacosRecibidos": {
             "type": "number",
             "format": "double"
@@ -8126,6 +8186,28 @@
           "fAnulacion": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "idVariedadProducto": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "variedadProductoNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "variedadProductoCodigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "idProducto": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "productoNombre": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -8265,6 +8347,11 @@
             "format": "double"
           },
           "idLlegadaPlanta": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "idUbicacion": {
             "type": "integer",
             "format": "int32",
             "nullable": true
@@ -10139,6 +10226,10 @@
           "unidadMedidaNombre": {
             "type": "string",
             "nullable": true
+          },
+          "stockKg": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false

@@ -15,6 +15,7 @@ public class Compra
     public string? Observacion { get; set; }
     public string? Estado { get; set; }
     public string? EstadoRecepcion { get; set; }
+    public string? EsParcial { get; set; }
     public int? IdUsuarioAnulacion { get; set; }
     public string? MotivoAnulacion { get; set; }
     public DateTime? FAnulacion { get; set; } 

@@ -22,6 +22,14 @@ public class GetVariedadesProductoHandler : IRequestHandler<GetVariedadesProduct
         var variedades = await _unitOfWork.Repository<Domain.Entities.VariedadProducto>().GetAllAsync(cancellationToken);
         var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
         var unidades = await _unitOfWork.Repository<Domain.Entities.UnidadMedida>().GetAllAsync(cancellationToken);
+        
+        // Cargar todos los stocks si se proporciona IdUbicacion
+        List<Stock> todosLosStocks = new List<Stock>();
+        if (request.IdUbicacion.HasValue)
+        {
+            var stocks = await _unitOfWork.Repository<Stock>().GetAllAsync(cancellationToken);
+            todosLosStocks = stocks.Where(s => s.IdPlanta == request.IdUbicacion.Value).ToList();
+        }
 
         // Aplicar filtros
         if (!string.IsNullOrEmpty(request.Nombre))
@@ -48,13 +56,32 @@ public class GetVariedadesProductoHandler : IRequestHandler<GetVariedadesProduct
             variedades = variedades.Where(v => v.Estado == request.Estado).ToList();
         }
 
-        // Cargar relaciones
+        // Construir los DTOs con stock
+        var resultado = new List<VariedadProductoDto>();
+
         foreach (var variedad in variedades)
         {
+            // Cargar relaciones
             variedad.Producto = productos.FirstOrDefault(p => p.IdProducto == variedad.IdProducto) ?? new Producto();
             variedad.UnidadMedida = unidades.FirstOrDefault(u => u.IdUnidadMedida == variedad.IdUnidadMedida) ?? new Domain.Entities.UnidadMedida();
+
+            // Mapear a DTO
+            var dto = _mapper.Map<VariedadProductoDto>(variedad);
+
+            // Buscar el stock para esta variedad en la ubicación especificada
+            if (request.IdUbicacion.HasValue)
+            {
+                var stock = todosLosStocks.FirstOrDefault(s => s.IdVariedadProducto == variedad.IdVariedadProducto);
+                dto.StockKg = stock?.CantidadKg ?? 0;  // Si no hay stock, retorna 0
+            }
+            else
+            {
+                dto.StockKg = 0;  // Si no se proporciona ubicación, stock es 0
+            }
+
+            resultado.Add(dto);
         }
 
-        return variedades.Select(v => _mapper.Map<VariedadProductoDto>(v)).ToList();
+        return resultado;
     }
 }

@@ -9,6 +9,7 @@ public class CompraDto
     public DateTime? FEmision { get; set; }
     public string? Estado { get; set; }
     public string? EstadoRecepcion { get; set; }
+    public string? EsParcial { get; set; }  // ? AGREGADO
     
     // Información de la negociación asociada
     public string? ProveedorNombre { get; set; }

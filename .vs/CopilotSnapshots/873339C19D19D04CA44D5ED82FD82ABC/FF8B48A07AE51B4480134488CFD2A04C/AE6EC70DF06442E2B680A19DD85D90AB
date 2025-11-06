@@ -1,0 +1,239 @@
+﻿using MediatR;
+using FluentValidation;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.LlegadasPlanta.Commands.CreateLlegadaPlanta;
+
+public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCommand, CreateLlegadaPlantaResponseDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IValidator<CreateLlegadaPlantaDto> _validator;
+
+    public CreateLlegadaPlantaHandler(IUnitOfWork unitOfWork, IValidator<CreateLlegadaPlantaDto> validator)
+    {
+        _unitOfWork = unitOfWork;
+        _validator = validator;
+    }
+
+    public async Task<CreateLlegadaPlantaResponseDto> Handle(CreateLlegadaPlantaCommand request, CancellationToken cancellationToken)
+    {
+        // Validar el DTO
+        var validationResult = await _validator.ValidateAsync(request.Data, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult.Errors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
+            throw new Shared.Exceptions.ValidationException(errors);
+        }
+
+        // Verificar que el CompraVehiculo existe
+        var compraVehiculo = await _unitOfWork.Repository<CompraVehiculo>()
+            .GetByIdAsync(request.Data.IdCompraVehiculo, cancellationToken);
+
+        if (compraVehiculo == null)
+            throw new NotFoundException("CompraVehiculo", request.Data.IdCompraVehiculo);
+
+        // Verificar que el usuario existe
+        var usuario = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(request.Data.IdUsuario, cancellationToken);
+
+        if (usuario == null)
+            throw new NotFoundException("Usuario", request.Data.IdUsuario);
+
+        // Cargar la persona asociada al usuario para el nombre
+        var persona = await _unitOfWork.Repository<Persona>()
+            .GetByIdAsync(usuario.IdUsuario, cancellationToken);
+
+        // Obtener todos los lotes para validaciones
+        var todosLosLotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
+        var todasLasCompras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
+        var llegadasExistentes = await _unitOfWork.Repository<LlegadaPlanta>().GetAllAsync(cancellationToken);
+        var todasLasUbicaciones = await _unitOfWork.Repository<Ubicacion>().GetAllAsync(cancellationToken);
+
+        // Validar cada detalle
+        foreach (var detalle in request.Data.Detalles)
+        {
+            // Verificar que la compra existe
+            var compra = todasLasCompras.FirstOrDefault(c => c.IdCompra == detalle.IdCompra);
+            if (compra == null)
+                throw new NotFoundException("Compra", detalle.IdCompra);
+
+            // Verificar que el lote existe y pertenece a la compra
+            var lote = todosLosLotes.FirstOrDefault(l => l.IdLote == detalle.IdLote);
+            if (lote == null)
+                throw new NotFoundException("Lote", detalle.IdLote);
+
+            if (lote.IdCompra != detalle.IdCompra)
+            {
+                var errors = new Dictionary<string, string[]>
+                {
+                    { "Lote", new[] { $"El lote con ID {detalle.IdLote} no pertenece a la compra {detalle.IdCompra}" } }
+                };
+                throw new Shared.Exceptions.ValidationException(errors);
+            }
+
+            // Verificar que la ubicación existe
+            var ubicacion = todasLasUbicaciones.FirstOrDefault(u => u.IdUbicacion == detalle.IdUbicacion);
+            if (ubicacion == null)
+                throw new NotFoundException("Ubicacion", detalle.IdUbicacion);
+
+            // Verificar que el lote no haya sido registrado previamente
+            var loteYaRegistrado = llegadasExistentes.Any(lp => lp.IdLote == detalle.IdLote);
+            if (loteYaRegistrado)
+            {
+                var errors = new Dictionary<string, string[]>
+                {
+                    { "Lote", new[] { $"El lote con ID {detalle.IdLote} ya ha sido registrado en una llegada a planta" } }
+                };
+                throw new Shared.Exceptions.ValidationException(errors);
+            }
+        }
+
+        // Fecha de llegada automática
+        var fechaLlegada = DateTime.Now;
+
+        var llegadasRegistradas = new List<LlegadaPlantaDto>();
+        var comprasActualizadas = new HashSet<int>(); // Para rastrear qué compras debemos actualizar
+
+        // Diccionario para acumular peso por compra Y ubicación (para actualizar Stock)
+        // Clave: (IdCompra, IdUbicacion), Valor: PesoTotal
+        var pesoTotalPorCompraYUbicacion = new Dictionary<(int, int), decimal>();
+
+        // Crear las llegadas a planta para cada detalle
+        foreach (var detalleDto in request.Data.Detalles)
+        {
+            var lote = todosLosLotes.First(l => l.IdLote == detalleDto.IdLote);
+            var compra = todasLasCompras.First(c => c.IdCompra == detalleDto.IdCompra);
+            var ubicacion = todasLasUbicaciones.First(u => u.IdUbicacion == detalleDto.IdUbicacion);
+
+            // Crear la llegada a planta (usar IdUbicacion del detalle)
+            var llegadaPlanta = new LlegadaPlanta
+            {
+                IdCompra = detalleDto.IdCompra,
+                IdUsuario = request.Data.IdUsuario,
+                IdLote = detalleDto.IdLote,
+                IdUbicacion = detalleDto.IdUbicacion,  // ✨ Del detalle
+                SacosRecibidos = (double)detalleDto.SacosRecibidos,
+                PesoRecibido = (double)detalleDto.PesoRecibido,
+                FLlegada = fechaLlegada,
+                Observaciones = detalleDto.Observaciones,
+                Estado = "RECEPCIONADO"
+            };
+
+            await _unitOfWork.Repository<LlegadaPlanta>().AddAsync(llegadaPlanta, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Agregar compra a la lista de compras a actualizar
+            comprasActualizadas.Add(detalleDto.IdCompra);
+
+            // Acumular peso total por compra Y ubicación para actualizar Stock
+            var key = (detalleDto.IdCompra, detalleDto.IdUbicacion);
+            if (!pesoTotalPorCompraYUbicacion.ContainsKey(key))
+            {
+                pesoTotalPorCompraYUbicacion[key] = 0;
+            }
+            pesoTotalPorCompraYUbicacion[key] += detalleDto.PesoRecibido;
+
+            // Calcular diferencias
+            int diferenciaSacos = lote.Sacos - (int)llegadaPlanta.SacosRecibidos;
+            decimal diferenciaPeso = lote.Peso - (decimal)llegadaPlanta.PesoRecibido;
+
+            // Agregar a la respuesta
+            llegadasRegistradas.Add(new LlegadaPlantaDto
+            {
+                IdLlegadaPlanta = llegadaPlanta.IdLlegadaPlanta,
+                IdCompra = llegadaPlanta.IdCompra,
+                IdUsuario = llegadaPlanta.IdUsuario,
+                IdLote = llegadaPlanta.IdLote,
+                IdUbicacion = llegadaPlanta.IdUbicacion,
+                SacosRecibidos = (decimal)llegadaPlanta.SacosRecibidos,
+                PesoRecibido = (decimal)llegadaPlanta.PesoRecibido,
+                FLlegada = llegadaPlanta.FLlegada,
+                Observaciones = llegadaPlanta.Observaciones,
+                Estado = llegadaPlanta.Estado,
+                CompraSerie = compra.Serie,
+                UsuarioNombre = persona != null ? $"{persona.Nombres} {persona.Apellidos}" : "Usuario desconocido",
+                LoteCodigo = lote.Codigo,
+                UbicacionNombre = ubicacion.Nombre,
+                SacosAsignados = lote.Sacos,
+                PesoAsignado = lote.Peso,
+                DiferenciaSacos = diferenciaSacos,
+                DiferenciaPeso = diferenciaPeso
+            });
+        }
+
+        // Actualizar el EstadoRecepcion de las compras recepcionadas
+        foreach (var idCompra in comprasActualizadas)
+        {
+            var compra = todasLasCompras.First(c => c.IdCompra == idCompra);
+            compra.EstadoRecepcion = "RECEPCIONADO";
+            await _unitOfWork.Repository<Compra>().UpdateAsync(compra, cancellationToken);
+        }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Actualizar o crear Stock por cada compra Y ubicación procesada
+        var todasLasNegociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
+        var todosLosStocks = await _unitOfWork.Repository<Stock>().GetAllAsync(cancellationToken);
+
+        foreach (var kvp in pesoTotalPorCompraYUbicacion)
+        {
+            var (idCompra, idUbicacion) = kvp.Key;
+            var pesoTotal = kvp.Value;
+
+            var compra = todasLasCompras.First(c => c.IdCompra == idCompra);
+            var negociacion = todasLasNegociaciones.FirstOrDefault(n => n.IdNegociacion == compra.IdNegociacion);
+
+            if (negociacion == null || !negociacion.IdVariedadProducto.HasValue)
+            {
+                // Si no hay negociación o no tiene variedad de producto, no podemos actualizar stock
+                continue;
+            }
+
+            var idVariedadProducto = negociacion.IdVariedadProducto.Value;
+
+            // Buscar si ya existe un Stock para esta combinación de Planta + VariedadProducto
+            var stockExistente = todosLosStocks.FirstOrDefault(s => 
+                s.IdPlanta == idUbicacion && 
+                s.IdVariedadProducto == idVariedadProducto);
+
+            if (stockExistente != null)
+            {
+                // Actualizar stock existente (sumar el peso recibido)
+                stockExistente.CantidadKg = (stockExistente.CantidadKg ?? 0) + pesoTotal;
+                await _unitOfWork.Repository<Stock>().UpdateAsync(stockExistente, cancellationToken);
+            }
+            else
+            {
+                // Crear nuevo stock
+                var nuevoStock = new Stock
+                {
+                    IdVariedadProducto = idVariedadProducto,
+                    IdPlanta = idUbicacion,
+                    CantidadKg = pesoTotal
+                };
+                await _unitOfWork.Repository<Stock>().AddAsync(nuevoStock, cancellationToken);
+            }
+        }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cambiar el estado del CompraVehiculo a ENTREGADO
+        compraVehiculo.Estado = "ENTREGADO";
+        await _unitOfWork.Repository<CompraVehiculo>().UpdateAsync(compraVehiculo, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Construir el DTO de respuesta
+        var resultado = new CreateLlegadaPlantaResponseDto
+        {
+            IdCompraVehiculo = request.Data.IdCompraVehiculo,
+            TotalLotesRecibidos = llegadasRegistradas.Count,
+            FLlegada = fechaLlegada,
+            LlegadasRegistradas = llegadasRegistradas
+        };
+
+        return resultado;
+    }
+}

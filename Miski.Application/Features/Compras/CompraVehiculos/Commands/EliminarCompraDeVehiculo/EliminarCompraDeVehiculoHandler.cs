@@ -35,7 +35,9 @@ public class EliminarCompraDeVehiculoHandler : IRequestHandler<EliminarCompraDeV
         {
             var errors = new Dictionary<string, string[]>
             {
-                { "CompraVehiculo", new[] { "No se puede eliminar la asociación porque el vehículo ya fue entregado a planta" } }
+                { "CompraVehiculo", new[] { compraVehiculo.Estado == "PARCIAL" 
+                    ? "No se puede eliminar la asociación porque el vehículo ya inició la entrega a planta (estado PARCIAL)" 
+                    : "No se puede eliminar la asociación porque el vehículo ya fue entregado a planta" } }
             };
             throw new Shared.Exceptions.ValidationException(errors);
         }

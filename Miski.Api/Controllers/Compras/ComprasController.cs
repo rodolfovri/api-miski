@@ -5,6 +5,7 @@ using Miski.Application.Features.Compras.Compras.Queries.GetCompras;
 using Miski.Application.Features.Compras.Compras.Queries.GetCompraById;
 using Miski.Application.Features.Compras.Compras.Queries.GetComprasSinAsignar;
 using Miski.Application.Features.Compras.Compras.Commands.AnularCompra;
+using Miski.Application.Features.Compras.Compras.Commands.ToggleCompraParcial;
 using Miski.Application.Features.Compras.Lotes.Commands.CreateLote;
 using Miski.Application.Features.Compras.Lotes.Commands.UpdateLote;
 using Miski.Application.Features.Compras.Lotes.Commands.DeleteLote;
@@ -393,6 +394,69 @@ public class ComprasController : ControllerBase
         {
             return NotFound(ApiResponse.ErrorResult(
                 "Entidad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Marca o desmarca una compra como parcial
+    /// </summary>
+    /// <remarks>
+    /// Permite alternar el campo EsParcial de una compra entre "SI" y "NO".
+    /// 
+    /// **Comportamiento:**
+    /// - Si EsParcial es "SI" ? lo cambia a "NO"
+    /// - Si EsParcial es "NO" o null ? lo cambia a "SI"
+    /// 
+    /// **Validaciones implementadas:**
+    /// - ? La compra debe existir
+    /// - ? La compra NO debe estar ANULADA
+    /// - ? La compra NO debe estar asignada a un vehículo (no debe existir en CompraVehiculoDetalle)
+    /// 
+    /// **Casos de uso:**
+    /// - Marcar una compra como parcial antes de asignarla a un vehículo
+    /// - Indicar que se recibirá la compra en múltiples envíos
+    /// - Desmarcar una compra si se determina que se recibirá completa
+    /// 
+    /// **IMPORTANTE:** 
+    /// - Una vez que la compra esté asignada a un vehículo, no se podrá cambiar este campo
+    /// - Si la compra está anulada, no se puede modificar
+    /// 
+    /// Ejemplo de uso:
+    /// ```
+    /// PATCH /api/compras/{id}/parcial
+    /// ```
+    /// 
+    /// Sin body necesario, solo el ID en la URL.
+    /// </remarks>
+    [HttpPatch("{id}/parcial")]
+    public async Task<ActionResult<ApiResponse>> ToggleCompraParcial(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new ToggleCompraParcialCommand(id);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Estado de compra parcial actualizado exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Compra no encontrada",
                 ex.Message
             ));
         }

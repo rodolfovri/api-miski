@@ -83,6 +83,7 @@ public class GetCompraVehiculoConLotesHandler : IRequestHandler<GetCompraVehicul
                         SacosAsignados = lote.Sacos,
                         PesoAsignado = lote.Peso,
                         IdLlegadaPlanta = llegadaPlanta?.IdLlegadaPlanta,
+                        IdUbicacion = llegadaPlanta?.IdUbicacion,  // ? AGREGADO
                         SacosRecibidos = llegadaPlanta != null ? (decimal)llegadaPlanta.SacosRecibidos : null,
                         PesoRecibido = llegadaPlanta != null ? (decimal)llegadaPlanta.PesoRecibido : null,
                         DiferenciaSacos = diferenciaSacos,

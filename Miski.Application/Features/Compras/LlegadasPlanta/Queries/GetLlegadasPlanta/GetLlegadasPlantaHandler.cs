@@ -41,17 +41,14 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
             llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada <= request.FechaFin.Value).ToList();
         }
 
-        // Obtener todas las compras
+        // Obtener todas las entidades necesarias
         var todasLasCompras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
-
-        // Obtener todos los usuarios (personas)
         var todasLasPersonas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
-
-        // Obtener todos los lotes
         var todosLosLotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
-
-        // Obtener todas las ubicaciones
         var todasLasUbicaciones = await _unitOfWork.Repository<Ubicacion>().GetAllAsync(cancellationToken);
+        var todasLasNegociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
+        var todasLasVariedadesProducto = await _unitOfWork.Repository<VariedadProducto>().GetAllAsync(cancellationToken);
+        var todosLosProductos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
 
         // Construir los DTOs
         var resultado = new List<LlegadaPlantaDto>();
@@ -75,6 +72,27 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
             if (compra?.IdUsuarioAnulacion.HasValue == true)
             {
                 usuarioAnulacion = todasLasPersonas.FirstOrDefault(p => p.IdPersona == compra.IdUsuarioAnulacion.Value);
+            }
+
+            // Buscar la Negociación asociada a la Compra
+            Negociacion? negociacion = null;
+            if (compra != null)
+            {
+                negociacion = todasLasNegociaciones.FirstOrDefault(n => n.IdNegociacion == compra.IdNegociacion);
+            }
+
+            // Buscar la VariedadProducto desde la Negociación
+            VariedadProducto? variedadProducto = null;
+            if (negociacion?.IdVariedadProducto.HasValue == true)
+            {
+                variedadProducto = todasLasVariedadesProducto.FirstOrDefault(vp => vp.IdVariedadProducto == negociacion.IdVariedadProducto.Value);
+            }
+
+            // Buscar el Producto desde la VariedadProducto
+            Producto? producto = null;
+            if (variedadProducto != null)
+            {
+                producto = todosLosProductos.FirstOrDefault(p => p.IdProducto == variedadProducto.IdProducto);
             }
 
             // Calcular diferencias
@@ -111,7 +129,13 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
                 IdUsuarioAnulacion = compra?.IdUsuarioAnulacion,
                 UsuarioAnulacionNombre = usuarioAnulacion != null ? $"{usuarioAnulacion.Nombres} {usuarioAnulacion.Apellidos}" : null,
                 MotivoAnulacion = compra?.MotivoAnulacion,
-                FAnulacion = compra?.FAnulacion
+                FAnulacion = compra?.FAnulacion,
+                // Datos del Producto y VariedadProducto
+                IdVariedadProducto = variedadProducto?.IdVariedadProducto,
+                VariedadProductoNombre = variedadProducto?.Nombre,
+                VariedadProductoCodigo = variedadProducto?.Codigo,
+                IdProducto = producto?.IdProducto,
+                ProductoNombre = producto?.Nombre
             });
         }
 

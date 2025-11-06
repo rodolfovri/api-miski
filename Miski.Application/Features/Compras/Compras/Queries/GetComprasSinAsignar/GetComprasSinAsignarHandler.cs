@@ -66,6 +66,7 @@ public class GetComprasSinAsignarHandler : IRequestHandler<GetComprasSinAsignarQ
                 FEmision = compra.FEmision,
                 Estado = compra.Estado,
                 EstadoRecepcion = compra.EstadoRecepcion,
+                EsParcial = compra.EsParcial,  // ? AGREGADO
                 MontoTotal = compra.MontoTotal ?? 0, // MontoTotal de Compra
                 PesoTotal = pesoTotal, // PesoTotal desde Lotes
                 SacosTotales = sacosTotales, // SacosTotales desde Lotes

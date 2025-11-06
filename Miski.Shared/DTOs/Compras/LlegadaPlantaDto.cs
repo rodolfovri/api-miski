@@ -7,7 +7,7 @@ public class LlegadaPlantaDto
     public int IdCompra { get; set; }
     public int IdUsuario { get; set; }
     public int IdLote { get; set; }
-    public int IdUbicacion { get; set; }
+    public int IdUbicacion { get; set; }  // ? AGREGADO DE VUELTA
     public decimal SacosRecibidos { get; set; }
     public decimal PesoRecibido { get; set; }
     public DateTime? FLlegada { get; set; }
@@ -31,6 +31,13 @@ public class LlegadaPlantaDto
     public string? UsuarioAnulacionNombre { get; set; }
     public string? MotivoAnulacion { get; set; }
     public DateTime? FAnulacion { get; set; }
+    
+    // Datos del Producto y VariedadProducto (desde Negociación)
+    public int? IdVariedadProducto { get; set; }
+    public string? VariedadProductoNombre { get; set; }
+    public string? VariedadProductoCodigo { get; set; }
+    public int? IdProducto { get; set; }
+    public string? ProductoNombre { get; set; }
 }
 
 // DTO para anular llegada a planta (request body)
@@ -45,7 +52,6 @@ public class CreateLlegadaPlantaDto
 {
     public int IdCompraVehiculo { get; set; }
     public int IdUsuario { get; set; }
-    public int IdUbicacion { get; set; }
     public List<LlegadaPlantaDetalleInputDto> Detalles { get; set; } = new List<LlegadaPlantaDetalleInputDto>();
 }
 
@@ -54,6 +60,7 @@ public class LlegadaPlantaDetalleInputDto
 {
     public int IdCompra { get; set; }
     public int IdLote { get; set; }
+    public int IdUbicacion { get; set; }  // ? MOVIDO AQUÍ
     public decimal SacosRecibidos { get; set; }
     public decimal PesoRecibido { get; set; }
     public string? Observaciones { get; set; }
@@ -106,6 +113,7 @@ public class LoteConRecepcionDto
     
     // Información de recepción (si ya fue recibido)
     public int? IdLlegadaPlanta { get; set; }
+    public int? IdUbicacion { get; set; }  // ? AGREGADO
     public decimal? SacosRecibidos { get; set; }
     public decimal? PesoRecibido { get; set; }
     public int? DiferenciaSacos { get; set; }

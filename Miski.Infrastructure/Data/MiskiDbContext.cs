@@ -405,6 +405,7 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Correlativo).HasMaxLength(20);
             entity.Property(e => e.Estado).HasMaxLength(20);
             entity.Property(e => e.EstadoRecepcion).HasMaxLength(20);
+            entity.Property(e => e.EsParcial).HasMaxLength(10);
             entity.Property(e => e.MontoTotal).HasPrecision(18, 2);
             entity.Property(e => e.IGV).HasPrecision(18, 2);
             entity.Property(e => e.Observacion).HasMaxLength(200);

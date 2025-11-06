@@ -468,6 +468,35 @@
     ]
   },
   {
+    "ContainingType": "Miski.Api.Controllers.Compras.ComprasController",
+    "Method": "ToggleCompraParcial",
+    "RelativePath": "api/compras/{id}/parcial",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Miski.Shared.DTOs.Base.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Compras"
+    ]
+  },
+  {
     "ContainingType": "Miski.Api.Controllers.Compras.CompraVehiculosController",
     "Method": "GetCompraVehiculos",
     "RelativePath": "api/compras/asignacion-vehiculos",
@@ -2606,6 +2635,11 @@
       {
         "Name": "estado",
         "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "idUbicacion",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
     ],

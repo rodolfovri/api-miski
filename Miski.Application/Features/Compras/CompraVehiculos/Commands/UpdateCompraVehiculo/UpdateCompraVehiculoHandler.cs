@@ -29,10 +29,15 @@ public class UpdateCompraVehiculoHandler : IRequestHandler<UpdateCompraVehiculoC
         if (compraVehiculo == null)
             throw new NotFoundException("CompraVehiculo", request.Id);
 
-        // Validar que no esté en estado ENTREGADO
+        // Validar que no esté en estado ENTREGADO o PARCIAL
         if (compraVehiculo.Estado == "ENTREGADO")
         {
-            throw new ValidationException("No se puede editar una asignación de compra a vehículo que ya ha sido entregada y recepcionada en planta");
+            throw new ValidationException("No se puede editar una asignación de compra a vehículo que ya ha sido entregada completamente en planta");
+        }
+
+        if (compraVehiculo.Estado == "PARCIAL")
+        {
+            throw new ValidationException("No se puede editar una asignación de compra a vehículo que ya está en proceso de entrega (estado PARCIAL). El vehículo ya inició la recepción en planta");
         }
 
         // Validar que la persona existe

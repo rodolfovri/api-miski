@@ -47,6 +47,7 @@ public class GetCompraByIdHandler : IRequestHandler<GetCompraByIdQuery, CompraDt
             FEmision = compra.FEmision,
             Estado = compra.Estado,
             EstadoRecepcion = compra.EstadoRecepcion,
+            EsParcial = compra.EsParcial,  // ? AGREGADO
             MontoTotal = compra.MontoTotal ?? 0,
             
             // Totales calculados desde los Lotes

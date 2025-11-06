@@ -66,6 +66,7 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
             FRegistro = DateTime.Now,
             FEmision = DateTime.Now,
             Estado = "ACTIVO",
+            EsParcial = "NO",  // ? AGREGADO - Por defecto NO es parcial
             // MontoTotal, IGV y Observacion se dejan null inicialmente
             MontoTotal = null,
             IGV = null,

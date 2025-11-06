@@ -106,6 +106,10 @@ namespace Miski.Api.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("EsParcial")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<string>("Estado")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");

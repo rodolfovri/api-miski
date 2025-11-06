@@ -33,6 +33,12 @@ public class VariedadProductoController : ControllerBase
     /// - codigo: Búsqueda parcial por código
     /// - idProducto: Filtrar por producto
     /// - estado: Filtrar por estado (ACTIVO, INACTIVO)
+    /// - idUbicacion: Filtrar por ubicación/planta para obtener el stock específico
+    /// 
+    /// **Stock:**
+    /// - Si se proporciona `idUbicacion`, el campo `stockKg` mostrará el stock disponible en esa ubicación
+    /// - Si NO se proporciona `idUbicacion`, el campo `stockKg` será 0
+    /// - Si no existe stock para una variedad en la ubicación especificada, el campo `stockKg` será 0
     /// </remarks>
     [HttpGet]
     public async Task<ActionResult<ApiResponse<IEnumerable<VariedadProductoDto>>>> GetVariedades(
@@ -40,11 +46,12 @@ public class VariedadProductoController : ControllerBase
         [FromQuery] string? codigo = null,
         [FromQuery] int? idProducto = null,
         [FromQuery] string? estado = null,
+        [FromQuery] int? idUbicacion = null,  // ? NUEVO
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetVariedadesProductoQuery(nombre, codigo, idProducto, estado);
+            var query = new GetVariedadesProductoQuery(nombre, codigo, idProducto, estado, idUbicacion);
             var result = await _mediator.Send(query, cancellationToken);
             
             return Ok(ApiResponse<IEnumerable<VariedadProductoDto>>.SuccessResult(
