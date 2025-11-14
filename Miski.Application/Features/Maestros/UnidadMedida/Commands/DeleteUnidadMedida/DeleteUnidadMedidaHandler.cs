@@ -28,10 +28,7 @@ public class DeleteUnidadMedidaHandler : IRequestHandler<DeleteUnidadMedidaComma
 
         if (tieneVariedades)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "UnidadMedida", new[] { "No se puede eliminar la unidad de medida porque está siendo utilizada por variedades de productos" } }
-            });
+            throw new ValidationException("No se puede eliminar la unidad de medida porque está siendo utilizada por variedades de productos");
         }
 
         await _unitOfWork.Repository<Domain.Entities.UnidadMedida>().DeleteAsync(unidadMedida, cancellationToken);

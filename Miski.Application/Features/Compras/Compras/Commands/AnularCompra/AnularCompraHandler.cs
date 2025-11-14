@@ -23,14 +23,10 @@ public class AnularCompraHandler : IRequestHandler<AnularCompraCommand, Unit>
         if (compra == null)
             throw new NotFoundException("Compra", request.IdCompra);
 
-        // Verificar que la compra no esté ya anulada
+        // Verificar que la compra no está ya anulada
         if (compra.Estado == "ANULADO")
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Compra", new[] { "La compra ya está anulada" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
+            throw new Shared.Exceptions.ValidationException("La compra ya está anulada");
         }
 
         // Verificar que el usuario existe
@@ -48,11 +44,7 @@ public class AnularCompraHandler : IRequestHandler<AnularCompraCommand, Unit>
 
         if (tieneVehiculoAsignado)
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Compra", new[] { "No se puede anular la compra porque ya tiene un vehículo asignado" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
+            throw new Shared.Exceptions.ValidationException("No se puede anular la compra porque ya tiene un vehículo asignado");
         }
 
         // Anular la compra

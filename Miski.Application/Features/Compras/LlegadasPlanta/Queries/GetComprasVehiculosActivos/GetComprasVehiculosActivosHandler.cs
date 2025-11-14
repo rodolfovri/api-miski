@@ -18,12 +18,12 @@ public class GetComprasVehiculosActivosHandler : IRequestHandler<GetComprasVehic
 
     public async Task<List<CompraVehiculoResumenDto>> Handle(GetComprasVehiculosActivosQuery request, CancellationToken cancellationToken)
     {
-        // Obtener todos los CompraVehiculo con Include para cargar relaciones
+        // ? Obtener todos los CompraVehiculo con Include para cargar relaciones (relación 1:1)
         var comprasVehiculos = await _context.CompraVehiculos
             .Include(cv => cv.Vehiculo)
             .Include(cv => cv.CompraVehiculoDetalles)
                 .ThenInclude(cvd => cvd.Compra)
-                    .ThenInclude(c => c.Lotes)
+                    .ThenInclude(c => c.Lote)  // ? Lote (singular, relación 1:1)
             .ToListAsync(cancellationToken);
 
         var resultado = new List<CompraVehiculoResumenDto>();
@@ -44,8 +44,10 @@ public class GetComprasVehiculosActivosHandler : IRequestHandler<GetComprasVehic
             {
                 var compra = cvDetalle.Compra;
                 
-                // Por cada compra, obtener sus lotes
-                foreach (var lote in compra.Lotes)
+                // ? Obtener el lote asociado a esta compra (relación 1:1)
+                var lote = compra.Lote;
+                
+                if (lote != null)
                 {
                     // Buscar si hay llegada a planta para este lote
                     var llegadaPlanta = await _context.LlegadasPlanta

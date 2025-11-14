@@ -43,7 +43,7 @@ public class Negociacion
 
     // Navigation properties
     public virtual Persona? Proveedor { get; set; }
-    public virtual Persona Comisionista { get; set; } = null!;
+    public virtual Usuario Comisionista { get; set; } = null!;
     public virtual Usuario? AprobadaPorUsuarioIngeniero { get; set; }
     public virtual Usuario? AprobadaPorUsuarioContadora { get; set; }
     public virtual Usuario? RechazadoPorUsuarioIngeniero { get; set; }

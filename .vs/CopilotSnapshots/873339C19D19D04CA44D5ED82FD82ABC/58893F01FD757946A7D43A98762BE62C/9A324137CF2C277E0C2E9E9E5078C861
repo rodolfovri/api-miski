@@ -1,0 +1,102 @@
+﻿using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.LlegadasPlanta.Commands.AnularLlegadaPlanta;
+
+public class AnularLlegadaPlantaHandler : IRequestHandler<AnularLlegadaPlantaCommand, Unit>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public AnularLlegadaPlantaHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<Unit> Handle(AnularLlegadaPlantaCommand request, CancellationToken cancellationToken)
+    {
+        // 1. Verificar que la LlegadaPlanta existe
+        var llegadaPlanta = await _unitOfWork.Repository<LlegadaPlanta>()
+            .GetByIdAsync(request.IdLlegadaPlanta, cancellationToken);
+
+        if (llegadaPlanta == null)
+            throw new NotFoundException("LlegadaPlanta", request.IdLlegadaPlanta);
+
+        // 2. Verificar que la LlegadaPlanta NO está ya anulada
+        if (llegadaPlanta.Estado == "ANULADO")
+        {
+            throw new Shared.Exceptions.ValidationException("La llegada a planta ya está anulada");
+        }
+
+        // 3. Verificar que el usuario existe
+        var usuario = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(request.IdUsuarioAnulacion, cancellationToken);
+
+        if (usuario == null)
+            throw new NotFoundException("Usuario", request.IdUsuarioAnulacion);
+
+        // 4. Obtener la Compra asociada
+        var compra = await _unitOfWork.Repository<Compra>()
+            .GetByIdAsync(llegadaPlanta.IdCompra, cancellationToken);
+
+        if (compra == null)
+            throw new NotFoundException("Compra", llegadaPlanta.IdCompra);
+
+        // 5. Obtener la Negociación para obtener IdVariedadProducto
+        var negociacion = await _unitOfWork.Repository<Negociacion>()
+            .GetByIdAsync(compra.IdNegociacion, cancellationToken);
+
+        if (negociacion == null)
+            throw new NotFoundException("Negociacion", compra.IdNegociacion);
+
+        // 6. Validar que la Negociación tenga IdVariedadProducto
+        if (!negociacion.IdVariedadProducto.HasValue)
+        {
+            throw new Shared.Exceptions.ValidationException("La negociación no tiene una variedad de producto asociada. No se puede revertir el stock");
+        }
+
+        var idVariedadProducto = negociacion.IdVariedadProducto.Value;
+        var pesoRecibido = (decimal)llegadaPlanta.PesoRecibido;
+
+        // 7. Buscar el Stock correspondiente (Ubicacion + VariedadProducto)
+        var todosLosStocks = await _unitOfWork.Repository<Stock>().GetAllAsync(cancellationToken);
+        var stock = todosLosStocks.FirstOrDefault(s =>
+            s.IdPlanta == llegadaPlanta.IdUbicacion &&
+            s.IdVariedadProducto == idVariedadProducto);
+
+        if (stock == null)
+        {
+            throw new Shared.Exceptions.ValidationException($"No se encontró stock para la ubicación {llegadaPlanta.IdUbicacion} y producto {idVariedadProducto}. No se puede revertir el stock");
+        }
+
+        // 8. Validar que hay stock suficiente para revertir
+        var stockActual = stock.CantidadKg ?? 0;
+        if (stockActual < pesoRecibido)
+        {
+            throw new Shared.Exceptions.ValidationException($"Stock insuficiente para revertir. Stock actual: {stockActual} kg, se requiere revertir: {pesoRecibido} kg. El stock resultante sería negativo");
+        }
+
+        // 9. Revertir el stock (restar el peso recibido)
+        stock.CantidadKg = stockActual - pesoRecibido;
+        await _unitOfWork.Repository<Stock>().UpdateAsync(stock, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // 10. Anular la LlegadaPlanta
+        llegadaPlanta.Estado = "ANULADO";
+        await _unitOfWork.Repository<LlegadaPlanta>().UpdateAsync(llegadaPlanta, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // 11. Actualizar la Compra (Estado, EstadoRecepcion y datos de anulación)
+        compra.Estado = "ANULADO";
+        compra.EstadoRecepcion = "ANULADO";
+        compra.IdUsuarioAnulacion = request.IdUsuarioAnulacion;
+        compra.MotivoAnulacion = request.MotivoAnulacion;
+        compra.FAnulacion = DateTime.Now;
+
+        await _unitOfWork.Repository<Compra>().UpdateAsync(compra, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
+    }
+}

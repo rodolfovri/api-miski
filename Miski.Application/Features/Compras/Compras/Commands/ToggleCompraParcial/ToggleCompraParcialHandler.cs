@@ -26,11 +26,7 @@ public class ToggleCompraParcialHandler : IRequestHandler<ToggleCompraParcialCom
         // 2. Validar que la compra NO está ANULADA
         if (compra.Estado == "ANULADO")
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Compra", new[] { "No se puede marcar/desmarcar como parcial una compra que está anulada" } }
-            };
-            throw new ValidationException(errors);
+            throw new ValidationException("No se puede marcar/desmarcar como parcial una compra que está anulada");
         }
 
         // 3. Validar que la compra NO está asignada a un vehículo
@@ -41,11 +37,7 @@ public class ToggleCompraParcialHandler : IRequestHandler<ToggleCompraParcialCom
 
         if (estaAsignada)
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Compra", new[] { "No se puede marcar/desmarcar como parcial una compra que ya está asignada a un vehículo" } }
-            };
-            throw new ValidationException(errors);
+            throw new ValidationException("No se puede marcar/desmarcar como parcial una compra que ya está asignada a un vehículo");
         }
 
         // 4. Toggle del campo EsParcial

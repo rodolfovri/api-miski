@@ -1,0 +1,78 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Compras;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.Negociaciones.Commands.RechazarNegociacionIngeniero;
+
+public class RechazarNegociacionIngenieroHandler : IRequestHandler<RechazarNegociacionIngenieroCommand, NegociacionDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public RechazarNegociacionIngenieroHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<NegociacionDto> Handle(RechazarNegociacionIngenieroCommand request, CancellationToken cancellationToken)
+    {
+        var dto = request.Rechazo;
+
+        var negociacion = await _unitOfWork.Repository<Negociacion>()
+            .GetByIdAsync(dto.IdNegociacion, cancellationToken);
+
+        if (negociacion == null)
+            throw new NotFoundException("Negociacion", dto.IdNegociacion);
+
+        // Validar que la negociación esté en proceso
+        if (negociacion.Estado != "EN PROCESO")
+        {
+            throw new ValidationException("Solo se pueden rechazar negociaciones en estado 'EN PROCESO'");
+        }
+
+        // Validar que esté pendiente de aprobación por ingeniero
+        if (negociacion.EstadoAprobacionIngeniero != "PENDIENTE")
+        {
+            throw new ValidationException("La negociación ya ha sido procesada por el ingeniero");
+        }
+
+        // Validar que el usuario que rechaza existe
+        var rechazador = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(dto.RechazadoPorIngeniero, cancellationToken);
+        
+        if (rechazador == null)
+            throw new NotFoundException("Usuario rechazador", dto.RechazadoPorIngeniero);
+
+        // Rechazar la negociación
+        negociacion.EstadoAprobacionIngeniero = "RECHAZADO";
+        negociacion.RechazadoPorIngeniero = dto.RechazadoPorIngeniero;
+        negociacion.FRechazoIngeniero = DateTime.Now;
+        negociacion.Estado = "ANULADO"; // Cambia el estado general a ANULADO
+
+        await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Cargar relaciones para el DTO
+        negociacion.RechazadoPorUsuarioIngeniero = rechazador;
+        negociacion.Comisionista = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Usuario();
+        
+        if (!string.IsNullOrEmpty(negociacion.NroDocumentoProveedor))
+        {
+            var proveedores = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+            negociacion.Proveedor = proveedores.FirstOrDefault(p => p.NumeroDocumento == negociacion.NroDocumentoProveedor);
+        }
+
+        if (negociacion.IdVariedadProducto.HasValue)
+        {
+            negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
+                .GetByIdAsync(negociacion.IdVariedadProducto.Value, cancellationToken);
+        }
+
+        return _mapper.Map<NegociacionDto>(negociacion);
+    }
+}

@@ -1,0 +1,65 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Usuarios;
+using System.Collections.ObjectModel;
+
+namespace Miski.Application.Features.Usuarios.Queries.GetUsuarios;
+
+public class GetUsuariosHandler : IRequestHandler<GetUsuariosQuery, List<UsuarioDto>>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public GetUsuariosHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<List<UsuarioDto>> Handle(GetUsuariosQuery request, CancellationToken cancellationToken)
+    {
+        var usuarios = await _unitOfWork.Repository<Usuario>().GetAllAsync(cancellationToken);
+        var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+        var usuarioRoles = await _unitOfWork.Repository<UsuarioRol>().GetAllAsync(cancellationToken);
+        var roles = await _unitOfWork.Repository<Rol>().GetAllAsync(cancellationToken);
+
+        // Aplicar filtros
+        if (!string.IsNullOrEmpty(request.Estado))
+        {
+            usuarios = usuarios.Where(u => u.Estado == request.Estado).ToList();
+        }
+
+        if (request.IdPersona.HasValue)
+        {
+            usuarios = usuarios.Where(u => u.IdPersona == request.IdPersona.Value).ToList();
+        }
+
+        // Cargar relaciones
+        foreach (var usuario in usuarios)
+        {
+            if (usuario.IdPersona.HasValue)
+            {
+                usuario.Persona = personas.FirstOrDefault(p => p.IdPersona == usuario.IdPersona.Value);
+            }
+
+            // Cargar roles del usuario
+            var rolesUsuario = usuarioRoles
+                .Where(ur => ur.IdUsuario == usuario.IdUsuario)
+                .Select(ur => ur.IdRol)
+                .ToList();
+
+            usuario.UsuarioRoles = new Collection<UsuarioRol>(rolesUsuario
+                .Select(idRol => new UsuarioRol 
+                { 
+                    IdUsuario = usuario.IdUsuario, 
+                    IdRol = idRol,
+                    Rol = roles.FirstOrDefault(r => r.IdRol == idRol)
+                })
+                .ToList());
+        }
+
+        return usuarios.Select(u => _mapper.Map<UsuarioDto>(u)).ToList();
+    }
+}

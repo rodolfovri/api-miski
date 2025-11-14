@@ -1528,6 +1528,73 @@
         ]
       }
     },
+    "/api/compras/{idCompra}/lote": {
+      "post": {
+        "tags": [
+          "Compras"
+        ],
+        "parameters": [
+          {
+            "name": "idCompra",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoteParaCompraDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoteParaCompraDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoteParaCompraDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoteDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
     "/api/compras/{id}/parcial": {
       "patch": {
         "tags": [
@@ -1536,6 +1603,121 @@
         "parameters": [
           {
             "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/{idCompra}/asignar-lote": {
+      "put": {
+        "tags": [
+          "Compras"
+        ],
+        "parameters": [
+          {
+            "name": "idCompra",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsignarLoteACompraDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsignarLoteACompraDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsignarLoteACompraDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompraDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/{idCompra}/desasignar-lote": {
+      "put": {
+        "tags": [
+          "Compras"
+        ],
+        "parameters": [
+          {
+            "name": "idCompra",
             "in": "path",
             "required": true,
             "schema": {
@@ -2806,6 +2988,54 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/compras/negociaciones/usuario/{idUsuario}": {
+      "get": {
+        "tags": [
+          "Negociaciones"
+        ],
+        "parameters": [
+          {
+            "name": "idUsuario",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegociacionDtoIEnumerableApiResponse"
                 }
               }
             }
@@ -6082,6 +6312,377 @@
         ]
       }
     },
+    "/api/usuarios": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "parameters": [
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idPersona",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUsuarioDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUsuarioDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUsuarioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/usuarios/{id}": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Usuarios"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUsuarioDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUsuarioDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUsuarioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Usuarios"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/usuarios/{id}/password": {
+      "put": {
+        "tags": [
+          "Usuarios"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/api/usuarios/activos": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoIEnumerableApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoIEnumerableApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDtoIEnumerableApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
     "/api/maestros/variedad-producto": {
       "get": {
         "tags": [
@@ -6814,6 +7415,24 @@
         },
         "additionalProperties": false
       },
+      "AsignarLoteACompraDto": {
+        "type": "object",
+        "properties": {
+          "idCompra": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idLote": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "montoTotal": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
       "AsignarPermisoDto": {
         "type": "object",
         "properties": {
@@ -7272,6 +7891,11 @@
             "type": "integer",
             "format": "int32"
           },
+          "idLote": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "serie": {
             "type": "string",
             "nullable": true
@@ -7306,13 +7930,24 @@
             "type": "string",
             "nullable": true
           },
-          "pesoTotal": {
+          "pesoLote": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "nullable": true
           },
-          "sacosTotales": {
+          "sacosLote": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
+          },
+          "codigoLote": {
+            "type": "string",
+            "nullable": true
+          },
+          "comisionLote": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           },
           "negociacionPesoTotal": {
             "type": "number",
@@ -7328,14 +7963,11 @@
           },
           "montoTotal": {
             "type": "number",
-            "format": "double"
-          },
-          "lotes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LoteDto"
-            },
+            "format": "double",
             "nullable": true
+          },
+          "lote": {
+            "$ref": "#/components/schemas/LoteDto"
           }
         },
         "additionalProperties": false
@@ -7855,10 +8487,6 @@
       "CreateLoteDto": {
         "type": "object",
         "properties": {
-          "idCompra": {
-            "type": "integer",
-            "format": "int32"
-          },
           "peso": {
             "type": "number",
             "format": "double"
@@ -7871,9 +8499,32 @@
             "type": "string",
             "nullable": true
           },
-          "montoTotal": {
+          "comision": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "observacion": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateLoteParaCompraDto": {
+        "type": "object",
+        "properties": {
+          "peso": {
             "type": "number",
             "format": "double"
+          },
+          "sacos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
           },
           "comision": {
             "type": "number",
@@ -7883,6 +8534,10 @@
           "observacion": {
             "type": "string",
             "nullable": true
+          },
+          "montoTotal": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
@@ -8041,6 +8696,37 @@
           },
           "abreviatura": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateUsuarioDto": {
+        "type": "object",
+        "properties": {
+          "idPersona": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "rolesIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
             "nullable": true
           }
         },
@@ -8393,10 +9079,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "idCompra": {
-            "type": "integer",
-            "format": "int32"
-          },
           "peso": {
             "type": "number",
             "format": "double"
@@ -8415,6 +9097,15 @@
             "nullable": true
           },
           "observacion": {
+            "type": "string",
+            "nullable": true
+          },
+          "idCompra": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "compraSerie": {
             "type": "string",
             "nullable": true
           }
@@ -8779,6 +9470,11 @@
           },
           "comisionistaNombre": {
             "type": "string",
+            "nullable": true
+          },
+          "idProducto": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "variedadProductoNombre": {
@@ -9943,10 +10639,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "idCompra": {
-            "type": "integer",
-            "format": "int32"
-          },
           "peso": {
             "type": "number",
             "format": "double"
@@ -10021,6 +10713,20 @@
           "precioUnitario": {
             "type": "number",
             "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdatePasswordDto": {
+        "type": "object",
+        "properties": {
+          "idUsuario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "newPassword": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -10154,6 +10860,37 @@
         },
         "additionalProperties": false
       },
+      "UpdateUsuarioDto": {
+        "type": "object",
+        "properties": {
+          "idUsuario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idPersona": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "rolesIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateVehiculoDto": {
         "type": "object",
         "properties": {
@@ -10175,6 +10912,106 @@
           },
           "estado": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UsuarioDto": {
+        "type": "object",
+        "properties": {
+          "idUsuario": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idPersona": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "estado": {
+            "type": "string",
+            "nullable": true
+          },
+          "fRegistro": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "personaNombre": {
+            "type": "string",
+            "nullable": true
+          },
+          "personaApellidos": {
+            "type": "string",
+            "nullable": true
+          },
+          "personaNombreCompleto": {
+            "type": "string",
+            "nullable": true
+          },
+          "personaEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "personaTelefono": {
+            "type": "string",
+            "nullable": true
+          },
+          "personaNumeroDocumento": {
+            "type": "string",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UsuarioDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/UsuarioDto"
+          },
+          "errors": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UsuarioDtoIEnumerableApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UsuarioDto"
+            },
+            "nullable": true
+          },
+          "errors": {
             "nullable": true
           }
         },

@@ -34,13 +34,20 @@ public class GetNegociacionByIdHandler : IRequestHandler<GetNegociacionByIdQuery
             negociacion.Proveedor = personas.FirstOrDefault(p => p.NumeroDocumento == negociacion.NroDocumentoProveedor);
         }
 
-        negociacion.Comisionista = await _unitOfWork.Repository<Persona>()
-            .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Persona();
+        negociacion.Comisionista = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Usuario();
 
         if (negociacion.IdVariedadProducto.HasValue)  // CAMBIADO de IdProducto
         {
             negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
                 .GetByIdAsync(negociacion.IdVariedadProducto.Value, cancellationToken);
+            
+            // ? CARGAR EL PRODUCTO DENTRO DE VARIEDAD PRODUCTO
+            if (negociacion.VariedadProducto != null && negociacion.VariedadProducto.IdProducto > 0)
+            {
+                negociacion.VariedadProducto.Producto = await _unitOfWork.Repository<Producto>()
+                    .GetByIdAsync(negociacion.VariedadProducto.IdProducto, cancellationToken);
+            }
         }
 
         if (negociacion.IdTipoDocumento.HasValue)

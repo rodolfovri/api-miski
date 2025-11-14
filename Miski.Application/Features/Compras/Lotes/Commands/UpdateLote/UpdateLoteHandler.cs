@@ -4,6 +4,7 @@ using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Compras;
 using Miski.Shared.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Miski.Application.Features.Compras.Lotes.Commands.UpdateLote;
 
@@ -28,32 +29,24 @@ public class UpdateLoteHandler : IRequestHandler<UpdateLoteCommand, LoteDto>
         if (lote == null)
             throw new NotFoundException("Lote", request.Id);
 
-        // Validar que la compra existe
-        var compra = await _unitOfWork.Repository<Compra>()
-            .GetByIdAsync(dto.IdCompra, cancellationToken);
+        // ? Validar si el lote está asignado a una compra (relación 1:1 inversa)
+        var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
+        var compraAsociada = compras.FirstOrDefault(c => c.IdLote == lote.IdLote);
 
-        if (compra == null)
-            throw new NotFoundException("Compra", dto.IdCompra);
-
-        // Validar el EstadoRecepcion de la compra asociada al lote
-        if (!string.IsNullOrEmpty(compra.EstadoRecepcion))
+        if (compraAsociada != null)
         {
-            if (compra.EstadoRecepcion == "PENDIENTE")
+            // Validar el EstadoRecepcion de la compra asociada
+            if (!string.IsNullOrEmpty(compraAsociada.EstadoRecepcion))
             {
-                var errors = new Dictionary<string, string[]>
+                if (compraAsociada.EstadoRecepcion == "PENDIENTE")
                 {
-                    { "Lote", new[] { "No se puede editar el lote porque la compra ya está asignada a un vehículo" } }
-                };
-                throw new Shared.Exceptions.ValidationException(errors);
-            }
+                    throw new ValidationException("No se puede editar el lote porque la compra ya está asignada a un vehículo");
+                }
 
-            if (compra.EstadoRecepcion == "RECEPCIONADO")
-            {
-                var errors = new Dictionary<string, string[]>
+                if (compraAsociada.EstadoRecepcion == "RECEPCIONADO")
                 {
-                    { "Lote", new[] { "No se puede editar el lote porque la compra ya ha sido recepcionada en planta" } }
-                };
-                throw new Shared.Exceptions.ValidationException(errors);
+                    throw new ValidationException("No se puede editar el lote porque la compra ya ha sido recepcionada en planta");
+                }
             }
         }
 
@@ -61,14 +54,13 @@ public class UpdateLoteHandler : IRequestHandler<UpdateLoteCommand, LoteDto>
         if (!string.IsNullOrEmpty(dto.Codigo))
         {
             var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
-            if (lotes.Any(l => l.IdCompra == dto.IdCompra && l.Codigo == dto.Codigo && l.IdLote != request.Id))
+            if (lotes.Any(l => l.Codigo == dto.Codigo && l.IdLote != request.Id))
             {
-                throw new Shared.Exceptions.ValidationException($"Ya existe otro lote con el código {dto.Codigo} en esta compra");
+                throw new ValidationException($"Ya existe otro lote con el código {dto.Codigo}");
             }
         }
 
-        // Actualizar lote
-        lote.IdCompra = dto.IdCompra;
+        // ? Actualizar solo los campos del lote (NO la relación con Compra)
         lote.Peso = dto.Peso;
         lote.Sacos = dto.Sacos;
         lote.Codigo = dto.Codigo;

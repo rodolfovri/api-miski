@@ -28,10 +28,7 @@ public class DeletePersonaHandler : IRequestHandler<DeletePersonaCommand, bool>
 
         if (tieneUsuario)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "Persona", new[] { "No se puede eliminar la persona porque tiene un usuario asociado" } }
-            });
+            throw new ValidationException("No se puede eliminar la persona porque tiene un usuario asociado");
         }
 
         // Cambiar estado a INACTIVO en lugar de eliminar físicamente

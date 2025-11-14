@@ -28,10 +28,7 @@ public class DeleteTipoDocumentoHandler : IRequestHandler<DeleteTipoDocumentoCom
 
         if (tienePersonas)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "TipoDocumento", new[] { "No se puede eliminar el tipo de documento porque está siendo utilizado por personas" } }
-            });
+            throw new ValidationException("No se puede eliminar el tipo de documento porque está siendo utilizado por personas");
         }
 
         await _unitOfWork.Repository<Domain.Entities.TipoDocumento>().DeleteAsync(tipoDocumento, cancellationToken);

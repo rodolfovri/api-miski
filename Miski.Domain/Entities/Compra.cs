@@ -4,6 +4,7 @@ public class Compra
 {
     public int IdCompra { get; set; }
     public int IdNegociacion { get; set; }
+    public int? IdLote { get; set; }
     public int IdMoneda { get; set; }
     public int? IdTipoCambio { get; set; }
     public string? Serie { get; set; }
@@ -25,7 +26,7 @@ public class Compra
     public virtual Moneda Moneda { get; set; } = null!;
     public virtual TipoCambio? TipoCambio { get; set; }
     public virtual Usuario? UsuarioAnulacion { get; set; }
-    public virtual ICollection<Lote> Lotes { get; set; } = new List<Lote>();
+    public virtual Lote? Lote { get; set; }
     public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
     public virtual ICollection<CompraVehiculoDetalle> CompraVehiculoDetalles { get; set; } = new List<CompraVehiculoDetalle>();
 

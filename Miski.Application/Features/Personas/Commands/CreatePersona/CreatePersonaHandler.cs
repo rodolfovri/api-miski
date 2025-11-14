@@ -34,10 +34,7 @@ public class CreatePersonaHandler : IRequestHandler<CreatePersonaCommand, Person
 
         if (personaExistente != null)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "NumeroDocumento", new[] { "Ya existe una persona con este número de documento" } }
-            });
+            throw new ValidationException("Ya existe una persona con este número de documento");
         }
 
         // Crear la persona

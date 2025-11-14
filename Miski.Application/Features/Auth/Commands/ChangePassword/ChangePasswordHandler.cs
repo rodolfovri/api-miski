@@ -28,10 +28,7 @@ public class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, bool
         // Verificar contraseña actual
         if (!VerifyPassword(request.ChangePasswordData.CurrentPassword, usuario.PasswordHash))
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "CurrentPassword", new[] { "La contraseña actual es incorrecta" } }
-            });
+            throw new ValidationException("La contraseña actual es incorrecta");
         }
 
         // Generar hash de la nueva contraseña

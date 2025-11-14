@@ -35,10 +35,7 @@ public class UpdateTipoDocumentoHandler : IRequestHandler<UpdateTipoDocumentoCom
 
         if (existe)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "Nombre", new[] { "Ya existe otro tipo de documento con este nombre" } }
-            });
+            throw new ValidationException("Ya existe otro tipo de documento con este nombre");
         }
 
         // Actualizar el tipo de documento

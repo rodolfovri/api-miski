@@ -22,6 +22,7 @@ public class GetNegociacionesHandler : IRequestHandler<GetNegociacionesQuery, Li
         var negociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
         var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
         var variedadesProducto = await _unitOfWork.Repository<VariedadProducto>().GetAllAsync(cancellationToken);
+        var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
         var usuarios = await _unitOfWork.Repository<Usuario>().GetAllAsync(cancellationToken);
 
         // Aplicar filtros
@@ -54,11 +55,17 @@ public class GetNegociacionesHandler : IRequestHandler<GetNegociacionesQuery, Li
                 negociacion.Proveedor = personas.FirstOrDefault(p => p.NumeroDocumento == negociacion.NroDocumentoProveedor);
             }
 
-            negociacion.Comisionista = personas.FirstOrDefault(p => p.IdPersona == negociacion.IdComisionista) ?? new Persona();
+            negociacion.Comisionista = usuarios.FirstOrDefault(u => u.IdUsuario == negociacion.IdComisionista) ?? new Usuario();
 
             if (negociacion.IdVariedadProducto.HasValue)
             {
                 negociacion.VariedadProducto = variedadesProducto.FirstOrDefault(v => v.IdVariedadProducto == negociacion.IdVariedadProducto.Value);
+
+                // ? CARGAR EL PRODUCTO DENTRO DE VARIEDAD PRODUCTO
+                if (negociacion.VariedadProducto != null && negociacion.VariedadProducto.IdProducto > 0)
+                {
+                    negociacion.VariedadProducto.Producto = productos.FirstOrDefault(p => p.IdProducto == negociacion.VariedadProducto.IdProducto);
+                }
             }
 
             if (negociacion.IdTipoDocumento.HasValue)

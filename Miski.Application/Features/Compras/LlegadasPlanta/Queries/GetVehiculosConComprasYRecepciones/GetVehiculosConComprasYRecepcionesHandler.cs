@@ -66,40 +66,43 @@ public class GetVehiculosConComprasYRecepcionesHandler : IRequestHandler<GetVehi
                 
                 if (compra != null)
                 {
-                    // Obtener los lotes de esta compra
-                    var lotesDeCompra = todosLosLotes.Where(l => l.IdCompra == compra.IdCompra).ToList();
-
+                    // Obtener el lote de esta compra (relación 1:1)
                     var lotesDto = new List<LoteConRecepcionDetalladoDto>();
-
-                    foreach (var lote in lotesDeCompra)
+                    
+                    if (compra.IdLote.HasValue)
                     {
-                        // Buscar si este lote tiene registro en LlegadaPlanta
-                        var llegadaPlanta = todasLasLlegadas
-                            .FirstOrDefault(lp => lp.IdLote == lote.IdLote);
-
-                        int? diferenciaSacos = null;
-                        decimal? diferenciaPeso = null;
-
-                        if (llegadaPlanta != null)
+                        var lote = todosLosLotes.FirstOrDefault(l => l.IdLote == compra.IdLote.Value);
+                        
+                        if (lote != null)
                         {
-                            diferenciaSacos = lote.Sacos - (int)llegadaPlanta.SacosRecibidos;
-                            diferenciaPeso = lote.Peso - (decimal)llegadaPlanta.PesoRecibido;
+                            // Buscar si este lote tiene registro en LlegadaPlanta
+                            var llegadaPlanta = todasLasLlegadas
+                                .FirstOrDefault(lp => lp.IdLote == lote.IdLote);
+
+                            int? diferenciaSacos = null;
+                            decimal? diferenciaPeso = null;
+
+                            if (llegadaPlanta != null)
+                            {
+                                diferenciaSacos = lote.Sacos - (int)llegadaPlanta.SacosRecibidos;
+                                diferenciaPeso = lote.Peso - (decimal)llegadaPlanta.PesoRecibido;
+                            }
+
+                            lotesDto.Add(new LoteConRecepcionDetalladoDto
+                            {
+                                IdLote = lote.IdLote,
+                                Codigo = lote.Codigo,
+                                SacosAsignados = lote.Sacos,
+                                PesoAsignado = lote.Peso,
+                                IdLlegadaPlanta = llegadaPlanta?.IdLlegadaPlanta,
+                                SacosRecibidos = llegadaPlanta != null ? (decimal)llegadaPlanta.SacosRecibidos : null,
+                                PesoRecibido = llegadaPlanta != null ? (decimal)llegadaPlanta.PesoRecibido : null,
+                                DiferenciaSacos = diferenciaSacos,
+                                DiferenciaPeso = diferenciaPeso,
+                                Observaciones = llegadaPlanta?.Observaciones,
+                                YaRecibido = llegadaPlanta != null
+                            });
                         }
-
-                        lotesDto.Add(new LoteConRecepcionDetalladoDto
-                        {
-                            IdLote = lote.IdLote,
-                            Codigo = lote.Codigo,
-                            SacosAsignados = lote.Sacos,
-                            PesoAsignado = lote.Peso,
-                            IdLlegadaPlanta = llegadaPlanta?.IdLlegadaPlanta,
-                            SacosRecibidos = llegadaPlanta != null ? (decimal)llegadaPlanta.SacosRecibidos : null,
-                            PesoRecibido = llegadaPlanta != null ? (decimal)llegadaPlanta.PesoRecibido : null,
-                            DiferenciaSacos = diferenciaSacos,
-                            DiferenciaPeso = diferenciaPeso,
-                            Observaciones = llegadaPlanta?.Observaciones,
-                            YaRecibido = llegadaPlanta != null
-                        });
                     }
 
                     comprasDto.Add(new CompraConRecepcionDetalladaDto

@@ -8,6 +8,7 @@ using Miski.Shared.DTOs.Maestros;
 using Miski.Shared.DTOs.Ubicaciones;
 using Miski.Shared.DTOs.Almacen;
 using Miski.Shared.DTOs.Compras;
+using Miski.Shared.DTOs.Usuarios;
 
 namespace Miski.Application.Mappings;
 
@@ -117,7 +118,11 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.ProveedorNombre, opt => opt.MapFrom(src => 
                 src.Proveedor != null ? $"{src.Proveedor.Nombres} {src.Proveedor.Apellidos}" : string.Empty))
             .ForMember(dest => dest.ComisionistaNombre, opt => opt.MapFrom(src => 
-                src.Comisionista != null ? $"{src.Comisionista.Nombres} {src.Comisionista.Apellidos}" : string.Empty))
+                src.Comisionista != null && src.Comisionista.Persona != null 
+                    ? $"{src.Comisionista.Persona.Nombres} {src.Comisionista.Persona.Apellidos}" 
+                    : string.Empty))
+            .ForMember(dest => dest.IdProducto, opt => opt.MapFrom(src => 
+                src.VariedadProducto != null ? (int?)src.VariedadProducto.IdProducto : null))
             .ForMember(dest => dest.VariedadProductoNombre, opt => opt.MapFrom(src => 
                 src.VariedadProducto != null ? src.VariedadProducto.Nombre : string.Empty))
             .ForMember(dest => dest.ProductoNombre, opt => opt.MapFrom(src => 
@@ -159,14 +164,32 @@ public class MappingProfile : Profile
                 src.Compra != null ? src.Compra.MontoTotal : null))
             .ForMember(dest => dest.CompraNegociacionId, opt => opt.MapFrom(src => 
                 src.Compra != null ? src.Compra.IdNegociacion.ToString() : string.Empty))
+            // ? Relación 1:1: Una Compra tiene un Lote (no una colección)
             .ForMember(dest => dest.IdLote, opt => opt.MapFrom(src => 
-                src.Compra != null && src.Compra.Lotes.Any() ? src.Compra.Lotes.First().IdLote : (int?)null))
+                src.Compra != null && src.Compra.Lote != null ? src.Compra.Lote.IdLote : (int?)null))
             .ForMember(dest => dest.LoteCodigo, opt => opt.MapFrom(src => 
-                src.Compra != null && src.Compra.Lotes.Any() ? src.Compra.Lotes.First().Codigo : null))
+                src.Compra != null && src.Compra.Lote != null ? src.Compra.Lote.Codigo : null))
             .ForMember(dest => dest.LotePeso, opt => opt.MapFrom(src => 
-                src.Compra != null && src.Compra.Lotes.Any() ? src.Compra.Lotes.First().Peso : (decimal?)null))
+                src.Compra != null && src.Compra.Lote != null ? src.Compra.Lote.Peso : (decimal?)null))
             .ForMember(dest => dest.LoteSacos, opt => opt.MapFrom(src => 
-                src.Compra != null && src.Compra.Lotes.Any() ? src.Compra.Lotes.First().Sacos : (int?)null));
+                src.Compra != null && src.Compra.Lote != null ? src.Compra.Lote.Sacos : (int?)null));
+
+        // Mapeos para Usuarios
+        CreateMap<Usuario, UsuarioDto>()
+            .ForMember(dest => dest.PersonaNombre, opt => opt.MapFrom(src => 
+                src.Persona != null ? src.Persona.Nombres : string.Empty))
+            .ForMember(dest => dest.PersonaApellidos, opt => opt.MapFrom(src => 
+                src.Persona != null ? src.Persona.Apellidos : string.Empty))
+            .ForMember(dest => dest.PersonaNombreCompleto, opt => opt.MapFrom(src => 
+                src.Persona != null ? $"{src.Persona.Nombres} {src.Persona.Apellidos}" : string.Empty))
+            .ForMember(dest => dest.PersonaEmail, opt => opt.MapFrom(src => 
+                src.Persona != null ? src.Persona.Email : string.Empty))
+            .ForMember(dest => dest.PersonaTelefono, opt => opt.MapFrom(src => 
+                src.Persona != null ? src.Persona.Telefono : string.Empty))
+            .ForMember(dest => dest.PersonaNumeroDocumento, opt => opt.MapFrom(src => 
+                src.Persona != null ? src.Persona.NumeroDocumento : string.Empty))
+            .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => 
+                src.UsuarioRoles.Select(ur => ur.Rol != null ? ur.Rol.Nombre : string.Empty).ToList()));
     }
 }
 

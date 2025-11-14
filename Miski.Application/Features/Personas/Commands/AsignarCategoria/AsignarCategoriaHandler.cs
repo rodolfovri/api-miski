@@ -38,10 +38,7 @@ public class AsignarCategoriaHandler : IRequestHandler<AsignarCategoriaCommand, 
 
         if (yaAsignada)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "Categoria", new[] { "Esta categoría ya está asignada a la persona" } }
-            });
+            throw new ValidationException("Esta categoría ya está asignada a la persona");
         }
 
         // Asignar la categoría

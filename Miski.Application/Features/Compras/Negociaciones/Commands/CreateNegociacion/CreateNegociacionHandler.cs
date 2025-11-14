@@ -24,11 +24,11 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
         var dto = request.Negociacion;
 
         // Validar que el comisionista existe
-        var comisionista = await _unitOfWork.Repository<Persona>()
+        var comisionista = await _unitOfWork.Repository<Usuario>()
             .GetByIdAsync(dto.IdComisionista, cancellationToken);
         
         if (comisionista == null)
-            throw new NotFoundException("Comisionista", dto.IdComisionista);
+            throw new NotFoundException("Usuario", dto.IdComisionista);
 
         // Validar que la variedad de producto existe si se proporciona
         if (dto.IdVariedadProducto.HasValue)
@@ -88,6 +88,13 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
         {
             negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
                 .GetByIdAsync(dto.IdVariedadProducto.Value, cancellationToken);
+            
+            // ? CARGAR EL PRODUCTO DENTRO DE VARIEDAD PRODUCTO
+            if (negociacion.VariedadProducto != null && negociacion.VariedadProducto.IdProducto > 0)
+            {
+                negociacion.VariedadProducto.Producto = await _unitOfWork.Repository<Producto>()
+                    .GetByIdAsync(negociacion.VariedadProducto.IdProducto, cancellationToken);
+            }
         }
 
         return _mapper.Map<NegociacionDto>(negociacion);

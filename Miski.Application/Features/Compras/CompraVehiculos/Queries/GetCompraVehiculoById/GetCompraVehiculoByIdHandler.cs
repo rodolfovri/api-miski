@@ -48,14 +48,11 @@ public class GetCompraVehiculoByIdHandler : IRequestHandler<GetCompraVehiculoByI
             detalle.Compra = await _unitOfWork.Repository<Compra>()
                 .GetByIdAsync(detalle.IdCompra, cancellationToken) ?? new Compra();
             
-            // Cargar lotes de la compra
-            if (detalle.Compra != null)
+            // ? Cargar el lote de la compra (relación 1:1)
+            if (detalle.Compra != null && detalle.Compra.IdLote.HasValue)
             {
-                var lotes = await _unitOfWork.Repository<Lote>()
-                    .GetAllAsync(cancellationToken);
-                detalle.Compra.Lotes = lotes
-                    .Where(l => l.IdCompra == detalle.Compra.IdCompra)
-                    .ToList();
+                detalle.Compra.Lote = await _unitOfWork.Repository<Lote>()
+                    .GetByIdAsync(detalle.Compra.IdLote.Value, cancellationToken);
             }
         }
 

@@ -11,6 +11,7 @@ using Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociaci
 using Miski.Application.Features.Compras.Negociaciones.Commands.RechazarNegociacionContadora;
 using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociaciones;
 using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociacionById;
+using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociacionesByUsuario;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Compras;
 
@@ -95,6 +96,44 @@ public class NegociacionesController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene todas las negociaciones creadas por un usuario específico (comisionista)
+    /// </summary>
+    /// <remarks>
+    /// Retorna todas las negociaciones donde el IdComisionista coincide con el IdUsuario proporcionado.
+    /// Incluye toda la información relacionada (proveedor, producto, estados de aprobación, etc.)
+    /// </remarks>
+    [HttpGet("usuario/{idUsuario}")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetNegociacionesByUsuario(
+        int idUsuario,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetNegociacionesByUsuarioQuery(idUsuario);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
+                result,
+                $"Negociaciones del usuario obtenidas exitosamente. Total: {result.Count}"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<IEnumerable<NegociacionDto>>.ErrorResult(
+                "Usuario no encontrado",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<NegociacionDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));

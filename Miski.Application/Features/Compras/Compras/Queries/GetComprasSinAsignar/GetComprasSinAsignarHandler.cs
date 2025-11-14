@@ -33,7 +33,7 @@ public class GetComprasSinAsignarHandler : IRequestHandler<GetComprasSinAsignarQ
             .Distinct()
             .ToList();
 
-        // Filtrar compras sin asignar (que NO están en CompraVehiculoDetalle)
+        // Filtrar compras sin asignar (que NO estén en CompraVehiculoDetalle)
         var comprasSinAsignar = compras
             .Where(c => !idsComprasAsignadas.Contains(c.IdCompra))
             .ToList();
@@ -50,27 +50,37 @@ public class GetComprasSinAsignarHandler : IRequestHandler<GetComprasSinAsignarQ
             // Cargar negociación
             var negociacion = negociaciones.FirstOrDefault(n => n.IdNegociacion == compra.IdNegociacion);
             
-            // Cargar lotes asociados a esta compra
-            var lotesCompra = lotes.Where(l => l.IdCompra == compra.IdCompra).ToList();
-            
-            // Calcular PesoTotal y SacosTotales desde los lotes
-            var pesoTotal = lotesCompra.Sum(l => l.Peso);
-            var sacosTotales = lotesCompra.Sum(l => l.Sacos);
+            // ? Cargar lote asociado a esta compra (relación 1:1)
+            Lote? loteCompra = null;
+            if (compra.IdLote.HasValue)
+            {
+                loteCompra = lotes.FirstOrDefault(l => l.IdLote == compra.IdLote.Value);
+            }
             
             var compraDto = new CompraDto
             {
                 IdCompra = compra.IdCompra,
                 IdNegociacion = compra.IdNegociacion,
+                IdLote = compra.IdLote,  // ? FK al lote (puede ser null)
                 Serie = compra.Serie,
                 FRegistro = compra.FRegistro,
                 FEmision = compra.FEmision,
                 Estado = compra.Estado,
                 EstadoRecepcion = compra.EstadoRecepcion,
-                EsParcial = compra.EsParcial,  // ? AGREGADO
-                MontoTotal = compra.MontoTotal ?? 0, // MontoTotal de Compra
-                PesoTotal = pesoTotal, // PesoTotal desde Lotes
-                SacosTotales = sacosTotales, // SacosTotales desde Lotes
-                PrecioUnitario = negociacion?.PrecioUnitario ?? 0 // PrecioUnitario desde Negociacion
+                EsParcial = compra.EsParcial,
+                MontoTotal = compra.MontoTotal,
+                
+                // ? Información del lote (si existe)
+                PesoLote = loteCompra?.Peso,
+                SacosLote = loteCompra?.Sacos,
+                CodigoLote = loteCompra?.Codigo,
+                ComisionLote = loteCompra?.Comision,
+                
+                // Totales originales desde la Negociación
+                NegociacionPesoTotal = negociacion?.PesoTotal ?? 0,
+                NegociacionSacosTotales = negociacion?.SacosTotales ?? 0,
+                
+                PrecioUnitario = negociacion?.PrecioUnitario ?? 0
             };
 
             // Si existe la negociación, cargar información
@@ -94,8 +104,12 @@ public class GetComprasSinAsignarHandler : IRequestHandler<GetComprasSinAsignarQ
                 }
             }
 
-            // Cargar lotes en el DTO
-            compraDto.Lotes = lotesCompra.Select(l => _mapper.Map<LoteDto>(l)).ToList();
+            // ? Cargar el lote en el DTO (relación 1:1)
+            if (loteCompra != null)
+            {
+                loteCompra.Compra = compra; // Cargar relación inversa
+                compraDto.Lote = _mapper.Map<LoteDto>(loteCompra);
+            }
 
             comprasDto.Add(compraDto);
         }

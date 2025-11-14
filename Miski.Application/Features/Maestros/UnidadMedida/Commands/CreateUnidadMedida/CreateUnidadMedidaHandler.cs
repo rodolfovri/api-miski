@@ -28,10 +28,7 @@ public class CreateUnidadMedidaHandler : IRequestHandler<CreateUnidadMedidaComma
 
         if (existe)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "UnidadMedida", new[] { "Ya existe una unidad de medida con este nombre o abreviatura" } }
-            });
+            throw new ValidationException("Ya existe una unidad de medida con este nombre o abreviatura");
         }
 
         // Crear la nueva unidad de medida

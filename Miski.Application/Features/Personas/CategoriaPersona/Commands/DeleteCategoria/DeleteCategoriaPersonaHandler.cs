@@ -28,10 +28,7 @@ public class DeleteCategoriaPersonaHandler : IRequestHandler<DeleteCategoriaPers
 
         if (tienePersonas)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "Categoria", new[] { "No se puede eliminar la categoría porque tiene personas asociadas" } }
-            });
+            throw new ValidationException("No se puede eliminar la categoría porque tiene personas asociadas");
         }
 
         await _unitOfWork.Repository<Domain.Entities.CategoriaPersona>().DeleteAsync(categoria, cancellationToken);

@@ -22,40 +22,35 @@ public class DeleteLoteHandler : IRequestHandler<DeleteLoteCommand, Unit>
         if (lote == null)
             throw new NotFoundException("Lote", request.Id);
 
-        // Obtener la compra asociada al lote
-        var compra = await _unitOfWork.Repository<Compra>()
-            .GetByIdAsync(lote.IdCompra, cancellationToken);
+        // ? Buscar si el lote está asignado a alguna compra (relación 1:1 inversa)
+        var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
+        var compraAsociada = compras.FirstOrDefault(c => c.IdLote == request.Id);
 
-        if (compra == null)
-            throw new NotFoundException("Compra", lote.IdCompra);
-
-        // Validar el EstadoRecepcion de la compra asociada al lote
-        if (!string.IsNullOrEmpty(compra.EstadoRecepcion))
+        if (compraAsociada != null)
         {
-            if (compra.EstadoRecepcion == "PENDIENTE")
+            // Validar el EstadoRecepcion de la compra asociada al lote
+            if (!string.IsNullOrEmpty(compraAsociada.EstadoRecepcion))
             {
-                var errors = new Dictionary<string, string[]>
+                if (compraAsociada.EstadoRecepcion == "PENDIENTE")
                 {
-                    { "Lote", new[] { "No se puede eliminar el lote porque la compra ya está asignada a un vehículo" } }
-                };
-                throw new Shared.Exceptions.ValidationException(errors);
+                    throw new ValidationException("No se puede eliminar el lote porque la compra ya está asignada a un vehículo");
+                }
+
+                if (compraAsociada.EstadoRecepcion == "RECEPCIONADO")
+                {
+                    throw new ValidationException("No se puede eliminar el lote porque la compra ya ha sido recepcionada en planta");
+                }
             }
 
-            if (compra.EstadoRecepcion == "RECEPCIONADO")
-            {
-                var errors = new Dictionary<string, string[]>
-                {
-                    { "Lote", new[] { "No se puede eliminar el lote porque la compra ya ha sido recepcionada en planta" } }
-                };
-                throw new Shared.Exceptions.ValidationException(errors);
-            }
+            // Si el lote está asignado a una compra activa, no permitir eliminarlo
+            throw new ValidationException($"No se puede eliminar el lote porque está asignado a la compra #{compraAsociada.IdCompra}. Primero debe desasignar el lote de la compra.");
         }
 
         // Validar que el lote no tenga llegadas de planta asociadas
         var llegadasPlanta = await _unitOfWork.Repository<LlegadaPlanta>().GetAllAsync(cancellationToken);
         if (llegadasPlanta.Any(lp => lp.IdLote == request.Id))
         {
-            throw new Shared.Exceptions.ValidationException("No se puede eliminar el lote porque tiene llegadas de planta asociadas");
+            throw new ValidationException("No se puede eliminar el lote porque tiene llegadas de planta asociadas");
         }
 
         // Eliminar físicamente el lote

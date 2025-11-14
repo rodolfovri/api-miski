@@ -6,7 +6,10 @@ using Miski.Application.Features.Compras.Compras.Queries.GetCompraById;
 using Miski.Application.Features.Compras.Compras.Queries.GetComprasSinAsignar;
 using Miski.Application.Features.Compras.Compras.Commands.AnularCompra;
 using Miski.Application.Features.Compras.Compras.Commands.ToggleCompraParcial;
+using Miski.Application.Features.Compras.Compras.Commands.AsignarLote;
+using Miski.Application.Features.Compras.Compras.Commands.DesasignarLote;
 using Miski.Application.Features.Compras.Lotes.Commands.CreateLote;
+using Miski.Application.Features.Compras.Lotes.Commands.CreateLoteParaCompra;
 using Miski.Application.Features.Compras.Lotes.Commands.UpdateLote;
 using Miski.Application.Features.Compras.Lotes.Commands.DeleteLote;
 using Miski.Application.Features.Compras.Lotes.Queries.GetLotes;
@@ -30,16 +33,18 @@ public class ComprasController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene todas las compras con su información de negociación y lotes
+    /// Obtiene todas las compras con su información de negociación y lote
     /// </summary>
     /// <remarks>
+    /// **RELACIÓN 1:1 - Una Compra tiene un Lote**
+    /// 
     /// Permite filtrar por:
-    /// - estado: Filtrar por estado (EN PROCESO/COMPLETADA)
+    /// - estado: Filtrar por estado (ACTIVO/ANULADO)
     /// - idNegociacion: Filtrar por ID de negociación
     /// 
     /// Incluye automáticamente:
     /// - Información del proveedor y comisionista de la negociación
-    /// - Lista de lotes asociados a cada compra
+    /// - Lote asignado a la compra (relación 1:1)
     /// </remarks>
     [HttpGet]
     public async Task<ActionResult<ApiResponse<IEnumerable<CompraDto>>>> GetCompras(
@@ -138,12 +143,18 @@ public class ComprasController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene todos los lotes
+    /// Obtiene todos los lotes (disponibles y asignados)
     /// </summary>
     /// <remarks>
+    /// **RELACIÓN 1:1 - Un Lote puede estar asignado a una Compra**
+    /// 
     /// Permite filtrar por:
-    /// - idCompra: Filtrar por compra específica
+    /// - idCompra: Obtener el lote asignado a una compra específica
     /// - codigo: Búsqueda parcial por código
+    /// 
+    /// Los lotes pueden estar:
+    /// - Sin asignar (IdCompra = null en el DTO)
+    /// - Asignados a una compra (IdCompra con valor)
     /// </remarks>
     [HttpGet("lotes")]
     public async Task<ActionResult<ApiResponse<IEnumerable<LoteDto>>>> GetLotes(
@@ -205,30 +216,31 @@ public class ComprasController : ControllerBase
     }
 
     /// <summary>
-    /// Crea un nuevo lote para una compra
+    /// Crea un nuevo lote (sin asignarlo a una compra)
     /// </summary>
     /// <remarks>
-    /// Crea un nuevo lote y actualiza el MontoTotal de la compra asociada.
+    /// **FLUJO 1:1 - Crear Lote Independiente**
+    /// 
+    /// Este endpoint crea un lote que NO está asignado a ninguna compra.
+    /// Para asignar el lote a una compra, usar el endpoint: PUT /api/compras/{idCompra}/asignar-lote
     /// 
     /// Campos requeridos:
-    /// - IdCompra: ID de la compra a la que pertenece el lote
     /// - Peso: Peso del lote en kg (mayor a 0, máximo 10,000)
     /// - Sacos: Cantidad de sacos (mayor a 0, máximo 500)
-    /// - MontoTotal: Monto total que se actualizará en la compra
     /// 
     /// Campos opcionales:
-    /// - Codigo: Código único del lote (máximo 50 caracteres, no puede estar duplicado en la misma compra)
+    /// - Codigo: Código único del lote (máximo 50 caracteres)
+    /// - Comision: Comisión asociada al lote
+    /// - Observacion: Observaciones adicionales
     /// 
     /// Ejemplo de request:
     /// {
-    ///   "idCompra": 1,
     ///   "peso": 1500.50,
     ///   "sacos": 30,
     ///   "codigo": "LOTE-2024-001",
-    ///   "montoTotal": 8250.00
+    ///   "comision": 150.00,
+    ///   "observacion": "Lote de quinua blanca"
     /// }
-    /// 
-    /// NOTA: El MontoTotal proporcionado se actualizará en la tabla Compra.
     /// </remarks>
     [HttpPost("lotes")]
     public async Task<ActionResult<ApiResponse<LoteDto>>> CreateLote(
@@ -245,7 +257,7 @@ public class ComprasController : ControllerBase
                 new { id = result.IdLote },
                 ApiResponse<LoteDto>.SuccessResult(
                     result,
-                    "Lote creado exitosamente"
+                    "Lote creado exitosamente (sin asignar a compra)"
                 )
             );
         }
@@ -270,8 +282,107 @@ public class ComprasController : ControllerBase
     }
 
     /// <summary>
-    /// Actualiza un lote
+    /// Crea un lote Y lo asigna directamente a una compra (1 paso)
     /// </summary>
+    /// <remarks>
+    /// **FLUJO RÁPIDO 1:1 - Crear y Asignar en un solo paso**
+    /// 
+    /// Este endpoint crea un nuevo lote y lo asigna automáticamente a la compra especificada.
+    /// Es equivalente a hacer POST /api/compras/lotes + PUT /api/compras/{id}/asignar-lote en un solo paso.
+    /// 
+    /// **Validaciones:**
+    /// - ? La compra debe existir
+    /// - ? La compra debe estar en estado ACTIVO
+    /// - ? La compra NO debe tener un lote ya asignado
+    /// - ? El código del lote no debe estar duplicado (si se proporciona)
+    /// 
+    /// Campos requeridos:
+    /// - Peso: Peso del lote en kg (mayor a 0, máximo 10,000)
+    /// - Sacos: Cantidad de sacos (mayor a 0, máximo 500)
+    /// - MontoTotal: Monto total que se actualizará en la compra
+    /// 
+    /// Campos opcionales:
+    /// - Codigo: Código único del lote (máximo 50 caracteres)
+    /// - Comision: Comisión asociada al lote
+    /// - Observacion: Observaciones adicionales
+    /// 
+    /// Ejemplo de request:
+    /// ```json
+    /// {
+    ///   "peso": 1500.50,
+    ///   "sacos": 30,
+    ///   "codigo": "LOTE-2024-001",
+    ///   "comision": 150.00,
+    ///   "observacion": "Lote de quinua blanca",
+    ///   "montoTotal": 42500.00
+    /// }
+    /// ```
+    /// 
+    /// **Uso recomendado:** Cuando quieres crear un lote para una compra específica en un solo paso.
+    /// </remarks>
+    [HttpPost("{idCompra}/lote")]
+    public async Task<ActionResult<ApiResponse<LoteDto>>> CreateLoteParaCompra(
+        int idCompra,
+        [FromBody] CreateLoteParaCompraDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var loteDto = new CreateLoteDto
+            {
+                Peso = request.Peso,
+                Sacos = request.Sacos,
+                Codigo = request.Codigo,
+                Comision = request.Comision,
+                Observacion = request.Observacion
+            };
+
+            var command = new CreateLoteParaCompraCommand(idCompra, loteDto, request.MontoTotal);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return CreatedAtAction(
+                nameof(GetLoteById),
+                new { id = result.IdLote },
+                ApiResponse<LoteDto>.SuccessResult(
+                    result,
+                    "Lote creado y asignado a la compra exitosamente"
+                )
+            );
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<LoteDto>.ErrorResult(
+                "Entidad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<LoteDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<LoteDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Actualiza un lote existente
+    /// </summary>
+    /// <remarks>
+    /// **Actualiza solo los datos del lote, NO la asignación a la compra**
+    /// 
+    /// Para cambiar la asignación del lote, usar:
+    /// - PUT /api/compras/{idCompra}/asignar-lote
+    /// - PUT /api/compras/{idCompra}/desasignar-lote
+    /// 
+    /// No se puede editar si:
+    /// - La compra asociada está asignada a un vehículo (EstadoRecepcion = PENDIENTE)
+    /// - La compra ya fue recepcionada (EstadoRecepcion = RECEPCIONADO)
+    /// </remarks>
     [HttpPut("lotes/{id}")]
     public async Task<ActionResult<ApiResponse<LoteDto>>> UpdateLote(
         int id,
@@ -452,6 +563,121 @@ public class ComprasController : ControllerBase
             await _mediator.Send(command, cancellationToken);
 
             return Ok(ApiResponse.SuccessResult("Estado de compra parcial actualizado exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Compra no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Asigna un lote existente a una compra (relación 1:1)
+    /// </summary>
+    /// <remarks>
+    /// **FLUJO 1:1 - Asignar Lote a Compra**
+    /// 
+    /// Establece la relación uno a uno entre una Compra y un Lote.
+    /// 
+    /// **Validaciones:**
+    /// - ? La compra debe existir
+    /// - ? El lote debe existir
+    /// - ? La compra NO debe tener ya un lote asignado
+    /// - ? El lote NO debe estar asignado a otra compra
+    /// - ? La compra debe estar en estado ACTIVO
+    /// 
+    /// **Request:**
+    /// {
+    ///   "idLote": 5,
+    ///   "montoTotal": 42500.00
+    /// }
+    /// 
+    /// El endpoint retorna la compra actualizada con su lote asignado.
+    /// </remarks>
+    [HttpPut("{idCompra}/asignar-lote")]
+    public async Task<ActionResult<ApiResponse<CompraDto>>> AsignarLoteACompra(
+        int idCompra,
+        [FromBody] AsignarLoteACompraDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (idCompra != request.IdCompra)
+            {
+                return BadRequest(ApiResponse<CompraDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del request"
+                ));
+            }
+
+            var command = new AsignarLoteACompraCommand(request.IdCompra, request.IdLote, request.MontoTotal);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<CompraDto>.SuccessResult(
+                result,
+                "Lote asignado a la compra exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<CompraDto>.ErrorResult(
+                "Entidad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<CompraDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<CompraDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Desasocia el lote de una compra (relación 1:1)
+    /// </summary>
+    /// <remarks>
+    /// **FLUJO 1:1 - Desasignar Lote de Compra**
+    /// 
+    /// Elimina la relación entre la Compra y su Lote.
+    /// El lote queda disponible para ser asignado a otra compra.
+    /// 
+    /// **Validaciones:**
+    /// - ? La compra debe tener un lote asignado
+    /// - ? La compra NO debe tener llegadas de planta
+    /// - ? La compra NO debe estar asignada a un vehículo
+    /// 
+    /// No requiere body, solo el ID de la compra en la URL.
+    /// </remarks>
+    [HttpPut("{idCompra}/desasignar-lote")]
+    public async Task<ActionResult<ApiResponse>> DesasignarLoteDeCompra(
+        int idCompra,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new DesasignarLoteDeCompraCommand(idCompra);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Lote desasignado de la compra exitosamente"));
         }
         catch (Shared.Exceptions.NotFoundException ex)
         {

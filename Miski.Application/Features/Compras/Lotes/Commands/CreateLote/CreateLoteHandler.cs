@@ -22,27 +22,20 @@ public class CreateLoteHandler : IRequestHandler<CreateLoteCommand, LoteDto>
     {
         var dto = request.Lote;
 
-        // Validar que la compra existe
-        var compra = await _unitOfWork.Repository<Compra>()
-            .GetByIdAsync(dto.IdCompra, cancellationToken);
-
-        if (compra == null)
-            throw new NotFoundException("Compra", dto.IdCompra);
-
-        // Validar que el código no esté duplicado en la misma compra
+        // Validar que el código no esté duplicado si se proporciona
         if (!string.IsNullOrEmpty(dto.Codigo))
         {
             var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
-            if (lotes.Any(l => l.IdCompra == dto.IdCompra && l.Codigo == dto.Codigo))
+            if (lotes.Any(l => l.Codigo == dto.Codigo))
             {
-                throw new ValidationException($"Ya existe un lote con el código {dto.Codigo} en esta compra");
+                throw new ValidationException($"Ya existe un lote con el código {dto.Codigo}");
             }
         }
 
-        // Crear el lote
+        // ? Crear el lote SIN asignarlo a una compra (relación 1:1)
+        // La asignación se hará posteriormente con AsignarLoteACompra
         var lote = new Lote
         {
-            IdCompra = dto.IdCompra,
             Peso = dto.Peso,
             Sacos = dto.Sacos,
             Codigo = dto.Codigo,
@@ -51,11 +44,6 @@ public class CreateLoteHandler : IRequestHandler<CreateLoteCommand, LoteDto>
         };
 
         await _unitOfWork.Repository<Lote>().AddAsync(lote, cancellationToken);
-
-        // Actualizar el MontoTotal en la Compra
-        compra.MontoTotal = dto.MontoTotal;
-        await _unitOfWork.Repository<Compra>().UpdateAsync(compra, cancellationToken);
-
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<LoteDto>(lote);

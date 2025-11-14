@@ -26,10 +26,7 @@ public class CreateCategoriaProductoHandler : IRequestHandler<CreateCategoriaPro
 
         if (existe)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "Nombre", new[] { "Ya existe una categoría con este nombre" } }
-            });
+            throw new ValidationException("Ya existe una categoría con este nombre");
         }
 
         // Crear la nueva categoría

@@ -27,10 +27,4 @@ public class ValidationException : Exception
     {
         Errors = message;
     }
-
-    // Para múltiples errores (formularios grandes, etc.)
-    public ValidationException(IDictionary<string, string[]> errors) : base("Uno o más errores de validación ocurrieron.")
-    {
-        Errors = errors;
-    }
 }

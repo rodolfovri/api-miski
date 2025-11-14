@@ -1,0 +1,62 @@
+﻿using MediatR;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Compras.Lotes.Commands.DeleteLote;
+
+public class DeleteLoteHandler : IRequestHandler<DeleteLoteCommand, Unit>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public DeleteLoteHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<Unit> Handle(DeleteLoteCommand request, CancellationToken cancellationToken)
+    {
+        var lote = await _unitOfWork.Repository<Lote>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (lote == null)
+            throw new NotFoundException("Lote", request.Id);
+
+        // ✅ Buscar si el lote está asignado a alguna compra (relación 1:1 inversa)
+        var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
+        var compraAsociada = compras.FirstOrDefault(c => c.IdLote == request.Id);
+
+        if (compraAsociada != null)
+        {
+            // Validar el EstadoRecepcion de la compra asociada al lote
+            if (!string.IsNullOrEmpty(compraAsociada.EstadoRecepcion))
+            {
+                if (compraAsociada.EstadoRecepcion == "PENDIENTE")
+                {
+                    throw new ValidationException("No se puede eliminar el lote porque la compra ya está asignada a un vehículo");
+                }
+
+                if (compraAsociada.EstadoRecepcion == "RECEPCIONADO")
+                {
+                    throw new ValidationException("No se puede eliminar el lote porque la compra ya ha sido recepcionada en planta");
+                }
+            }
+
+            // Si el lote está asignado a una compra activa, no permitir eliminarlo
+            throw new ValidationException($"No se puede eliminar el lote porque está asignado a la compra #{compraAsociada.IdCompra}. Primero debe desasignar el lote de la compra.");
+        }
+
+        // Validar que el lote no tenga llegadas de planta asociadas
+        var llegadasPlanta = await _unitOfWork.Repository<LlegadaPlanta>().GetAllAsync(cancellationToken);
+        if (llegadasPlanta.Any(lp => lp.IdLote == request.Id))
+        {
+            throw new ValidationException("No se puede eliminar el lote porque tiene llegadas de planta asociadas");
+        }
+
+        // Eliminar físicamente el lote
+        await _unitOfWork.Repository<Lote>().DeleteAsync(lote, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
+    }
+}

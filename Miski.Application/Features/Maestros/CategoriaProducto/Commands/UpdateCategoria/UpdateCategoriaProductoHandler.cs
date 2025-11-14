@@ -35,10 +35,7 @@ public class UpdateCategoriaProductoHandler : IRequestHandler<UpdateCategoriaPro
 
         if (existe)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "Nombre", new[] { "Ya existe otra categoría con este nombre" } }
-            });
+            throw new ValidationException("Ya existe otra categoría con este nombre");
         }
 
         // Actualizar la categoría

@@ -174,8 +174,8 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // Cargar relaciones para el DTO
-        negociacion.Comisionista = await _unitOfWork.Repository<Persona>()
-            .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Persona();
+        negociacion.Comisionista = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Usuario();
 
         // Buscar proveedor por documento
         if (!string.IsNullOrEmpty(negociacion.NroDocumentoProveedor))
@@ -188,6 +188,13 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
         {
             negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
                 .GetByIdAsync(negociacion.IdVariedadProducto.Value, cancellationToken);
+            
+            // ? CARGAR EL PRODUCTO DENTRO DE VARIEDAD PRODUCTO
+            if (negociacion.VariedadProducto != null && negociacion.VariedadProducto.IdProducto > 0)
+            {
+                negociacion.VariedadProducto.Producto = await _unitOfWork.Repository<Producto>()
+                    .GetByIdAsync(negociacion.VariedadProducto.IdProducto, cancellationToken);
+            }
         }
 
         if (negociacion.IdTipoDocumento.HasValue)

@@ -42,10 +42,7 @@ public class UpdatePersonaHandler : IRequestHandler<UpdatePersonaCommand, Person
 
         if (personaExistente != null)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "NumeroDocumento", new[] { "Ya existe otra persona con este número de documento" } }
-            });
+            throw new ValidationException("Ya existe otra persona con este número de documento");
         }
 
         // Actualizar la persona

@@ -20,11 +20,29 @@ public class GetLotesHandler : IRequestHandler<GetLotesQuery, IEnumerable<LoteDt
     public async Task<IEnumerable<LoteDto>> Handle(GetLotesQuery request, CancellationToken cancellationToken)
     {
         var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
+        var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
 
-        // Filtrar por compra si se especifica
+        // ? Filtrar por compra si se especifica (relación 1:1 inversa)
         if (request.IdCompra.HasValue)
         {
-            lotes = lotes.Where(l => l.IdCompra == request.IdCompra.Value);
+            var compra = compras.FirstOrDefault(c => c.IdCompra == request.IdCompra.Value);
+
+            if (compra != null && compra.IdLote.HasValue)
+            {
+                // Solo retornar el lote asociado a esta compra
+                var loteAsociado = lotes.FirstOrDefault(l => l.IdLote == compra.IdLote.Value);
+
+                if (loteAsociado != null)
+                {
+                    // Cargar la relación inversa
+                    loteAsociado.Compra = compra;
+
+                    var result = _mapper.Map<LoteDto>(loteAsociado);
+                    return new List<LoteDto> { result };
+                }
+            }
+
+            return new List<LoteDto>();
         }
 
         // Filtrar por código si se especifica
@@ -33,12 +51,14 @@ public class GetLotesHandler : IRequestHandler<GetLotesQuery, IEnumerable<LoteDt
             lotes = lotes.Where(l => l.Codigo != null && l.Codigo.Contains(request.Codigo, StringComparison.OrdinalIgnoreCase));
         }
 
-        // Cargar relaciones
-        var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
-
+        // ? Cargar la relación inversa para todos los lotes
         foreach (var lote in lotes)
         {
-            lote.Compra = compras.FirstOrDefault(c => c.IdCompra == lote.IdCompra);
+            var compraAsociada = compras.FirstOrDefault(c => c.IdLote == lote.IdLote);
+            if (compraAsociada != null)
+            {
+                lote.Compra = compraAsociada;
+            }
         }
 
         return lotes.Select(l => _mapper.Map<LoteDto>(l)).ToList();

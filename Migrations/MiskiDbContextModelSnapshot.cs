@@ -131,6 +131,9 @@ namespace Miski.Api.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("IdLote")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdMoneda")
                         .HasColumnType("int");
 
@@ -160,6 +163,10 @@ namespace Miski.Api.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("IdCompra");
+
+                    b.HasIndex("IdLote")
+                        .IsUnique()
+                        .HasFilter("[IdLote] IS NOT NULL");
 
                     b.HasIndex("IdMoneda");
 
@@ -302,9 +309,6 @@ namespace Miski.Api.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("IdCompra")
-                        .HasColumnType("int");
-
                     b.Property<string>("Observacion")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -317,8 +321,6 @@ namespace Miski.Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("IdLote");
-
-                    b.HasIndex("IdCompra");
 
                     b.ToTable("Lote", (string)null);
                 });
@@ -1222,6 +1224,12 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Compra", b =>
                 {
+                    b.HasOne("Miski.Domain.Entities.Lote", "Lote")
+                        .WithOne("Compra")
+                        .HasForeignKey("Miski.Domain.Entities.Compra", "IdLote")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_Compra_Lote");
+
                     b.HasOne("Miski.Domain.Entities.Moneda", "Moneda")
                         .WithMany("Compras")
                         .HasForeignKey("IdMoneda")
@@ -1247,6 +1255,8 @@ namespace Miski.Api.Migrations
                         .HasForeignKey("IdUsuarioAnulacion")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_Compra_UsuarioAnulacion");
+
+                    b.Navigation("Lote");
 
                     b.Navigation("Moneda");
 
@@ -1338,18 +1348,6 @@ namespace Miski.Api.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Miski.Domain.Entities.Lote", b =>
-                {
-                    b.HasOne("Miski.Domain.Entities.Compra", "Compra")
-                        .WithMany("Lotes")
-                        .HasForeignKey("IdCompra")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_Lote_Compra");
-
-                    b.Navigation("Compra");
-                });
-
             modelBuilder.Entity("Miski.Domain.Entities.Negociacion", b =>
                 {
                     b.HasOne("Miski.Domain.Entities.Usuario", "AprobadaPorUsuarioContadora")
@@ -1370,7 +1368,7 @@ namespace Miski.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("FK_Negociacion_Banco");
 
-                    b.HasOne("Miski.Domain.Entities.Persona", "Comisionista")
+                    b.HasOne("Miski.Domain.Entities.Usuario", "Comisionista")
                         .WithMany("NegociacionesComisionista")
                         .HasForeignKey("IdComisionista")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1397,7 +1395,8 @@ namespace Miski.Api.Migrations
 
                     b.HasOne("Miski.Domain.Entities.Persona", "Proveedor")
                         .WithMany()
-                        .HasForeignKey("ProveedorIdPersona");
+                        .HasForeignKey("ProveedorIdPersona")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Miski.Domain.Entities.Usuario", "RechazadoPorUsuarioContadora")
                         .WithMany()
@@ -1709,8 +1708,6 @@ namespace Miski.Api.Migrations
                     b.Navigation("CompraVehiculoDetalles");
 
                     b.Navigation("LlegadasPlanta");
-
-                    b.Navigation("Lotes");
                 });
 
             modelBuilder.Entity("Miski.Domain.Entities.CompraVehiculo", b =>
@@ -1720,6 +1717,8 @@ namespace Miski.Api.Migrations
 
             modelBuilder.Entity("Miski.Domain.Entities.Lote", b =>
                 {
+                    b.Navigation("Compra");
+
                     b.Navigation("LlegadasPlanta");
                 });
 
@@ -1745,8 +1744,6 @@ namespace Miski.Api.Migrations
             modelBuilder.Entity("Miski.Domain.Entities.Persona", b =>
                 {
                     b.Navigation("CompraVehiculos");
-
-                    b.Navigation("NegociacionesComisionista");
 
                     b.Navigation("PersonaCategorias");
 
@@ -1812,6 +1809,8 @@ namespace Miski.Api.Migrations
             modelBuilder.Entity("Miski.Domain.Entities.Usuario", b =>
                 {
                     b.Navigation("LlegadasPlanta");
+
+                    b.Navigation("NegociacionesComisionista");
 
                     b.Navigation("TipoCambios");
 

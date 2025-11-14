@@ -79,8 +79,12 @@ public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraV
                     montoTotal = (negociacion.PesoTotal ?? 0) * (negociacion.PrecioUnitario ?? 0);
                 }
 
-                // Obtener el lote de esta compra
-                var lote = todosLosLotes.FirstOrDefault(l => l.IdCompra == compra.IdCompra);
+                // Obtener el lote de esta compra (relación 1:1)
+                Lote? lote = null;
+                if (compra.IdLote.HasValue)
+                {
+                    lote = todosLosLotes.FirstOrDefault(l => l.IdLote == compra.IdLote.Value);
+                }
 
                 detalles.Add(new CompraVehiculoDetalleDto
                 {
@@ -117,8 +121,12 @@ public class GetCompraVehiculoConDisponiblesHandler : IRequestHandler<GetCompraV
                 montoTotal = (negociacion.PesoTotal ?? 0) * (negociacion.PrecioUnitario ?? 0);
             }
 
-            // Obtener el lote de esta compra
-            var lote = todosLosLotes.FirstOrDefault(l => l.IdCompra == compra.IdCompra);
+            // Obtener el lote de esta compra (relación 1:1)
+            Lote? lote = null;
+            if (compra.IdLote.HasValue)
+            {
+                lote = todosLosLotes.FirstOrDefault(l => l.IdLote == compra.IdLote.Value);
+            }
 
             detalles.Add(new CompraVehiculoDetalleDto
             {

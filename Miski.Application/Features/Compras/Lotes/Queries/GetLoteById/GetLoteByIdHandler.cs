@@ -26,9 +26,14 @@ public class GetLoteByIdHandler : IRequestHandler<GetLoteByIdQuery, LoteDto>
         if (lote == null)
             throw new NotFoundException("Lote", request.Id);
 
-        // Cargar relación con Compra
-        lote.Compra = await _unitOfWork.Repository<Compra>()
-            .GetByIdAsync(lote.IdCompra, cancellationToken);
+        // ? Cargar relación inversa con Compra (relación 1:1)
+        var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
+        var compraAsociada = compras.FirstOrDefault(c => c.IdLote == lote.IdLote);
+        
+        if (compraAsociada != null)
+        {
+            lote.Compra = compraAsociada;
+        }
 
         return _mapper.Map<LoteDto>(lote);
     }

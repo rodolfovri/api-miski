@@ -43,6 +43,7 @@ public class NegociacionDto
     // Información adicional
     public string? ProveedorNombre { get; set; }
     public string? ComisionistaNombre { get; set; }
+    public int? IdProducto { get; set; }  // ? AGREGADO - ID del producto desde VariedadProducto
     public string? VariedadProductoNombre { get; set; }
     public string? ProductoNombre { get; set; }
     public string? TipoDocumentoNombre { get; set; }  // AGREGADO

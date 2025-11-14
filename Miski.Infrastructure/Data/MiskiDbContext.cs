@@ -422,7 +422,6 @@ public class MiskiDbContext : DbContext
                 .HasForeignKey(d => d.IdMoneda)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Compra_Moneda");
-            entity.HasOne(d => d.TipoCambio);
 
             entity.HasOne(d => d.TipoCambio)
                 .WithMany(p => p.Compras)
@@ -437,6 +436,14 @@ public class MiskiDbContext : DbContext
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Compra_UsuarioAnulacion");
+
+            // ? RELACIÓN UNO A UNO: Una Compra tiene un Lote
+            entity.HasOne(d => d.Lote)
+                .WithOne(p => p.Compra)
+                .HasForeignKey<Compra>(d => d.IdLote)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Compra_Lote");
 
             entity.ToTable("Compra");
         });
@@ -489,12 +496,6 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Codigo).HasMaxLength(50);
             entity.Property(e => e.Comision).HasPrecision(18, 2);
             entity.Property(e => e.Observacion).HasMaxLength(200);
-
-            entity.HasOne(d => d.Compra)
-                .WithMany(p => p.Lotes)
-                .HasForeignKey(d => d.IdCompra)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Lote_Compra");
 
             entity.ToTable("Lote");
         });

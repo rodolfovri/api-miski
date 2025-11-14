@@ -30,29 +30,32 @@ public class GetCompraByIdHandler : IRequestHandler<GetCompraByIdQuery, CompraDt
         var negociacion = await _unitOfWork.Repository<Negociacion>()
             .GetByIdAsync(compra.IdNegociacion, cancellationToken);
 
-        // Cargar lotes asociados a esta compra
-        var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
-        var lotesCompra = lotes.Where(l => l.IdCompra == compra.IdCompra).ToList();
-        
-        // Calcular PesoTotal y SacosTotales desde los lotes
-        var pesoTotal = lotesCompra.Sum(l => l.Peso);
-        var sacosTotales = lotesCompra.Sum(l => l.Sacos);
+        // ? Cargar lote asociado a esta compra (relación 1:1)
+        Lote? loteCompra = null;
+        if (compra.IdLote.HasValue)
+        {
+            loteCompra = await _unitOfWork.Repository<Lote>()
+                .GetByIdAsync(compra.IdLote.Value, cancellationToken);
+        }
 
         var compraDto = new CompraDto
         {
             IdCompra = compra.IdCompra,
             IdNegociacion = compra.IdNegociacion,
+            IdLote = compra.IdLote,  // ? FK al lote (puede ser null)
             Serie = compra.Serie,
             FRegistro = compra.FRegistro,
             FEmision = compra.FEmision,
             Estado = compra.Estado,
             EstadoRecepcion = compra.EstadoRecepcion,
-            EsParcial = compra.EsParcial,  // ? AGREGADO
-            MontoTotal = compra.MontoTotal ?? 0,
+            EsParcial = compra.EsParcial,
+            MontoTotal = compra.MontoTotal,
             
-            // Totales calculados desde los Lotes
-            PesoTotal = pesoTotal,
-            SacosTotales = sacosTotales,
+            // ? Información del lote (si existe)
+            PesoLote = loteCompra?.Peso,
+            SacosLote = loteCompra?.Sacos,
+            CodigoLote = loteCompra?.Codigo,
+            ComisionLote = loteCompra?.Comision,
             
             // Totales originales desde la Negociación
             NegociacionPesoTotal = negociacion?.PesoTotal ?? 0,
@@ -85,8 +88,12 @@ public class GetCompraByIdHandler : IRequestHandler<GetCompraByIdQuery, CompraDt
             }
         }
 
-        // Cargar lotes en el DTO
-        compraDto.Lotes = lotesCompra.Select(l => _mapper.Map<LoteDto>(l)).ToList();
+        // ? Cargar el lote en el DTO (relación 1:1)
+        if (loteCompra != null)
+        {
+            loteCompra.Compra = compra; // Cargar relación inversa
+            compraDto.Lote = _mapper.Map<LoteDto>(loteCompra);
+        }
 
         return compraDto;
     }

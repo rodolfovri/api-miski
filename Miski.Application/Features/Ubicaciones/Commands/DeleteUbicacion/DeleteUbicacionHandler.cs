@@ -31,10 +31,7 @@ public class DeleteUbicacionHandler : IRequestHandler<DeleteUbicacionCommand, bo
 
         if (tieneStock)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "Ubicacion", new[] { "No se puede eliminar la ubicación porque tiene stock asociado" } }
-            });
+            throw new ValidationException("No se puede eliminar la ubicación porque tiene stock asociado");
         }
 
         // Eliminar el PDF asociado si existe

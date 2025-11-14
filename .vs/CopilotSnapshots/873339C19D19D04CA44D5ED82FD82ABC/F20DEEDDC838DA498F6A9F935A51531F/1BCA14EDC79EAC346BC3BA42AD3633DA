@@ -1,0 +1,53 @@
+﻿using MediatR;
+using AutoMapper;
+using Miski.Domain.Contracts;
+using Miski.Domain.Entities;
+using Miski.Shared.DTOs.Maestros;
+using Miski.Shared.Exceptions;
+
+namespace Miski.Application.Features.Maestros.TipoDocumento.Commands.UpdateTipoDocumento;
+
+public class UpdateTipoDocumentoHandler : IRequestHandler<UpdateTipoDocumentoCommand, TipoDocumentoDto>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public UpdateTipoDocumentoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<TipoDocumentoDto> Handle(UpdateTipoDocumentoCommand request, CancellationToken cancellationToken)
+    {
+        // Buscar el tipo de documento
+        var tipoDocumento = await _unitOfWork.Repository<Domain.Entities.TipoDocumento>()
+            .GetByIdAsync(request.Id, cancellationToken);
+
+        if (tipoDocumento == null)
+            throw new NotFoundException("TipoDocumento", request.Id);
+
+        // Verificar que no exista otro tipo con el mismo nombre
+        var tiposExistentes = await _unitOfWork.Repository<Domain.Entities.TipoDocumento>().GetAllAsync(cancellationToken);
+        var existe = tiposExistentes.Any(t =>
+            t.Nombre.ToLower() == request.TipoDocumento.Nombre.ToLower() &&
+            t.IdTipoDocumento != request.Id);
+
+        if (existe)
+        {
+            throw new ValidationException(new Dictionary<string, string[]>
+            {
+                { "Nombre", new[] { "Ya existe otro tipo de documento con este nombre" } }
+            });
+        }
+
+        // Actualizar el tipo de documento
+        tipoDocumento.Nombre = request.TipoDocumento.Nombre;
+        tipoDocumento.LongitudMin = request.TipoDocumento.LongitudMin;
+        tipoDocumento.LongitudMax = request.TipoDocumento.LongitudMax;
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return _mapper.Map<TipoDocumentoDto>(tipoDocumento);
+    }
+}

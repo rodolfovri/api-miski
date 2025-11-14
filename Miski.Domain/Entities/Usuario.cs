@@ -16,4 +16,6 @@ public class Usuario
     public virtual Collection<TipoCambio> TipoCambios { get; set; } = new Collection<TipoCambio>();
     public virtual Collection<UsuarioRol> UsuarioRoles { get; set; } = new Collection<UsuarioRol>();
     public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
+    public virtual ICollection<Negociacion> NegociacionesComisionista { get; set; } = new List<Negociacion>();
+
 }

@@ -33,13 +33,10 @@ public class EliminarCompraDeVehiculoHandler : IRequestHandler<EliminarCompraDeV
         // 3. Validar que el CompraVehiculo está en estado ACTIVO
         if (compraVehiculo.Estado != "ACTIVO")
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "CompraVehiculo", new[] { compraVehiculo.Estado == "PARCIAL" 
-                    ? "No se puede eliminar la asociación porque el vehículo ya inició la entrega a planta (estado PARCIAL)" 
-                    : "No se puede eliminar la asociación porque el vehículo ya fue entregado a planta" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
+            string mensaje = compraVehiculo.Estado == "PARCIAL" 
+                ? "No se puede eliminar la asociación porque el vehículo ya inició la entrega a planta (estado PARCIAL)" 
+                : "No se puede eliminar la asociación porque el vehículo ya fue entregado a planta";
+            throw new Shared.Exceptions.ValidationException(mensaje);
         }
 
         // 4. Verificar que la Compra existe
@@ -52,11 +49,7 @@ public class EliminarCompraDeVehiculoHandler : IRequestHandler<EliminarCompraDeV
         // 5. Validar que la Compra NO ha sido recepcionada
         if (compra.EstadoRecepcion == "RECEPCIONADO")
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Compra", new[] { "No se puede eliminar la asociación porque la compra ya fue recepcionada en planta" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
+            throw new Shared.Exceptions.ValidationException("No se puede eliminar la asociación porque la compra ya fue recepcionada en planta");
         }
 
         // 6. Validar que la Compra NO tiene llegadas a planta registradas
@@ -67,11 +60,7 @@ public class EliminarCompraDeVehiculoHandler : IRequestHandler<EliminarCompraDeV
 
         if (tieneLlegadas)
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Compra", new[] { "No se puede eliminar la asociación porque la compra tiene llegadas a planta registradas" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
+            throw new Shared.Exceptions.ValidationException("No se puede eliminar la asociación porque la compra tiene llegadas a planta registradas");
         }
 
         // 7. Eliminar el CompraVehiculoDetalle

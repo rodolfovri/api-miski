@@ -23,14 +23,10 @@ public class AnularLlegadaPlantaHandler : IRequestHandler<AnularLlegadaPlantaCom
         if (llegadaPlanta == null)
             throw new NotFoundException("LlegadaPlanta", request.IdLlegadaPlanta);
 
-        // 2. Verificar que la LlegadaPlanta NO esté ya anulada
+        // 2. Verificar que la LlegadaPlanta NO está ya anulada
         if (llegadaPlanta.Estado == "ANULADO")
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "LlegadaPlanta", new[] { "La llegada a planta ya está anulada" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
+            throw new Shared.Exceptions.ValidationException("La llegada a planta ya está anulada");
         }
 
         // 3. Verificar que el usuario existe
@@ -57,11 +53,7 @@ public class AnularLlegadaPlantaHandler : IRequestHandler<AnularLlegadaPlantaCom
         // 6. Validar que la Negociación tenga IdVariedadProducto
         if (!negociacion.IdVariedadProducto.HasValue)
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Negociacion", new[] { "La negociación no tiene una variedad de producto asociada. No se puede revertir el stock" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
+            throw new Shared.Exceptions.ValidationException("La negociación no tiene una variedad de producto asociada. No se puede revertir el stock");
         }
 
         var idVariedadProducto = negociacion.IdVariedadProducto.Value;
@@ -75,22 +67,14 @@ public class AnularLlegadaPlantaHandler : IRequestHandler<AnularLlegadaPlantaCom
 
         if (stock == null)
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Stock", new[] { $"No se encontró stock para la ubicación {llegadaPlanta.IdUbicacion} y producto {idVariedadProducto}. No se puede revertir el stock" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
+            throw new Shared.Exceptions.ValidationException($"No se encontró stock para la ubicación {llegadaPlanta.IdUbicacion} y producto {idVariedadProducto}. No se puede revertir el stock");
         }
 
         // 8. Validar que hay stock suficiente para revertir
         var stockActual = stock.CantidadKg ?? 0;
         if (stockActual < pesoRecibido)
         {
-            var errors = new Dictionary<string, string[]>
-            {
-                { "Stock", new[] { $"Stock insuficiente para revertir. Stock actual: {stockActual} kg, se requiere revertir: {pesoRecibido} kg. El stock resultante sería negativo" } }
-            };
-            throw new Shared.Exceptions.ValidationException(errors);
+            throw new Shared.Exceptions.ValidationException($"Stock insuficiente para revertir. Stock actual: {stockActual} kg, se requiere revertir: {pesoRecibido} kg. El stock resultante sería negativo");
         }
 
         // 9. Revertir el stock (restar el peso recibido)

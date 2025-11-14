@@ -58,8 +58,8 @@ public class RechazarNegociacionIngenieroHandler : IRequestHandler<RechazarNegoc
 
         // Cargar relaciones para el DTO
         negociacion.RechazadoPorUsuarioIngeniero = rechazador;
-        negociacion.Comisionista = await _unitOfWork.Repository<Persona>()
-            .GetByIdAsync(negociacion.IdComisionista, cancellationToken);
+        negociacion.Comisionista = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Usuario();
         
         if (!string.IsNullOrEmpty(negociacion.NroDocumentoProveedor))
         {
@@ -71,6 +71,13 @@ public class RechazarNegociacionIngenieroHandler : IRequestHandler<RechazarNegoc
         {
             negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
                 .GetByIdAsync(negociacion.IdVariedadProducto.Value, cancellationToken);
+            
+            // ? CARGAR EL PRODUCTO DENTRO DE VARIEDAD PRODUCTO
+            if (negociacion.VariedadProducto != null && negociacion.VariedadProducto.IdProducto > 0)
+            {
+                negociacion.VariedadProducto.Producto = await _unitOfWork.Repository<Producto>()
+                    .GetByIdAsync(negociacion.VariedadProducto.IdProducto, cancellationToken);
+            }
         }
 
         return _mapper.Map<NegociacionDto>(negociacion);

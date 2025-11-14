@@ -45,20 +45,14 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, AuthResponseDto>
         var usuarioExistentePorPersona = usuarios.FirstOrDefault(u => u.IdPersona == request.RegisterData.IdPersona);
         if (usuarioExistentePorPersona != null)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "IdPersona", new[] { "Esta persona ya tiene un usuario registrado" } }
-            });
+            throw new ValidationException("Esta persona ya tiene un usuario registrado");
         }
 
         // Verificar que el username no esté en uso
         var usuarioExistentePorUsername = usuarios.FirstOrDefault(u => u.Username.ToLower() == request.RegisterData.Username.ToLower());
         if (usuarioExistentePorUsername != null)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "Username", new[] { "Este nombre de usuario ya está en uso" } }
-            });
+            throw new ValidationException("Este nombre de usuario ya está en uso");
         }
 
         // Crear hash de la contraseña

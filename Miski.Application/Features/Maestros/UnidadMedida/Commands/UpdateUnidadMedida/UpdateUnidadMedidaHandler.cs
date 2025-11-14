@@ -36,10 +36,7 @@ public class UpdateUnidadMedidaHandler : IRequestHandler<UpdateUnidadMedidaComma
 
         if (existe)
         {
-            throw new ValidationException(new Dictionary<string, string[]>
-            {
-                { "UnidadMedida", new[] { "Ya existe otra unidad de medida con este nombre o abreviatura" } }
-            });
+            throw new ValidationException("Ya existe otra unidad de medida con este nombre o abreviatura");
         }
 
         // Actualizar la unidad de medida
