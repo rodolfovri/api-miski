@@ -187,7 +187,7 @@ if (!Directory.Exists(uploadPath))
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadPath),
-    RequestPath = "",  // Las rutas empiezan directamente desde /negociaciones/...
+    RequestPath = "/uploads",
     OnPrepareResponse = ctx =>
     {
         // Configurar CORS headers para las imágenes
