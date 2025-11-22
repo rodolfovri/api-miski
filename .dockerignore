@@ -1,0 +1,39 @@
+# Archivos de compilación
+**/bin/
+**/obj/
+**/out/
+
+# Archivos de Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Archivos de Git
+.git/
+.gitignore
+.gitattributes
+
+# Archivos de IDE
+**/.vscode/
+**/.idea/
+
+# Archivos de NuGet
+*.nupkg
+**/packages/
+
+# Archivos de prueba
+**/TestResults/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Documentación
+*.md
+LICENSE
+
+# Archivos temporales
+*.tmp
+*.log

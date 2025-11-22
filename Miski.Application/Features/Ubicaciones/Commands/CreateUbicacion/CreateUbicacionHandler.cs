@@ -56,7 +56,7 @@ public class CreateUbicacionHandler : IRequestHandler<CreateUbicacionCommand, Ub
             ComprobantePdf = comprobantePdfUrl,
             Tipo = dto.Tipo,
             Estado = dto.Estado,
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<Ubicacion>().AddAsync(nuevaUbicacion, cancellationToken);

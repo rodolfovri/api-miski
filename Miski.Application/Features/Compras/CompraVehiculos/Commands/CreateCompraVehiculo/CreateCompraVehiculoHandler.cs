@@ -74,7 +74,7 @@ public class CreateCompraVehiculoHandler : IRequestHandler<CreateCompraVehiculoC
             IdVehiculo = dto.IdVehiculo,
             GuiaRemision = dto.GuiaRemision.ToUpper().Trim(),
             Estado = "ACTIVO",
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<CompraVehiculo>().AddAsync(compraVehiculo, cancellationToken);

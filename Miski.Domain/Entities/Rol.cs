@@ -6,6 +6,7 @@ public class Rol
     public string Nombre { get; set; } = string.Empty;
     public string? Descripcion { get; set; }
     public string? TipoPlataforma { get; set; } // Ejemplo: "Web", "Mobile", etc.
+    public string? Estado { get; set; }
 
     // Navigation properties
     public virtual ICollection<UsuarioRol> UsuarioRoles { get; set; } = new List<UsuarioRol>();

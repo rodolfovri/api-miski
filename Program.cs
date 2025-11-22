@@ -84,9 +84,9 @@ builder.Services.AddSwaggerGen(c =>
     c.OperationFilter<AuthorizeOperationFilter>();
 });
 
-// Database Configuration
+// Database Configuration - PostgreSQL
 builder.Services.AddDbContext<MiskiDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // JWT Configuration
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "MiskiSecretKey2024!@#$%";
@@ -152,21 +152,20 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Habilitar Swagger en todos los entornos (Development y Production)
+// NOTA: En producción real, considera proteger Swagger con autenticación
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Miski API v1");
-        c.RoutePrefix = "swagger";
-        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
-        c.DefaultModelsExpandDepth(-1);
-        c.DisplayRequestDuration();
-        
-        // Personalización de la interfaz
-        c.DocumentTitle = "Miski API - Documentación";
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Miski API v1");
+    c.RoutePrefix = "swagger";
+    c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+    c.DefaultModelsExpandDepth(-1);
+    c.DisplayRequestDuration();
+    
+    // Personalización de la interfaz
+    c.DocumentTitle = "Miski API - Documentación";
+});
 
 app.UseHttpsRedirection();
 
@@ -176,10 +175,18 @@ app.UseCors("AllowAll");
 app.UseStaticFiles();
 
 // Configurar servicio de archivos estáticos para las imágenes de negociaciones
+var uploadPath = builder.Configuration["FileStorage:BasePath"] ?? 
+                 Path.Combine(builder.Environment.ContentRootPath, "uploads");
+
+// Crear el directorio si no existe
+if (!Directory.Exists(uploadPath))
+{
+    Directory.CreateDirectory(uploadPath);
+}
+
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
-        Path.Combine("C:", "MiskiFiles")),
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadPath),
     RequestPath = "",  // Las rutas empiezan directamente desde /negociaciones/...
     OnPrepareResponse = ctx =>
     {
@@ -200,6 +207,26 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    try
+//    {
+//        var context = services.GetRequiredService<MiskiDbContext>();
+//        var logger = services.GetRequiredService<ILogger<Program>>();
+
+//        logger.LogInformation("Aplicando migraciones pendientes...");
+//        context.Database.Migrate();
+//        logger.LogInformation("Migraciones aplicadas exitosamente");
+//    }
+//    catch (Exception ex)
+//    {
+//        var logger = services.GetRequiredService<ILogger<Program>>();
+//        logger.LogError(ex, "Error al aplicar migraciones");
+//        throw;
+//    }
+//}
 
 app.Run();
 

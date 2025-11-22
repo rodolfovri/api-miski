@@ -67,7 +67,7 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
             MontoTotalPago = montoTotalPago, // Asignar monto total calculado
             Estado = "EN PROCESO",  // Estado inicial automático
             EstadoAprobacionIngeniero = "PENDIENTE",
-            FRegistro = DateTime.Now,
+            FRegistro = DateTime.UtcNow,
             // Otros campos se llenarán en etapas posteriores
             NroDocumentoProveedor = string.Empty,
             FotoDniFrontal = string.Empty,

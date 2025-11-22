@@ -33,10 +33,28 @@ public class GetNegociacionesByUsuarioHandler : IRequestHandler<GetNegociaciones
         // Filtrar por IdComisionista (Usuario que creó la negociación)
         negociaciones = negociaciones.Where(n => n.IdComisionista == request.IdUsuario).ToList();
 
+        // ? Filtrar por rango de fechas si se proporcionan
+        if (request.FechaDesde.HasValue)
+        {
+            // Considerar desde las 00:00:00 del día especificado
+            var fechaDesde = request.FechaDesde.Value.Date;
+            negociaciones = negociaciones.Where(n => n.FRegistro >= fechaDesde).ToList();
+        }
+
+        if (request.FechaHasta.HasValue)
+        {
+            // Considerar hasta las 23:59:59 del día especificado
+            var fechaHasta = request.FechaHasta.Value.Date.AddDays(1).AddTicks(-1);
+            negociaciones = negociaciones.Where(n => n.FRegistro <= fechaHasta).ToList();
+        }
+
         var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
         var variedadesProducto = await _unitOfWork.Repository<VariedadProducto>().GetAllAsync(cancellationToken);
         var productos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
         var usuarios = await _unitOfWork.Repository<Usuario>().GetAllAsync(cancellationToken);
+        
+        // ? Cargar compras para obtener IdCompra e IdLote
+        var todasLasCompras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
 
         // Cargar relaciones para cada negociación
         foreach (var negociacion in negociaciones)
@@ -99,6 +117,11 @@ public class GetNegociacionesByUsuarioHandler : IRequestHandler<GetNegociaciones
             {
                 negociacion.RechazadoPorUsuarioContadora = usuarios.FirstOrDefault(u => u.IdUsuario == negociacion.RechazadoPorContadora.Value);
             }
+            
+            // ? Buscar la compra asociada a esta negociación
+            negociacion.Compras = todasLasCompras
+                .Where(c => c.IdNegociacion == negociacion.IdNegociacion)
+                .ToList();
         }
 
         return negociaciones.Select(n => _mapper.Map<NegociacionDto>(n)).ToList();

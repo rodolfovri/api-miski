@@ -50,7 +50,7 @@ public class RechazarNegociacionContadoraHandler : IRequestHandler<RechazarNegoc
         // Rechazar la negociación
         negociacion.EstadoAprobacionContadora = "RECHAZADO";
         negociacion.RechazadoPorContadora = dto.RechazadoPorContadora;
-        negociacion.FRechazoContadora = DateTime.Now;
+        negociacion.FRechazoContadora = DateTime.UtcNow;
         negociacion.Estado = "ANULADO"; // Cambia el estado general a ANULADO
 
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);

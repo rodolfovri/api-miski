@@ -50,7 +50,7 @@ public class RechazarNegociacionIngenieroHandler : IRequestHandler<RechazarNegoc
         // Rechazar la negociación
         negociacion.EstadoAprobacionIngeniero = "RECHAZADO";
         negociacion.RechazadoPorIngeniero = dto.RechazadoPorIngeniero;
-        negociacion.FRechazoIngeniero = DateTime.Now;
+        negociacion.FRechazoIngeniero = DateTime.UtcNow;
         negociacion.Estado = "ANULADO"; // Cambia el estado general a ANULADO
 
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);

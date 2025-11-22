@@ -9,7 +9,7 @@ public class Producto
     public string? Estado { get; set; }
     public string? Imagen { get; set; }
     public string? FichaTecnica { get; set; }
-    public DateTime FRegistro { get; set; } = DateTime.Now;
+    public DateTime FRegistro { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
     public virtual CategoriaProducto CategoriaProducto { get; set; } = null!;

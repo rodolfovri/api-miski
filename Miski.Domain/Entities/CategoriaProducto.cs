@@ -6,7 +6,7 @@ public class CategoriaProducto
     public string Nombre { get; set; } = string.Empty;
     public string? Descripcion { get; set; }
     public string? Estado { get; set; }
-    public DateTime FRegistro { get; set; } = DateTime.Now;
+    public DateTime FRegistro { get; set; } = DateTime.UtcNow;
     // Navigation properties
     public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();
 }

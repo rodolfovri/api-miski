@@ -11,7 +11,7 @@ public class Persona
     public string? Email { get; set; }
     public string? Direccion { get; set; }
     public string? Estado { get; set; }
-    public DateTime FRegistro { get; set; } = DateTime.Now;
+    public DateTime FRegistro { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
     public virtual TipoDocumento TipoDocumento { get; set; } = null!;
@@ -20,4 +20,5 @@ public class Persona
     public virtual ICollection<PersonaUbicacion> PersonaUbicaciones { get; set; } = new List<PersonaUbicacion>();
     public virtual ICollection<TrackingPersona> TrackingPersonas { get; set; } = new List<TrackingPersona>();
     public virtual ICollection<CompraVehiculo> CompraVehiculos { get; set; } = new List<CompraVehiculo>();
+    public virtual ICollection<PersonaCargo> PersonaCargos { get; set; } = new List<PersonaCargo>();
 }

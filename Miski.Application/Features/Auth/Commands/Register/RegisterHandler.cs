@@ -65,7 +65,7 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, AuthResponseDto>
             Username = request.RegisterData.Username,
             PasswordHash = passwordHash,
             Estado = request.RegisterData.Estado ?? "ACTIVO",
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<Usuario>().AddAsync(nuevoUsuario, cancellationToken);
@@ -76,7 +76,7 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, AuthResponseDto>
         {
             IdUsuario = nuevoUsuario.IdUsuario,
             IdRol = request.RegisterData.IdRol,
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<UsuarioRol>().AddAsync(usuarioRol, cancellationToken);

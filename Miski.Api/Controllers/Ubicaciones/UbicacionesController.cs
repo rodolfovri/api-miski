@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Ubicaciones.Commands.CreateUbicacion;
 using Miski.Application.Features.Ubicaciones.Commands.UpdateUbicacion;
 using Miski.Application.Features.Ubicaciones.Commands.DeleteUbicacion;
+using Miski.Application.Features.Ubicaciones.Commands.AsignarUbicacion;
+using Miski.Application.Features.Ubicaciones.Commands.RevocarUbicacion;
 using Miski.Application.Features.Ubicaciones.Queries.GetUbicaciones;
 using Miski.Application.Features.Ubicaciones.Queries.GetUbicacionById;
+using Miski.Application.Features.Ubicaciones.Queries.GetUbicacionesByPersona;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Ubicaciones;
 
@@ -96,6 +99,37 @@ public class UbicacionesController : ControllerBase
     }
 
     /// <summary>
+    /// Obtiene las ubicaciones asignadas a una persona
+    /// </summary>
+    /// <remarks>
+    /// Retorna la lista de ubicaciones que tiene asignadas una persona específica.
+    /// Incluye información detallada de cada ubicación.
+    /// </remarks>
+    [HttpGet("persona/{idPersona}")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<PersonaUbicacionDto>>>> GetUbicacionesByPersona(
+        int idPersona,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetUbicacionesByPersonaQuery(idPersona);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<IEnumerable<PersonaUbicacionDto>>.SuccessResult(
+                result,
+                "Ubicaciones de la persona obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<PersonaUbicacionDto>>.ErrorResult(
+                "Error al obtener ubicaciones de la persona",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
     /// Crea una nueva ubicación
     /// </summary>
     /// <remarks>
@@ -135,6 +169,87 @@ public class UbicacionesController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse<UbicacionDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Asigna una ubicación a una persona
+    /// </summary>
+    /// <remarks>
+    /// Crea la relación entre una persona y una ubicación.
+    /// No se puede asignar la misma ubicación dos veces a la misma persona.
+    /// </remarks>
+    [HttpPost("asignar")]
+    public async Task<ActionResult<ApiResponse<PersonaUbicacionDto>>> AsignarUbicacion(
+        [FromBody] AsignarUbicacionDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new AsignarUbicacionCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<PersonaUbicacionDto>.SuccessResult(
+                result,
+                "Ubicación asignada exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<PersonaUbicacionDto>.ErrorResult(
+                "Entidad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<PersonaUbicacionDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<PersonaUbicacionDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Revoca una ubicación de una persona
+    /// </summary>
+    /// <remarks>
+    /// Elimina la relación entre una persona y una ubicación.
+    /// La persona ya no tendrá acceso a esa ubicación.
+    /// </remarks>
+    [HttpDelete("revocar")]
+    public async Task<ActionResult<ApiResponse>> RevocarUbicacion(
+        [FromBody] RevocarUbicacionDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new RevocarUbicacionCommand(request);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Ubicación revocada exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Asignación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));

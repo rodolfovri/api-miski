@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using AutoMapper;
 using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
@@ -26,7 +26,7 @@ public class GetLoteByIdHandler : IRequestHandler<GetLoteByIdQuery, LoteDto>
         if (lote == null)
             throw new NotFoundException("Lote", request.Id);
 
-        // ? Cargar relaci�n inversa con Compra (relaci�n 1:1)
+        // ✅ Cargar relación inversa con Compra (relación 1:1)
         var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
         var compraAsociada = compras.FirstOrDefault(c => c.IdLote == lote.IdLote);
         
@@ -35,6 +35,15 @@ public class GetLoteByIdHandler : IRequestHandler<GetLoteByIdQuery, LoteDto>
             lote.Compra = compraAsociada;
         }
 
-        return _mapper.Map<LoteDto>(lote);
+        var loteDto = _mapper.Map<LoteDto>(lote);
+        
+        // ✅ Agregar MontoTotal de la compra asociada
+        if (compraAsociada != null)
+        {
+            loteDto.IdCompra = compraAsociada.IdCompra;
+            loteDto.MontoTotal = compraAsociada.MontoTotal;
+        }
+
+        return loteDto;
     }
 }

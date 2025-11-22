@@ -32,7 +32,7 @@ public class CreateLoteParaCompraHandler : IRequestHandler<CreateLoteParaCompraC
         // 2. Validar que la compra NO tenga un lote ya asignado (relación 1:1)
         if (compra.IdLote.HasValue)
         {
-            throw new ValidationException($"La compra #{request.IdCompra} ya tiene un lote asignado. Una compra solo puede tener un lote (relación 1:1)");
+            throw new ValidationException($"La compra ya tiene un lote asignado.");
         }
 
         // 3. Validar que la compra esté ACTIVA

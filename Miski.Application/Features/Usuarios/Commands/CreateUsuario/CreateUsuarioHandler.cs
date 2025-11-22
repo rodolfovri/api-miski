@@ -65,7 +65,7 @@ public class CreateUsuarioHandler : IRequestHandler<CreateUsuarioCommand, Usuari
             Username = dto.Username,
             PasswordHash = passwordHash,
             Estado = dto.Estado ?? "ACTIVO",
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<Usuario>().AddAsync(nuevoUsuario, cancellationToken);

@@ -58,7 +58,7 @@ public class DeleteNegociacionHandler : IRequestHandler<DeleteNegociacionCommand
         negociacion.EstadoAprobacionContadora = "ANULADO";
         negociacion.IdUsuarioAnulacion = request.IdUsuarioAnulacion;
         negociacion.MotivoAnulacion = request.MotivoAnulacion;
-        negociacion.FAnulacion = DateTime.Now;
+        negociacion.FAnulacion = DateTime.UtcNow;
 
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

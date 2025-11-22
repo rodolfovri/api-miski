@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Personas.CategoriaPersona.Commands.CreateCategoria;
 using Miski.Application.Features.Personas.CategoriaPersona.Commands.DeleteCategoria;
 using Miski.Application.Features.Personas.CategoriaPersona.Commands.UpdateCategoria;
+using Miski.Application.Features.Personas.CategoriaPersona.Commands.AsignarCategoria;
+using Miski.Application.Features.Personas.CategoriaPersona.Commands.RevocarCategoria;
 using Miski.Application.Features.Personas.CategoriaPersona.Queries.GetCategorias;
 using Miski.Application.Features.Personas.CategoriaPersona.Queries.GetCategoriaById;
+using Miski.Application.Features.Personas.CategoriaPersona.Queries.GetCategoriasByPersona;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Personas;
 
@@ -90,6 +93,37 @@ public class CategoriaPersonaController : ControllerBase
     }
 
     /// <summary>
+    /// Obtiene las categorías asignadas a una persona
+    /// </summary>
+    /// <remarks>
+    /// Retorna la lista de categorías que tiene asignadas una persona específica.
+    /// Incluye el nombre de cada categoría.
+    /// </remarks>
+    [HttpGet("persona/{idPersona}")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<PersonaCategoriaDto>>>> GetCategoriasByPersona(
+        int idPersona,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetCategoriasByPersonaQuery(idPersona);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<IEnumerable<PersonaCategoriaDto>>.SuccessResult(
+                result,
+                "Categorías de la persona obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<PersonaCategoriaDto>>.ErrorResult(
+                "Error al obtener categorías de la persona",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
     /// Crea una nueva categoría
     /// </summary>
     [HttpPost]
@@ -118,6 +152,87 @@ public class CategoriaPersonaController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse<CategoriaPersonaDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Asigna una categoría a una persona
+    /// </summary>
+    /// <remarks>
+    /// Crea la relación entre una persona y una categoría.
+    /// No se puede asignar la misma categoría dos veces a la misma persona.
+    /// </remarks>
+    [HttpPost("asignar")]
+    public async Task<ActionResult<ApiResponse<PersonaCategoriaDto>>> AsignarCategoria(
+        [FromBody] AsignarCategoriaDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new AsignarCategoriaCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<PersonaCategoriaDto>.SuccessResult(
+                result,
+                "Categoría asignada exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<PersonaCategoriaDto>.ErrorResult(
+                "Entidad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<PersonaCategoriaDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<PersonaCategoriaDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Revoca una categoría de una persona
+    /// </summary>
+    /// <remarks>
+    /// Elimina la relación entre una persona y una categoría.
+    /// La persona ya no tendrá esa categoría asignada.
+    /// </remarks>
+    [HttpDelete("revocar")]
+    public async Task<ActionResult<ApiResponse>> RevocarCategoria(
+        [FromBody] RevocarCategoriaDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var command = new RevocarCategoriaCommand(request);
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse.SuccessResult("Categoría revocada exitosamente"));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse.ErrorResult(
+                "Asignación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));

@@ -20,6 +20,10 @@ public class LlegadaPlantaDto
     public string? LoteCodigo { get; set; }
     public string? UbicacionNombre { get; set; }
     
+    // NUEVO: Información del vehículo y conductor
+    public string? ConductorNombre { get; set; }
+    public string? VehiculoPlaca { get; set; }
+    
     // Datos del lote original
     public int SacosAsignados { get; set; }
     public decimal PesoAsignado { get; set; }
@@ -99,8 +103,8 @@ public class CompraConLotesDto
     public string? Serie { get; set; }
     public DateTime? FRegistro { get; set; }
     
-    // Lotes de esta compra
-    public List<LoteConRecepcionDto> Lotes { get; set; } = new List<LoteConRecepcionDto>();
+    // ? Lote de esta compra (relación 1:1)
+    public LoteConRecepcionDto? Lote { get; set; }
 }
 
 // DTO para lote con información de recepción
@@ -152,8 +156,8 @@ public class CompraConRecepcionDetalladaDto
     public DateTime? FRegistro { get; set; }
     public string? Estado { get; set; }
     
-    // Lotes con detalles de recepción
-    public List<LoteConRecepcionDetalladoDto> Lotes { get; set; } = new List<LoteConRecepcionDetalladoDto>();
+    // ? Lote con detalles de recepción (relación 1:1)
+    public LoteConRecepcionDetalladoDto? Lote { get; set; }
 }
 
 // DTO para lote con recepción detallada

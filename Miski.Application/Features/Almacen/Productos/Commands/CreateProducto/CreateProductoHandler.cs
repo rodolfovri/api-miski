@@ -60,7 +60,7 @@ public class CreateProductoHandler : IRequestHandler<CreateProductoCommand, Prod
             Estado = dto.Estado,
             Imagen = imagenUrl,
             FichaTecnica = fichaTecnicaUrl,
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<Producto>().AddAsync(producto, cancellationToken);

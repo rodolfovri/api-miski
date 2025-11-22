@@ -50,7 +50,7 @@ public class AprobarNegociacionIngenieroHandler : IRequestHandler<AprobarNegocia
         // Aprobar la negociación
         negociacion.EstadoAprobacionIngeniero = "APROBADO";
         negociacion.AprobadaPorIngeniero = dto.AprobadaPorIngeniero;
-        negociacion.FAprobacionIngeniero = DateTime.Now;
+        negociacion.FAprobacionIngeniero = DateTime.UtcNow;
         negociacion.Estado = "APROBADO"; // Cambia el estado general a APROBADO
 
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);

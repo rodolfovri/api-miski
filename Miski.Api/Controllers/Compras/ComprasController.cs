@@ -184,6 +184,13 @@ public class ComprasController : ControllerBase
     /// <summary>
     /// Obtiene un lote por ID
     /// </summary>
+    /// <remarks>
+    /// Retorna el lote con toda su información, incluyendo:
+    /// - IdCompra: ID de la compra asociada (si existe)
+    /// - MontoTotalCompra: Monto total de la compra asociada (si existe)
+    /// 
+    /// Si el lote no está asignado a ninguna compra, estos campos serán null.
+    /// </remarks>
     [HttpGet("lotes/{id}")]
     public async Task<ActionResult<ApiResponse<LoteDto>>> GetLoteById(
         int id,
@@ -373,15 +380,38 @@ public class ComprasController : ControllerBase
     /// Actualiza un lote existente
     /// </summary>
     /// <remarks>
-    /// **Actualiza solo los datos del lote, NO la asignación a la compra**
+    /// **Actualiza los datos del lote y opcionalmente el MontoTotal de la compra asociada**
     /// 
-    /// Para cambiar la asignación del lote, usar:
+    /// Campos que se pueden actualizar:
+    /// - Peso: Peso del lote en kg
+    /// - Sacos: Cantidad de sacos
+    /// - Codigo: Código del lote
+    /// - Comision: Comisión del lote
+    /// - Observacion: Observaciones
+    /// - MontoTotal: (OPCIONAL) Si se envía, actualiza el MontoTotal de la Compra asociada
+    /// 
+    /// **Ejemplo de request:**
+    /// ```json
+    /// {
+    ///   "idLote": 5,
+    ///   "peso": 1600.00,
+    ///   "sacos": 32,
+    ///   "codigo": "LOTE-2024-001-MOD",
+    ///   "comision": 160.00,
+    ///   "observacion": "Lote actualizado",
+    ///   "montoTotal": 45000.00
+    /// }
+    /// ```
+    /// 
+    /// **Validaciones:**
+    /// - ? El lote debe existir
+    /// - ? El código no debe estar duplicado (si se cambia)
+    /// - ? No se puede editar si la compra está asignada a un vehículo (EstadoRecepcion = PENDIENTE)
+    /// - ? No se puede editar si la compra ya fue recepcionada (EstadoRecepcion = RECEPCIONADO)
+    /// 
+    /// **Nota:** Para cambiar la asignación del lote a otra compra, usar:
     /// - PUT /api/compras/{idCompra}/asignar-lote
     /// - PUT /api/compras/{idCompra}/desasignar-lote
-    /// 
-    /// No se puede editar si:
-    /// - La compra asociada está asignada a un vehículo (EstadoRecepcion = PENDIENTE)
-    /// - La compra ya fue recepcionada (EstadoRecepcion = RECEPCIONADO)
     /// </remarks>
     [HttpPut("lotes/{id}")]
     public async Task<ActionResult<ApiResponse<LoteDto>>> UpdateLote(

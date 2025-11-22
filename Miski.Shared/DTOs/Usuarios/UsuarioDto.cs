@@ -16,8 +16,14 @@ public class UsuarioDto
     public string? PersonaTelefono { get; set; }
     public string? PersonaNumeroDocumento { get; set; }
     
-    // Roles
-    public List<string> Roles { get; set; } = new List<string>();
+    // Roles con información completa (IdRol y Nombre)
+    public List<UsuarioRolInfo> Roles { get; set; } = new List<UsuarioRolInfo>();
+}
+
+public class UsuarioRolInfo
+{
+    public int IdRol { get; set; }
+    public string Nombre { get; set; } = string.Empty;
 }
 
 public class CreateUsuarioDto

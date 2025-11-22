@@ -49,6 +49,11 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
         var todasLasNegociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
         var todasLasVariedadesProducto = await _unitOfWork.Repository<VariedadProducto>().GetAllAsync(cancellationToken);
         var todosLosProductos = await _unitOfWork.Repository<Producto>().GetAllAsync(cancellationToken);
+        
+        // ? Cargar CompraVehiculo, CompraVehiculoDetalle y Vehiculos para obtener conductor y placa
+        var todosLosCompraVehiculoDetalles = await _unitOfWork.Repository<CompraVehiculoDetalle>().GetAllAsync(cancellationToken);
+        var todosLosCompraVehiculos = await _unitOfWork.Repository<CompraVehiculo>().GetAllAsync(cancellationToken);
+        var todosLosVehiculos = await _unitOfWork.Repository<Vehiculo>().GetAllAsync(cancellationToken);
 
         // Construir los DTOs
         var resultado = new List<LlegadaPlantaDto>();
@@ -95,6 +100,41 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
                 producto = todosLosProductos.FirstOrDefault(p => p.IdProducto == variedadProducto.IdProducto);
             }
 
+            // ? Buscar el CompraVehiculo y Vehiculo asociado a esta compra
+            string? conductorNombre = null;
+            string? vehiculoPlaca = null;
+            
+            if (compra != null)
+            {
+                // Buscar el detalle de CompraVehiculo para esta compra
+                var compraVehiculoDetalle = todosLosCompraVehiculoDetalles
+                    .FirstOrDefault(cvd => cvd.IdCompra == compra.IdCompra);
+                
+                if (compraVehiculoDetalle != null)
+                {
+                    // Buscar el CompraVehiculo
+                    var compraVehiculo = todosLosCompraVehiculos
+                        .FirstOrDefault(cv => cv.IdCompraVehiculo == compraVehiculoDetalle.IdCompraVehiculo);
+                    
+                    if (compraVehiculo != null)
+                    {
+                        // Buscar el conductor (Persona)
+                        var conductor = todasLasPersonas.FirstOrDefault(p => p.IdPersona == compraVehiculo.IdPersona);
+                        if (conductor != null)
+                        {
+                            conductorNombre = $"{conductor.Nombres} {conductor.Apellidos}";
+                        }
+                        
+                        // Buscar el vehículo
+                        var vehiculo = todosLosVehiculos.FirstOrDefault(v => v.IdVehiculo == compraVehiculo.IdVehiculo);
+                        if (vehiculo != null)
+                        {
+                            vehiculoPlaca = vehiculo.Placa;
+                        }
+                    }
+                }
+            }
+
             // Calcular diferencias
             int diferenciaSacos = 0;
             decimal diferenciaPeso = 0;
@@ -135,7 +175,10 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
                 VariedadProductoNombre = variedadProducto?.Nombre,
                 VariedadProductoCodigo = variedadProducto?.Codigo,
                 IdProducto = producto?.IdProducto,
-                ProductoNombre = producto?.Nombre
+                ProductoNombre = producto?.Nombre,
+                // ? Datos del conductor y vehículo
+                ConductorNombre = conductorNombre,
+                VehiculoPlaca = vehiculoPlaca
             });
         }
 

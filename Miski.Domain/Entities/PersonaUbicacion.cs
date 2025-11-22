@@ -5,8 +5,7 @@ public class PersonaUbicacion
     public int IdPersonaUbicacion { get; set; }
     public int IdPersona { get; set; }
     public int IdUbicacion { get; set; }
-    public DateTime FRegistro { get; set; } = DateTime.Now;
-    public string? Estado { get; set; }
+    public DateTime FRegistro { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
     public virtual Persona Persona { get; set; } = null!;

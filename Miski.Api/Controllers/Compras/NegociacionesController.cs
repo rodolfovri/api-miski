@@ -12,6 +12,7 @@ using Miski.Application.Features.Compras.Negociaciones.Commands.RechazarNegociac
 using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociaciones;
 using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociacionById;
 using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociacionesByUsuario;
+using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociacionInfo;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Compras;
 
@@ -103,20 +104,76 @@ public class NegociacionesController : ControllerBase
     }
 
     /// <summary>
+    /// Obtiene información básica de una negociación (sacos y peso)
+    /// </summary>
+    /// <remarks>
+    /// Retorna únicamente la información esencial de la negociación:
+    /// - SacosTotales: Cantidad total de sacos
+    /// - PesoTotal: Peso total en kg
+    /// - PesoPorSaco: Peso por saco (generalmente 50 kg)
+    /// - PrecioUnitario: Precio unitario
+    /// - MontoTotalPago: Monto total a pagar
+    /// 
+    /// Este endpoint es útil cuando solo necesitas datos básicos sin toda la información completa.
+    /// </remarks>
+    [HttpGet("{id}/info")]
+    public async Task<ActionResult<ApiResponse<NegociacionInfoDto>>> GetNegociacionInfo(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetNegociacionInfoQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionInfoDto>.SuccessResult(
+                result,
+                "Información de negociación obtenida exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionInfoDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionInfoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
     /// Obtiene todas las negociaciones creadas por un usuario específico (comisionista)
     /// </summary>
     /// <remarks>
     /// Retorna todas las negociaciones donde el IdComisionista coincide con el IdUsuario proporcionado.
     /// Incluye toda la información relacionada (proveedor, producto, estados de aprobación, etc.)
+    /// 
+    /// **Filtros opcionales:**
+    /// - fechaDesde: Fecha desde (inclusive). Filtra por FRegistro >= fechaDesde
+    /// - fechaHasta: Fecha hasta (inclusive). Filtra por FRegistro <= fechaHasta (hasta las 23:59:59 del día)
+    /// 
+    /// **Ejemplos:**
+    /// - `/api/compras/negociaciones/usuario/5` - Todas las negociaciones del usuario
+    /// - `/api/compras/negociaciones/usuario/5?fechaDesde=2024-01-01` - Desde enero 2024
+    /// - `/api/compras/negociaciones/usuario/5?fechaHasta=2024-12-31` - Hasta diciembre 2024
+    /// - `/api/compras/negociaciones/usuario/5?fechaDesde=2024-01-01&fechaHasta=2024-12-31` - Todo el año 2024
     /// </remarks>
     [HttpGet("usuario/{idUsuario}")]
     public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetNegociacionesByUsuario(
         int idUsuario,
+        [FromQuery] DateTime? fechaDesde = null,
+        [FromQuery] DateTime? fechaHasta = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetNegociacionesByUsuarioQuery(idUsuario);
+            var query = new GetNegociacionesByUsuarioQuery(idUsuario, fechaDesde, fechaHasta);
             var result = await _mediator.Send(query, cancellationToken);
 
             return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(

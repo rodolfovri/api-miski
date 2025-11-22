@@ -90,7 +90,7 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
         }
 
         // Fecha de llegada automática
-        var fechaLlegada = DateTime.Now;
+        var fechaLlegada = DateTime.UtcNow;
 
         var llegadasRegistradas = new List<LlegadaPlantaDto>();
         var comprasActualizadas = new HashSet<int>(); // Para rastrear qué compras debemos actualizar

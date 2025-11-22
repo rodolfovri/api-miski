@@ -78,7 +78,7 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.Direccion).HasMaxLength(100);
             entity.Property(e => e.Estado).HasMaxLength(20);
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.TipoDocumento)
                 .WithMany(p => p.Personas)
@@ -124,6 +124,7 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
             entity.Property(e => e.Descripcion).HasMaxLength(100);
             entity.Property(e => e.TipoPlataforma).HasMaxLength(20);
+            entity.Property(e => e.Estado).HasMaxLength(20);
             entity.ToTable("Rol");
         });
 
@@ -135,7 +136,7 @@ public class MiskiDbContext : DbContext
             entity.HasIndex(e => e.Username).IsUnique();
             entity.Property(e => e.PasswordHash).HasMaxLength(255).IsRequired();
             entity.Property(e => e.Estado).HasMaxLength(20);
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.Persona)
                 .WithOne(p => p.Usuario)
@@ -150,7 +151,7 @@ public class MiskiDbContext : DbContext
         modelBuilder.Entity<UsuarioRol>(entity =>
         {
             entity.HasKey(e => e.IdUsuarioRol);
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.Usuario)
                 .WithMany(p => p.UsuarioRoles)
@@ -167,6 +168,40 @@ public class MiskiDbContext : DbContext
             entity.ToTable("UsuarioRol");
         });
 
+        // Cargo configuration
+        modelBuilder.Entity<Cargo>(entity =>
+        {
+            entity.HasKey(e => e.IdCargo);
+            entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Descripcion).HasMaxLength(100);
+            entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.ToTable("Cargo");
+        });
+
+        modelBuilder.Entity<PersonaCargo>(entity =>
+        {
+            entity.HasKey(e => e.IdPersonaCargo);
+            entity.Property(e => e.FechaInicio).IsRequired();
+            entity.Property(e => e.EsActual).HasDefaultValue(true);
+            entity.Property(e => e.ObservacionAsignacion).HasMaxLength(255);
+            entity.Property(e => e.MotivoRevocacion).HasMaxLength(255);
+
+            entity.HasOne(d => d.Persona)
+                .WithMany(p => p.PersonaCargos)
+                .HasForeignKey(d => d.IdPersona)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PersonaCargo_Persona");
+
+            entity.HasOne(d => d.Cargo)
+                .WithMany(p => p.PersonaCargos)
+                .HasForeignKey(d => d.IdCargo)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PersonaCargo_Cargo");
+
+            entity.ToTable("PersonaCargo");
+        });
+
         // Ubicacion configuration
         modelBuilder.Entity<Ubicacion>(entity =>
         {
@@ -181,11 +216,12 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.ComprobantePdf).HasMaxLength(255);
             entity.Property(e => e.Tipo).HasMaxLength(50);
             entity.Property(e => e.Estado).HasMaxLength(20);
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.Usuario)
                 .WithMany()
                 .HasForeignKey(d => d.IdUsuario)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Ubicacion_Usuario");
 
@@ -196,8 +232,7 @@ public class MiskiDbContext : DbContext
         modelBuilder.Entity<PersonaUbicacion>(entity =>
         {
             entity.HasKey(e => e.IdPersonaUbicacion);
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
-            entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.Persona)
                 .WithMany(p => p.PersonaUbicaciones)
@@ -230,7 +265,7 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
             entity.Property(e => e.Descripcion).HasMaxLength(255);
             entity.Property(e => e.Estado).HasMaxLength(20);
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.ToTable("CategoriaProducto");
         });
 
@@ -241,7 +276,7 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Nombre).HasMaxLength(100).IsRequired();
             entity.Property(e => e.Descripcion).HasMaxLength(255);
             entity.Property(e => e.Estado).HasMaxLength(20);
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.Imagen).HasMaxLength(255);
             entity.Property(e => e.FichaTecnica).HasMaxLength(255);
 
@@ -276,7 +311,7 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Nombre).HasMaxLength(100).IsRequired();
             entity.Property(e => e.Descripcion).HasMaxLength(150);
             entity.Property(e => e.Estado).HasMaxLength(20);
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.FichaTecnica).HasMaxLength(255);
             entity.HasOne(d => d.Producto)
                 .WithMany(p => p.VariedadProductos)
@@ -437,7 +472,7 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Compra_UsuarioAnulacion");
 
-            // ? RELACIÓN UNO A UNO: Una Compra tiene un Lote
+            // RELACIÓN UNO A UNO: Una Compra tiene un Lote
             entity.HasOne(d => d.Lote)
                 .WithOne(p => p.Compra)
                 .HasForeignKey<Compra>(d => d.IdLote)
@@ -453,7 +488,7 @@ public class MiskiDbContext : DbContext
         {
             entity.HasKey(e => e.IdCompraVehiculo);
             entity.Property(e => e.GuiaRemision).HasMaxLength(50).IsRequired();
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.Estado).HasMaxLength(20);
 
             entity.HasOne(d => d.Vehiculo)
@@ -506,7 +541,7 @@ public class MiskiDbContext : DbContext
             entity.HasKey(e => e.IdLlegadaPlanta);
             entity.Property(e => e.Observaciones).HasMaxLength(255);
             entity.Property(e => e.Estado).HasMaxLength(20);
-            entity.Property(e => e.FLlegada).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FLlegada).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.SacosRecibidos).HasPrecision(18, 2).IsRequired();
             entity.Property(e => e.PesoRecibido).HasPrecision(18, 2).IsRequired();
 
@@ -543,7 +578,7 @@ public class MiskiDbContext : DbContext
             entity.HasKey(e => e.IdTracking);
             entity.Property(e => e.Latitud).HasPrecision(10, 7).IsRequired();
             entity.Property(e => e.Longitud).HasPrecision(10, 7).IsRequired();
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.Persona)
                 .WithMany(p => p.TrackingPersonas)
@@ -647,7 +682,7 @@ public class MiskiDbContext : DbContext
             entity.HasKey(e => e.IdTipoCambio);
             entity.Property(e => e.ValorCompra).HasPrecision(18, 4).IsRequired();
             entity.Property(e => e.ValorVenta).HasPrecision(18, 4).IsRequired();
-            entity.Property(e => e.FRegistro).HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.HasOne(d => d.Moneda)
                 .WithMany(p => p.TipoCambios)
                 .HasForeignKey(d => d.IdMoneda)

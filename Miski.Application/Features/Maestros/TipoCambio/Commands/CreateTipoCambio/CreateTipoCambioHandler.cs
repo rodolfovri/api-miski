@@ -43,7 +43,7 @@ public class CreateTipoCambioHandler : IRequestHandler<CreateTipoCambioCommand, 
             IdUsuario = dto.IdUsuario,
             ValorCompra = dto.ValorCompra,
             ValorVenta = dto.ValorVenta,
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<Domain.Entities.TipoCambio>().AddAsync(tipoCambio, cancellationToken);

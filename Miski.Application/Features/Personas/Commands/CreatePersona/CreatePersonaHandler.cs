@@ -48,7 +48,7 @@ public class CreatePersonaHandler : IRequestHandler<CreatePersonaCommand, Person
             Email = request.Persona.Email,
             Direccion = request.Persona.Direccion,
             Estado = request.Persona.Estado,
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<Persona>().AddAsync(nuevaPersona, cancellationToken);

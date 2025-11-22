@@ -1,10 +1,10 @@
-namespace Miski.Shared.DTOs.Compras;
+Ôªønamespace Miski.Shared.DTOs.Compras;
 
 public class CompraDto
 {
     public int IdCompra { get; set; }
     public int IdNegociacion { get; set; }
-    public int? IdLote { get; set; }  // ? FK al lote (relaciÛn 1:1)
+    public int? IdLote { get; set; }  // ? FK al lote (relaci√≥n 1:1)
     public string? Serie { get; set; }
     public DateTime? FRegistro { get; set; }
     public DateTime? FEmision { get; set; }
@@ -12,17 +12,17 @@ public class CompraDto
     public string? EstadoRecepcion { get; set; }
     public string? EsParcial { get; set; }
     
-    // InformaciÛn de la negociaciÛn asociada
+    // Informaci√≥n de la negociaci√≥n asociada
     public string? ProveedorNombre { get; set; }
     public string? ComisionistaNombre { get; set; }
     
-    // InformaciÛn del lote (relaciÛn 1:1)
+    // Informaci√≥n del lote (relaci√≥n 1:1)
     public decimal? PesoLote { get; set; }
     public int? SacosLote { get; set; }
     public string? CodigoLote { get; set; }
     public decimal? ComisionLote { get; set; }
     
-    // Totales originales desde la NegociaciÛn
+    // Totales originales desde la Negociaci√≥n
     public decimal NegociacionPesoTotal { get; set; }
     public int NegociacionSacosTotales { get; set; }
     
@@ -42,9 +42,9 @@ public class LoteDto
     public decimal? Comision { get; set; }
     public string? Observacion { get; set; }
     
-    // ? InformaciÛn de la compra asociada (desde la relaciÛn inversa)
+    // ‚úÖ Informaci√≥n de la compra asociada (desde la relaci√≥n inversa 1:1)
     public int? IdCompra { get; set; }
-    public string? CompraSerie { get; set; }
+    public decimal? MontoTotal { get; set; } 
 }
 
 public class CreateLoteDto
@@ -63,7 +63,7 @@ public class CreateLoteParaCompraDto
     public string? Codigo { get; set; }
     public decimal? Comision { get; set; }
     public string? Observacion { get; set; }
-    public decimal MontoTotal { get; set; }  // Monto total que se setear· en la Compra
+    public decimal MontoTotal { get; set; }  // Monto total que se setear√° en la Compra
 }
 
 public class UpdateLoteDto
@@ -74,13 +74,14 @@ public class UpdateLoteDto
     public string? Codigo { get; set; }
     public decimal? Comision { get; set; }
     public string? Observacion { get; set; }
+    public decimal? MontoTotal { get; set; }  // ‚úÖ OPCIONAL: Si se env√≠a, actualiza el MontoTotal de la Compra asociada
 }
 
 public class AsignarLoteACompraDto
 {
     public int IdCompra { get; set; }
     public int IdLote { get; set; }
-    public decimal MontoTotal { get; set; }  // Monto total que se setear· en la Compra
+    public decimal MontoTotal { get; set; }  // Monto total que se setear√° en la Compra
 }
 
 public class AnularCompraDto

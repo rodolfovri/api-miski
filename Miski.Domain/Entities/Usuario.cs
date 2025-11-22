@@ -9,7 +9,7 @@ public class Usuario
     public string Username { get; set; } = string.Empty;
     public byte[] PasswordHash { get; set; } = Array.Empty<byte>();
     public string? Estado { get; set; }
-    public DateTime FRegistro { get; set; } = DateTime.Now;
+    public DateTime FRegistro { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
     public virtual Persona? Persona { get; set; }

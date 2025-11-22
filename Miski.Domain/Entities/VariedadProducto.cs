@@ -10,7 +10,7 @@ public class VariedadProducto
     public string? Descripcion { get; set; }
     public string? Estado { get; set; }
     public string? FichaTecnica { get; set; }
-    public DateTime FRegistro { get; set; } = DateTime.Now;
+    public DateTime FRegistro { get; set; } = DateTime.UtcNow;
     // Navigation properties
     public virtual Producto Producto { get; set; } = null!;
     public virtual UnidadMedida UnidadMedida { get; set; } = null!;

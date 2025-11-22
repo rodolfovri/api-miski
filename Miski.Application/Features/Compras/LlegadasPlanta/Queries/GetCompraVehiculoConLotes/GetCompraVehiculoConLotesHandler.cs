@@ -56,7 +56,7 @@ public class GetCompraVehiculoConLotesHandler : IRequestHandler<GetCompraVehicul
             if (compra != null)
             {
                 // ? Obtener el lote de esta compra (relación 1:1)
-                var lotesDto = new List<LoteConRecepcionDto>();
+                LoteConRecepcionDto? loteDto = null;
                 
                 if (compra.IdLote.HasValue)
                 {
@@ -77,7 +77,7 @@ public class GetCompraVehiculoConLotesHandler : IRequestHandler<GetCompraVehicul
                             diferenciaPeso = lote.Peso - (decimal)llegadaPlanta.PesoRecibido;
                         }
 
-                        lotesDto.Add(new LoteConRecepcionDto
+                        loteDto = new LoteConRecepcionDto
                         {
                             IdLote = lote.IdLote,
                             Codigo = lote.Codigo,
@@ -91,7 +91,7 @@ public class GetCompraVehiculoConLotesHandler : IRequestHandler<GetCompraVehicul
                             DiferenciaPeso = diferenciaPeso,
                             Observaciones = llegadaPlanta?.Observaciones,
                             YaRecibido = llegadaPlanta != null
-                        });
+                        };
                     }
                 }
 
@@ -100,7 +100,7 @@ public class GetCompraVehiculoConLotesHandler : IRequestHandler<GetCompraVehicul
                     IdCompra = compra.IdCompra,
                     Serie = compra.Serie,
                     FRegistro = compra.FRegistro,
-                    Lotes = lotesDto
+                    Lote = loteDto  // ? Ahora es un solo objeto, no una lista
                 });
             }
         }

@@ -63,7 +63,7 @@ public class CreateVariedadProductoHandler : IRequestHandler<CreateVariedadProdu
             Descripcion = dto.Descripcion,
             Estado = dto.Estado,
             FichaTecnica = fichaTecnicaUrl,
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<Domain.Entities.VariedadProducto>().AddAsync(variedad, cancellationToken);

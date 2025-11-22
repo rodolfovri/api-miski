@@ -50,6 +50,10 @@ public class NegociacionDto
     public string? BancoNombre { get; set; }  // AGREGADO
     public string? AprobadaPorIngenieroNombre { get; set; }
     public string? AprobadaPorContadoraNombre { get; set; }
+    
+    // ? Información de la Compra asociada (si existe)
+    public int? IdCompra { get; set; }  // ID de la compra creada desde esta negociación
+    public int? IdLote { get; set; }    // ID del lote asignado a la compra (relación 1:1)
 }
 
 // DTO para crear negociación - PRIMERA ETAPA
@@ -126,4 +130,15 @@ public class AnularNegociacionDto
 {
     public int IdUsuarioAnulacion { get; set; }
     public string MotivoAnulacion { get; set; } = string.Empty;
+}
+
+// DTO para obtener información básica de la negociación
+public class NegociacionInfoDto
+{
+    public int IdNegociacion { get; set; }
+    public int SacosTotales { get; set; }
+    public decimal PesoTotal { get; set; }
+    public decimal PesoPorSaco { get; set; }
+    public decimal PrecioUnitario { get; set; }
+    public decimal MontoTotalPago { get; set; }
 }

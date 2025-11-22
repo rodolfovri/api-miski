@@ -29,7 +29,7 @@ public class UpdateLoteHandler : IRequestHandler<UpdateLoteCommand, LoteDto>
         if (lote == null)
             throw new NotFoundException("Lote", request.Id);
 
-        // ? Validar si el lote está asignado a una compra (relación 1:1 inversa)
+        // ? Validar si el lote está asignado a alguna compra (relación 1:1 inversa)
         var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
         var compraAsociada = compras.FirstOrDefault(c => c.IdLote == lote.IdLote);
 
@@ -69,6 +69,14 @@ public class UpdateLoteHandler : IRequestHandler<UpdateLoteCommand, LoteDto>
 
         await _unitOfWork.Repository<Lote>().UpdateAsync(lote, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // ? Si se proporciona MontoTotal, actualizar la compra asociada
+        if (dto.MontoTotal.HasValue && compraAsociada != null)
+        {
+            compraAsociada.MontoTotal = dto.MontoTotal.Value;
+            await _unitOfWork.Repository<Compra>().UpdateAsync(compraAsociada, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
 
         return _mapper.Map<LoteDto>(lote);
     }

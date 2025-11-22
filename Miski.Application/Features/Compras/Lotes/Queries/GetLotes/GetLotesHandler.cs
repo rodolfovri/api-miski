@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using AutoMapper;
 using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
@@ -22,7 +22,7 @@ public class GetLotesHandler : IRequestHandler<GetLotesQuery, IEnumerable<LoteDt
         var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
         var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
 
-        // ? Filtrar por compra si se especifica (relaci�n 1:1 inversa)
+        // ✅ Filtrar por compra si se especifica (relación 1:1 inversa)
         if (request.IdCompra.HasValue)
         {
             var compra = compras.FirstOrDefault(c => c.IdCompra == request.IdCompra.Value);
@@ -34,10 +34,14 @@ public class GetLotesHandler : IRequestHandler<GetLotesQuery, IEnumerable<LoteDt
 
                 if (loteAsociado != null)
                 {
-                    // Cargar la relaci�n inversa
+                    // Cargar la relación inversa
                     loteAsociado.Compra = compra;
 
                     var result = _mapper.Map<LoteDto>(loteAsociado);
+                    // ✅ Agregar MontoTotal de la compra
+                    result.IdCompra = compra.IdCompra;
+                    result.MontoTotal = compra.MontoTotal;
+                    
                     return new List<LoteDto> { result };
                 }
             }
@@ -45,13 +49,15 @@ public class GetLotesHandler : IRequestHandler<GetLotesQuery, IEnumerable<LoteDt
             return new List<LoteDto>();
         }
 
-        // Filtrar por c�digo si se especifica
+        // Filtrar por código si se especifica
         if (!string.IsNullOrEmpty(request.Codigo))
         {
             lotes = lotes.Where(l => l.Codigo != null && l.Codigo.Contains(request.Codigo, StringComparison.OrdinalIgnoreCase));
         }
 
-        // ? Cargar la relaci�n inversa para todos los lotes
+        // ✅ Cargar la relación inversa para todos los lotes y agregar MontoTotal
+        var lotesDto = new List<LoteDto>();
+        
         foreach (var lote in lotes)
         {
             var compraAsociada = compras.FirstOrDefault(c => c.IdLote == lote.IdLote);
@@ -59,8 +65,19 @@ public class GetLotesHandler : IRequestHandler<GetLotesQuery, IEnumerable<LoteDt
             {
                 lote.Compra = compraAsociada;
             }
+            
+            var loteDto = _mapper.Map<LoteDto>(lote);
+            
+            // ✅ Agregar MontoTotal si tiene compra asociada
+            if (compraAsociada != null)
+            {
+                loteDto.IdCompra = compraAsociada.IdCompra;
+                loteDto.MontoTotal = compraAsociada.MontoTotal;
+            }
+            
+            lotesDto.Add(loteDto);
         }
 
-        return lotes.Select(l => _mapper.Map<LoteDto>(l)).ToList();
+        return lotesDto;
     }
 }

@@ -1,0 +1,29 @@
+## Visual Studio
+.vs/
+.vscode/
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+
+## Uploads folder
+uploads/
+wwwroot/uploads/
+MiskiFiles/
+
+## Solo desarrollo local
+appsettings.Development.json
+
+## GitHub Copilot y AI
+.github-copilot/
+*.copilot
+copilot-index/
+
+## Otros archivos temporales comunes
+*.tmp
+*.log
+*.cache
+*.suo
+*.user

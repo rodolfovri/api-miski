@@ -92,7 +92,7 @@ public class AnularLlegadaPlantaHandler : IRequestHandler<AnularLlegadaPlantaCom
         compra.EstadoRecepcion = "ANULADO";
         compra.IdUsuarioAnulacion = request.IdUsuarioAnulacion;
         compra.MotivoAnulacion = request.MotivoAnulacion;
-        compra.FAnulacion = DateTime.Now;
+        compra.FAnulacion = DateTime.UtcNow;
 
         await _unitOfWork.Repository<Compra>().UpdateAsync(compra, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

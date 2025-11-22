@@ -50,7 +50,7 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
         // Aprobar la negociación
         negociacion.EstadoAprobacionContadora = "APROBADO";
         negociacion.AprobadaPorContadora = dto.AprobadaPorContadora;
-        negociacion.FAprobacionContadora = DateTime.Now;
+        negociacion.FAprobacionContadora = DateTime.UtcNow;
         negociacion.Estado = "FINALIZADO"; // Cambia el estado general a FINALIZADO
 
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
@@ -63,8 +63,8 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
             IdMoneda = 1, // Moneda por defecto (PEN - Soles)
             IdTipoCambio = null, // Se puede asignar después si es necesario
             Serie = null, // Se puede generar después
-            FRegistro = DateTime.Now,
-            FEmision = DateTime.Now,
+            FRegistro = DateTime.UtcNow,
+            FEmision = DateTime.UtcNow,
             Estado = "ACTIVO",
             EsParcial = "NO",  // ? AGREGADO - Por defecto NO es parcial
             // MontoTotal, IGV y Observacion se dejan null inicialmente

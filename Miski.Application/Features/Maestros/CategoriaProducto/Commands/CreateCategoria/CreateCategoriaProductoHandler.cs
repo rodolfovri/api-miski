@@ -35,7 +35,7 @@ public class CreateCategoriaProductoHandler : IRequestHandler<CreateCategoriaPro
             Nombre = request.Categoria.Nombre,
             Descripcion = request.Categoria.Descripcion,
             Estado = request.Categoria.Estado,
-            FRegistro = DateTime.Now
+            FRegistro = DateTime.UtcNow
         };
 
         await _unitOfWork.Repository<Domain.Entities.CategoriaProducto>().AddAsync(nuevaCategoria, cancellationToken);

@@ -51,7 +51,7 @@ public class AnularCompraHandler : IRequestHandler<AnularCompraCommand, Unit>
         compra.Estado = "ANULADO";
         compra.IdUsuarioAnulacion = request.IdUsuarioAnulacion;
         compra.MotivoAnulacion = request.MotivoAnulacion;
-        compra.FAnulacion = DateTime.Now;
+        compra.FAnulacion = DateTime.UtcNow;
 
         await _unitOfWork.Repository<Compra>().UpdateAsync(compra, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

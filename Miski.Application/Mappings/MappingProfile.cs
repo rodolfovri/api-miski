@@ -29,7 +29,7 @@ public class MappingProfile : Profile
                 src.TipoDocumento != null ? src.TipoDocumento.Nombre : string.Empty))
             .ForMember(dest => dest.NombreCompleto, opt => opt.MapFrom(src => $"{src.Nombres} {src.Apellidos}"));
 
-        CreateMap<Rol, RolDto>()
+        CreateMap<Rol, Miski.Shared.DTOs.Maestros.RolMaestroDto>()
             .ForMember(dest => dest.TipoPlataforma, opt => opt.MapFrom(src => src.TipoPlataforma));
 
         CreateMap<Usuario, AuthResponseDto>()
@@ -87,6 +87,18 @@ public class MappingProfile : Profile
         // Mapeos para Maestros - Banco
         CreateMap<Domain.Entities.Banco, BancoDto>();
 
+        // Mapeos para Maestros - Cargo
+        CreateMap<Domain.Entities.Cargo, CargoDto>();
+
+        // Mapeos para Maestros - PersonaCargo
+        CreateMap<Domain.Entities.PersonaCargo, PersonaCargoDto>()
+            .ForMember(dest => dest.PersonaNombre, opt => opt.MapFrom(src =>
+                src.Persona != null ? $"{src.Persona.Nombres} {src.Persona.Apellidos}" : string.Empty))
+            .ForMember(dest => dest.CargoNombre, opt => opt.MapFrom(src =>
+                src.Cargo != null ? src.Cargo.Nombre : string.Empty))
+            .ForMember(dest => dest.ObservacionAsignacion, opt => opt.MapFrom(src => src.ObservacionAsignacion))
+            .ForMember(dest => dest.MotivoRevocacion, opt => opt.MapFrom(src => src.MotivoRevocacion));
+
         // Mapeos para Maestros - Moneda
         CreateMap<Domain.Entities.Moneda, MonedaDto>();
 
@@ -138,7 +150,12 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.AprobadaPorContadoraNombre, opt => opt.MapFrom(src => 
                 src.AprobadaPorUsuarioContadora != null && src.AprobadaPorUsuarioContadora.Persona != null 
                     ? $"{src.AprobadaPorUsuarioContadora.Persona.Nombres} {src.AprobadaPorUsuarioContadora.Persona.Apellidos}" 
-                    : string.Empty));
+                    : string.Empty))
+            // ? Mapear IdCompra e IdLote desde la primera compra asociada (relación 1:1)
+            .ForMember(dest => dest.IdCompra, opt => opt.MapFrom(src => 
+                src.Compras != null && src.Compras.Any() ? (int?)src.Compras.First().IdCompra : null))
+            .ForMember(dest => dest.IdLote, opt => opt.MapFrom(src => 
+                src.Compras != null && src.Compras.Any() ? src.Compras.First().IdLote : null));
 
         // Mapeos para Compras - Lotes
         CreateMap<Lote, Miski.Shared.DTOs.Compras.LoteDto>();
@@ -189,7 +206,14 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.PersonaNumeroDocumento, opt => opt.MapFrom(src => 
                 src.Persona != null ? src.Persona.NumeroDocumento : string.Empty))
             .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => 
-                src.UsuarioRoles.Select(ur => ur.Rol != null ? ur.Rol.Nombre : string.Empty).ToList()));
+                src.UsuarioRoles
+                    .Where(ur => ur.Rol != null)
+                    .Select(ur => new Miski.Shared.DTOs.Usuarios.UsuarioRolInfo 
+                    { 
+                        IdRol = ur.Rol!.IdRol, 
+                        Nombre = ur.Rol.Nombre 
+                    })
+                    .ToList()));
     }
 }
 

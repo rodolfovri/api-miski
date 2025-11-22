@@ -7,8 +7,10 @@ using Miski.Application.Features.Usuarios.Commands.DeleteUsuario;
 using Miski.Application.Features.Usuarios.Commands.UpdatePassword;
 using Miski.Application.Features.Usuarios.Queries.GetUsuarios;
 using Miski.Application.Features.Usuarios.Queries.GetUsuarioById;
+using Miski.Application.Features.Usuarios.Queries.GetPersonasSinUsuario;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Usuarios;
+using Miski.Shared.DTOs.Personas;
 
 namespace Miski.Api.Controllers.Usuarios;
 
@@ -95,6 +97,75 @@ public class UsuariosController : ControllerBase
         {
             return StatusCode(500, ApiResponse<UsuarioDto>.ErrorResult(
                 "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene usuarios activos
+    /// </summary>
+    /// <remarks>
+    /// Retorna solo los usuarios con estado "ACTIVO".
+    /// Útil para listados en formularios y selecciones.
+    /// </remarks>
+    [HttpGet("activos")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<UsuarioDto>>>> GetUsuariosActivos(
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetUsuariosQuery(Estado: "ACTIVO");
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<UsuarioDto>>.SuccessResult(
+                result, 
+                "Usuarios activos obtenidos exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<UsuarioDto>>.ErrorResult(
+                "Error al obtener usuarios activos", 
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene personas que no tienen usuario creado
+    /// </summary>
+    /// <remarks>
+    /// Retorna la lista de personas que aún no tienen un usuario asociado en el sistema.
+    /// Útil para crear nuevos usuarios seleccionando de personas existentes.
+    /// 
+    /// Parámetros opcionales:
+    /// - estado: Filtrar por estado de la persona (ACTIVO/INACTIVO)
+    /// - idUsuario: ID del usuario para incluir su persona en la lista (útil para edición)
+    /// 
+    /// Cuando se proporciona idUsuario, la persona asociada a ese usuario se incluye en la lista,
+    /// permitiendo editar el usuario y mantener o cambiar la persona asignada.
+    /// </remarks>
+    [HttpGet("personas-disponibles")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<PersonaDto>>>> GetPersonasSinUsuario(
+        [FromQuery] string? estado = null,
+        [FromQuery] int? idUsuario = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetPersonasSinUsuarioQuery(estado, idUsuario);
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<PersonaDto>>.SuccessResult(
+                result, 
+                "Personas sin usuario obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<PersonaDto>>.ErrorResult(
+                "Error al obtener personas sin usuario", 
                 ex.Message
             ));
         }
@@ -292,36 +363,6 @@ public class UsuariosController : ControllerBase
         {
             return StatusCode(500, ApiResponse.ErrorResult(
                 "Error interno del servidor",
-                ex.Message
-            ));
-        }
-    }
-
-    /// <summary>
-    /// Obtiene usuarios activos
-    /// </summary>
-    /// <remarks>
-    /// Retorna solo los usuarios con estado "ACTIVO".
-    /// Útil para listados en formularios y selecciones.
-    /// </remarks>
-    [HttpGet("activos")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<UsuarioDto>>>> GetUsuariosActivos(
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var query = new GetUsuariosQuery(Estado: "ACTIVO");
-            var result = await _mediator.Send(query, cancellationToken);
-            
-            return Ok(ApiResponse<IEnumerable<UsuarioDto>>.SuccessResult(
-                result, 
-                "Usuarios activos obtenidos exitosamente"
-            ));
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ApiResponse<IEnumerable<UsuarioDto>>.ErrorResult(
-                "Error al obtener usuarios activos", 
                 ex.Message
             ));
         }
