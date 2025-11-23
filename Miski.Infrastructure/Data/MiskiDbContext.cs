@@ -579,13 +579,63 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Latitud).HasPrecision(10, 7).IsRequired();
             entity.Property(e => e.Longitud).HasPrecision(10, 7).IsRequired();
             entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.Estado).HasMaxLength(20).HasDefaultValue("ACTIVO");
+            entity.Property(e => e.Precision).HasPrecision(10, 2);
+            entity.Property(e => e.Velocidad).HasPrecision(10, 2);
 
             entity.HasOne(d => d.Persona)
                 .WithMany(p => p.TrackingPersonas)
                 .HasForeignKey(d => d.IdPersona)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_TrackingPersona_Persona");
+
+            entity.HasIndex(e => e.IdPersona).HasDatabaseName("IX_TrackingPersona_IdPersona");
+            entity.HasIndex(e => new { e.IdPersona, e.EsActual })
+                .HasDatabaseName("IX_TrackingPersona_IdPersona_EsActual");
+            entity.HasIndex(e => e.FRegistro).HasDatabaseName("IX_TrackingPersona_FRegistro");
             entity.ToTable("TrackingPersona");
+        });
+
+        // DispositivoPersona configuration
+        modelBuilder.Entity<DispositivoPersona>(entity =>
+        {
+            entity.HasKey(e => e.IdDispositivoPersona);
+
+            // Campo: DeviceId - ÚNICO
+            entity.Property(e => e.DeviceId)
+                .HasMaxLength(255)
+                .IsRequired();
+            entity.HasIndex(e => e.DeviceId)
+                .IsUnique()
+                .HasDatabaseName("IX_DispositivoPersona_DeviceId");
+
+            entity.Property(e => e.ModeloDispositivo)
+                .HasMaxLength(100);
+
+            entity.Property(e => e.SistemaOperativo)
+                .HasMaxLength(50);
+
+            entity.Property(e => e.VersionApp)
+                .HasMaxLength(20);
+
+            entity.Property(e => e.FRegistro)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.Property(e => e.Activo)
+                .HasDefaultValue(true);
+
+            entity.HasOne(d => d.Persona)
+                .WithMany(p => p.DispositivoPersonas)
+                .HasForeignKey(d => d.IdPersona)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_DispositivoPersona_Persona");
+
+            entity.HasIndex(e => e.IdPersona)
+                .HasDatabaseName("IX_DispositivoPersona_IdPersona");
+            entity.HasIndex(e => new { e.IdPersona, e.Activo })
+                .HasDatabaseName("IX_DispositivoPersona_IdPersona_Activo");
+
+            entity.ToTable("DispositivoPersona");
         });
 
         // Modulo configuration

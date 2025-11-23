@@ -54,6 +54,12 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             throw new ValidationException("Contraseña incorrecta");
         }
 
+        // Registrar dispositivo si es Mobile
+        if (request.LoginData.TipoPlataforma.Equals("Mobile", StringComparison.OrdinalIgnoreCase))
+        {
+            await RegisterOrUpdateDispositivoAsync(persona.IdPersona, request.LoginData, cancellationToken);
+        }
+
         // Cargar datos relacionados incluyendo roles y permisos
         var usuarioCompleto = await GetUsuarioCompletoAsync(usuario.IdUsuario, request.LoginData.TipoPlataforma, cancellationToken);
 
@@ -72,6 +78,42 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             Persona = usuarioCompleto.Persona != null ? _mapper.Map<AuthPersonaDto>(usuarioCompleto.Persona) : null,
             Roles = rolesConPermisos
         };
+    }
+
+    private async Task RegisterOrUpdateDispositivoAsync(int idPersona, LoginDto loginData, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(loginData.DeviceId))
+            return;
+
+        var dispositivos = await _unitOfWork.Repository<DispositivoPersona>().GetAllAsync(cancellationToken);
+        var dispositivo = dispositivos.FirstOrDefault(d => d.DeviceId == loginData.DeviceId);
+
+        if (dispositivo == null)
+        {
+            // Primera vez que se registra este dispositivo
+            dispositivo = new DispositivoPersona
+            {
+                IdPersona = idPersona,
+                DeviceId = loginData.DeviceId,
+                ModeloDispositivo = loginData.ModeloDispositivo,
+                SistemaOperativo = loginData.SistemaOperativo,
+                VersionApp = loginData.VersionApp,
+                FRegistro = DateTime.UtcNow,
+                FUltimaActividad = DateTime.UtcNow,
+                Activo = true
+            };
+            await _unitOfWork.Repository<DispositivoPersona>().AddAsync(dispositivo);
+        }
+        else
+        {
+            // Dispositivo conocido, actualizar actividad y versión
+            dispositivo.FUltimaActividad = DateTime.UtcNow;
+            dispositivo.VersionApp = loginData.VersionApp ?? dispositivo.VersionApp;
+            dispositivo.Activo = true;
+            await _unitOfWork.Repository<DispositivoPersona>().UpdateAsync(dispositivo);
+        }
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     private async Task<Usuario> GetUsuarioCompletoAsync(int usuarioId, string tipoPlataforma, CancellationToken cancellationToken)
