@@ -14,8 +14,8 @@ using System.Security.Claims;
 namespace Miski.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-[SwaggerTag("Gestión de tracking y ubicaciones en tiempo real")]
+[Route("api/tracking")]
+[Tags("Tracking")]
 public class TrackingController : ControllerBase
 {
     private readonly IMediator _mediator;
