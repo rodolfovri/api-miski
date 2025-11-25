@@ -14,7 +14,7 @@ namespace Miski.Api.Controllers.Permisos;
 
 [ApiController]
 [Route("api/permisos")]
-[SwaggerTag("Gestión de permisos, módulos, submódulos y acciones")]
+[Tags("Permisos")]
 [Authorize]
 public class PermisosController : ControllerBase
 {
@@ -31,8 +31,6 @@ public class PermisosController : ControllerBase
     /// Obtiene la estructura completa de módulos con jerarquía
     /// </summary>
     [HttpGet("modulos")]
-    [SwaggerOperation(Summary = "Obtener estructura de módulos")]
-    [SwaggerResponse(200, "Módulos obtenidos", typeof(ApiResponse))]
     public async Task<ActionResult<ApiResponse<List<ModuloDto>>>> GetModulos(
         [FromQuery] string? tipoPlataforma = null,
         CancellationToken cancellationToken = default)
@@ -66,8 +64,6 @@ public class PermisosController : ControllerBase
     /// que se pueden asignar a nivel de SubMódulo o SubMóduloDetalle.
     /// </remarks>
     [HttpGet("acciones")]
-    [SwaggerOperation(Summary = "Obtener todas las acciones disponibles")]
-    [SwaggerResponse(200, "Acciones obtenidas", typeof(ApiResponse))]
     public async Task<ActionResult<ApiResponse<List<AccionDto>>>> GetAcciones(
         CancellationToken cancellationToken = default)
     {
@@ -103,9 +99,6 @@ public class PermisosController : ControllerBase
     /// - RECHAZAR (rechazar solicitudes)
     /// </remarks>
     [HttpPost("acciones")]
-    [SwaggerOperation(Summary = "Crear una nueva acción")]
-    [SwaggerResponse(200, "Acción creada exitosamente", typeof(ApiResponse))]
-    [SwaggerResponse(400, "Datos inválidos")]
     public async Task<ActionResult<ApiResponse<AccionDto>>> CreateAccion(
         [FromBody] CreateAccionDto request,
         CancellationToken cancellationToken = default)
@@ -145,9 +138,6 @@ public class PermisosController : ControllerBase
     /// - Indica si cada acción está habilitada para el rol
     /// </remarks>
     [HttpGet("rol/{idRol}")]
-    [SwaggerOperation(Summary = "Obtener permisos de un rol con acciones")]
-    [SwaggerResponse(200, "Permisos obtenidos", typeof(ApiResponse))]
-    [SwaggerResponse(404, "Rol no encontrado")]
     public async Task<ActionResult<ApiResponse<PermisoRolConJerarquiaDto>>> GetPermisosPorRol(
         int idRol,
         CancellationToken cancellationToken = default)
@@ -204,10 +194,6 @@ public class PermisosController : ControllerBase
     /// ```
     /// </remarks>
     [HttpPost("asignar")]
-    [SwaggerOperation(Summary = "Asignar permiso con acciones a un rol")]
-    [SwaggerResponse(200, "Permiso asignado", typeof(ApiResponse))]
-    [SwaggerResponse(404, "Recurso no encontrado")]
-    [SwaggerResponse(400, "Datos inválidos")]
     public async Task<ActionResult<ApiResponse<PermisoRolDto>>> AsignarPermiso(
         [FromBody] AsignarPermisoDto request,
         CancellationToken cancellationToken = default)
@@ -249,8 +235,6 @@ public class PermisosController : ControllerBase
     /// Útil para configurar todos los permisos de un rol en una sola operación.
     /// </remarks>
     [HttpPost("asignar-multiples")]
-    [SwaggerOperation(Summary = "Asignar múltiples permisos a un rol")]
-    [SwaggerResponse(200, "Permisos asignados", typeof(ApiResponse))]
     public async Task<ActionResult<ApiResponse<List<PermisoRolDto>>>> AsignarPermisosMultiples(
         [FromBody] AsignarPermisosMultiplesDto request,
         CancellationToken cancellationToken = default)
@@ -300,8 +284,6 @@ public class PermisosController : ControllerBase
     /// Revoca un permiso específico de un rol
     /// </summary>
     [HttpDelete("revocar")]
-    [SwaggerOperation(Summary = "Revocar permiso de un rol")]
-    [SwaggerResponse(200, "Permiso revocado")]
     public async Task<ActionResult<ApiResponse>> RevocarPermiso(
         [FromQuery] int idRol,
         [FromQuery] int? idModulo = null,
