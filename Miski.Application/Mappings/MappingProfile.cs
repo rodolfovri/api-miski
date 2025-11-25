@@ -44,11 +44,23 @@ public class MappingProfile : Profile
         CreateMap<SubModuloDetalle, SubModuloDetalleDto>()
             .ForMember(dest => dest.SubModuloNombre, opt => opt.MapFrom(src => src.SubModulo.Nombre));
 
+        // Mapeo para Accion
+        CreateMap<Accion, AccionDto>();
+
         CreateMap<PermisoRol, PermisoRolDto>()
             .ForMember(dest => dest.RolNombre, opt => opt.MapFrom(src => src.Rol != null ? src.Rol.Nombre : null))
             .ForMember(dest => dest.ModuloNombre, opt => opt.MapFrom(src => src.Modulo != null ? src.Modulo.Nombre : null))
             .ForMember(dest => dest.SubModuloNombre, opt => opt.MapFrom(src => src.SubModulo != null ? src.SubModulo.Nombre : null))
-            .ForMember(dest => dest.SubModuloDetalleNombre, opt => opt.MapFrom(src => src.SubModuloDetalle != null ? src.SubModuloDetalle.Nombre : null));
+            .ForMember(dest => dest.SubModuloDetalleNombre, opt => opt.MapFrom(src => src.SubModuloDetalle != null ? src.SubModuloDetalle.Nombre : null))
+            .ForMember(dest => dest.Acciones, opt => opt.Ignore()); // Se maneja manualmente en el handler
+
+        // Mapeo para PermisoRolAccion a AccionPermisoDto
+        CreateMap<PermisoRolAccion, AccionPermisoDto>()
+            .ForMember(dest => dest.IdAccion, opt => opt.MapFrom(src => src.Accion.IdAccion))
+            .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Accion.Nombre))
+            .ForMember(dest => dest.Codigo, opt => opt.MapFrom(src => src.Accion.Codigo))
+            .ForMember(dest => dest.Icono, opt => opt.MapFrom(src => src.Accion.Icono))
+            .ForMember(dest => dest.Habilitado, opt => opt.MapFrom(src => src.Habilitado));
 
         // Mapeos para Personas
         CreateMap<Persona, Miski.Shared.DTOs.Personas.PersonaDto>()

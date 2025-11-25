@@ -57,27 +57,79 @@ public class AsignarPermisoHandler : IRequestHandler<AsignarPermisoCommand, Perm
             p.IdSubModulo == request.Permiso.IdSubModulo &&
             p.IdSubModuloDetalle == request.Permiso.IdSubModuloDetalle);
 
+        PermisoRol permiso;
+
         if (permisoExistente != null)
         {
             // Actualizar el permiso existente
             permisoExistente.TieneAcceso = request.Permiso.TieneAcceso;
+            await _unitOfWork.Repository<PermisoRol>().UpdateAsync(permisoExistente);
+            permiso = permisoExistente;
+        }
+        else
+        {
+            // Crear nuevo permiso
+            var nuevoPermiso = new PermisoRol
+            {
+                IdRol = request.Permiso.IdRol,
+                IdModulo = request.Permiso.IdModulo,
+                IdSubModulo = request.Permiso.IdSubModulo,
+                IdSubModuloDetalle = request.Permiso.IdSubModuloDetalle,
+                TieneAcceso = request.Permiso.TieneAcceso
+            };
+
+            await _unitOfWork.Repository<PermisoRol>().AddAsync(nuevoPermiso, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return _mapper.Map<PermisoRolDto>(permisoExistente);
+            permiso = nuevoPermiso;
         }
 
-        // Crear nuevo permiso
-        var nuevoPermiso = new PermisoRol
+        // Gestionar PermisoRolAccion si se especificaron acciones
+        if (request.Permiso.IdAcciones != null && request.Permiso.IdAcciones.Any())
         {
-            IdRol = request.Permiso.IdRol,
-            IdModulo = request.Permiso.IdModulo,
-            IdSubModulo = request.Permiso.IdSubModulo,
-            IdSubModuloDetalle = request.Permiso.IdSubModuloDetalle,
-            TieneAcceso = request.Permiso.TieneAcceso
-        };
+            await GestionarAccionesAsync(permiso.IdPermisoRol, request.Permiso.IdAcciones, cancellationToken);
+        }
 
-        await _unitOfWork.Repository<PermisoRol>().AddAsync(nuevoPermiso, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<PermisoRolDto>(nuevoPermiso);
+        return _mapper.Map<PermisoRolDto>(permiso);
+    }
+
+    private async Task GestionarAccionesAsync(int idPermisoRol, List<int> idAcciones, CancellationToken cancellationToken)
+    {
+        // Obtener permisos de acciones existentes
+        var permisosAccionExistentes = await _unitOfWork.Repository<PermisoRolAccion>().GetAllAsync(cancellationToken);
+        var permisosActuales = permisosAccionExistentes.Where(pra => pra.IdPermisoRol == idPermisoRol).ToList();
+
+        // Eliminar permisos que ya no están en la lista
+        var accionesAEliminar = permisosActuales.Where(pa => !idAcciones.Contains(pa.IdAccion)).ToList();
+        foreach (var accionEliminar in accionesAEliminar)
+        {
+            await _unitOfWork.Repository<PermisoRolAccion>().DeleteAsync(accionEliminar);
+        }
+
+        // Agregar o actualizar permisos
+        foreach (var idAccion in idAcciones)
+        {
+            var permisoAccionExistente = permisosActuales.FirstOrDefault(pa => pa.IdAccion == idAccion);
+
+            if (permisoAccionExistente != null)
+            {
+                // Actualizar habilitado
+                permisoAccionExistente.Habilitado = true;
+                await _unitOfWork.Repository<PermisoRolAccion>().UpdateAsync(permisoAccionExistente);
+            }
+            else
+            {
+                // Crear nuevo permiso de acción
+                var nuevoPermisoAccion = new PermisoRolAccion
+                {
+                    IdPermisoRol = idPermisoRol,
+                    IdAccion = idAccion,
+                    Habilitado = true
+                };
+
+                await _unitOfWork.Repository<PermisoRolAccion>().AddAsync(nuevoPermisoAccion, cancellationToken);
+            }
+        }
     }
 }

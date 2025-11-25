@@ -28,11 +28,14 @@ public class MiskiDbContext : DbContext
     public DbSet<Lote> Lotes { get; set; }
     public DbSet<LlegadaPlanta> LlegadasPlanta { get; set; }
     public DbSet<TrackingPersona> TrackingPersonas { get; set; }
+    public DbSet<DispositivoPersona> DispositivoPersonas { get; set; }
     public DbSet<CompraVehiculo> CompraVehiculos { get; set; }
     public DbSet<Modulo> Modulos { get; set; }
     public DbSet<SubModulo> SubModulos { get; set; }
     public DbSet<SubModuloDetalle> SubModuloDetalles { get; set; }
+    public DbSet<Accion> Acciones { get; set; }
     public DbSet<PermisoRol> PermisoRoles { get; set; }
+    public DbSet<PermisoRolAccion> PermisoRolAcciones { get; set; }
     public DbSet<UnidadMedida> UnidadMedidas { get; set; }
     public DbSet<CategoriaProducto> CategoriaProductos { get; set; }
     public DbSet<CompraVehiculoDetalle> CompraVehiculoDetalles { get; set; }
@@ -643,6 +646,8 @@ public class MiskiDbContext : DbContext
         {
             entity.HasKey(e => e.IdModulo);
             entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Ruta).HasMaxLength(100);
+            entity.Property(e => e.Icono).HasMaxLength(50);
             entity.Property(e => e.Orden).IsRequired();
             entity.Property(e => e.Estado).HasMaxLength(20).IsRequired();
             entity.Property(e => e.TipoPlataforma).HasMaxLength(10).IsRequired();
@@ -654,8 +659,11 @@ public class MiskiDbContext : DbContext
         {
             entity.HasKey(e => e.IdSubModulo);
             entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Ruta).HasMaxLength(100);
+            entity.Property(e => e.Icono).HasMaxLength(50);
             entity.Property(e => e.Orden).IsRequired();
             entity.Property(e => e.Estado).HasMaxLength(20).IsRequired();
+            entity.Property(e => e.TieneDetalles);
             entity.HasOne(d => d.Modulo)
                 .WithMany(p => p.SubModulos)
                 .HasForeignKey(d => d.IdModulo)
@@ -669,6 +677,8 @@ public class MiskiDbContext : DbContext
         {
             entity.HasKey(e => e.IdSubModuloDetalle);
             entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Ruta).HasMaxLength(100);
+            entity.Property(e => e.Icono).HasMaxLength(50);
             entity.Property(e => e.Orden).IsRequired();
             entity.Property(e => e.Estado).HasMaxLength(20).IsRequired();
             entity.HasOne(d => d.SubModulo)
@@ -677,6 +687,18 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_SubModuloDetalle_SubModulo");
             entity.ToTable("SubModuloDetalle");
+        });
+
+        // Accion configuration
+        modelBuilder.Entity<Accion>(entity =>
+        {
+            entity.HasKey(e => e.IdAccion);
+            entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Codigo).HasMaxLength(20).IsRequired();
+            entity.Property(e => e.Icono).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Estado).HasMaxLength(20).IsRequired();
+            entity.Property(e => e.Orden).IsRequired();
+            entity.ToTable("Accion");
         });
 
         // PermisoRol configuration
@@ -705,6 +727,26 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_PermisoRol_SubModuloDetalle");
             entity.ToTable("PermisoRol");
+        });
+
+        // PermisoRolAccion configuration
+        modelBuilder.Entity<PermisoRolAccion>(entity =>
+        {
+            entity.HasKey(e => e.IdPermisoRolAccion);
+            entity.Property(e => e.Habilitado);
+
+            entity.HasOne(d => d.PermisoRol)
+                .WithMany(p => p.PermisoRolAcciones)
+                .HasForeignKey(d => d.IdPermisoRol)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PermisoRolAccion_PermisoRol");
+
+            entity.HasOne(d => d.Accion)
+                .WithMany(p => p.PermisoRolAcciones)
+                .HasForeignKey(d => d.IdAccion)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PermisoRolAccion_Accion");
+            entity.ToTable("PermisoRolAccion");
         });
 
         // Banco configuration

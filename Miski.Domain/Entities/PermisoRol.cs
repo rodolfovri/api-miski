@@ -13,4 +13,5 @@ public class PermisoRol
     public Modulo? Modulo { get; set; } = null;
     public SubModulo? SubModulo { get; set; } = null;
     public SubModuloDetalle? SubModuloDetalle { get; set; } = null;
+    public virtual ICollection<PermisoRolAccion> PermisoRolAcciones { get; set; } = new List<PermisoRolAccion>();
 }

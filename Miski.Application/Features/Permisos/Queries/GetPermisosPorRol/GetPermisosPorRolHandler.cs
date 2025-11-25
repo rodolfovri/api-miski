@@ -22,11 +22,13 @@ public class GetPermisosPorRolHandler : IRequestHandler<GetPermisosPorRolQuery, 
         if (rol == null)
             throw new NotFoundException("Rol", request.IdRol);
 
-        // Obtener todos los módulos
+        // Obtener todas las entidades necesarias
         var modulos = await _unitOfWork.Repository<Modulo>().GetAllAsync(cancellationToken);
         var subModulos = await _unitOfWork.Repository<SubModulo>().GetAllAsync(cancellationToken);
         var detalles = await _unitOfWork.Repository<SubModuloDetalle>().GetAllAsync(cancellationToken);
         var permisos = await _unitOfWork.Repository<PermisoRol>().GetAllAsync(cancellationToken);
+        var acciones = await _unitOfWork.Repository<Accion>().GetAllAsync(cancellationToken);
+        var permisosAccion = await _unitOfWork.Repository<PermisoRolAccion>().GetAllAsync(cancellationToken);
 
         // Filtrar permisos del rol
         var permisosRol = permisos.Where(p => p.IdRol == request.IdRol).ToList();
@@ -42,35 +44,119 @@ public class GetPermisosPorRolHandler : IRequestHandler<GetPermisosPorRolQuery, 
                 {
                     IdModulo = modulo.IdModulo,
                     Nombre = modulo.Nombre,
+                    Ruta = modulo.Ruta,
+                    Icono = modulo.Icono,
                     Orden = modulo.Orden,
                     TieneAcceso = TieneAccesoModulo(modulo.IdModulo, permisosRol),
                     SubModulos = subModulos
                         .Where(sm => sm.IdModulo == modulo.IdModulo && sm.Estado == "ACTIVO")
                         .OrderBy(sm => sm.Orden)
-                        .Select(subModulo => new SubModuloPermisoDto
-                        {
-                            IdSubModulo = subModulo.IdSubModulo,
-                            Nombre = subModulo.Nombre,
-                            Orden = subModulo.Orden,
-                            TieneAcceso = TieneAccesoSubModulo(modulo.IdModulo, subModulo.IdSubModulo, permisosRol),
-                            SubModuloDetalles = detalles
-                                .Where(d => d.IdSubModulo == subModulo.IdSubModulo && d.Estado == "ACTIVO")
-                                .OrderBy(d => d.Orden)
-                                .Select(detalle => new SubModuloDetallePermisoDto
-                                {
-                                    IdSubModuloDetalle = detalle.IdSubModuloDetalle,
-                                    Nombre = detalle.Nombre,
-                                    Orden = detalle.Orden,
-                                    TieneAcceso = TieneAccesoDetalle(modulo.IdModulo, subModulo.IdSubModulo, detalle.IdSubModuloDetalle, permisosRol)
-                                })
-                                .ToList()
-                        })
+                        .Select(subModulo => BuildSubModuloPermiso(modulo.IdModulo, subModulo, permisosRol, detalles, acciones, permisosAccion))
                         .ToList()
                 })
                 .ToList()
         };
 
         return resultado;
+    }
+
+    private SubModuloPermisoDto BuildSubModuloPermiso(
+        int idModulo,
+        SubModulo subModulo,
+        List<PermisoRol> permisos,
+        IEnumerable<SubModuloDetalle> detalles,
+        IEnumerable<Accion> acciones,
+        IEnumerable<PermisoRolAccion> permisosAccion)
+    {
+        var tieneAcceso = TieneAccesoSubModulo(idModulo, subModulo.IdSubModulo, permisos);
+        var permisoSubModulo = permisos.FirstOrDefault(p =>
+            p.IdSubModulo == subModulo.IdSubModulo &&
+            !p.IdSubModuloDetalle.HasValue);
+
+        var dto = new SubModuloPermisoDto
+        {
+            IdSubModulo = subModulo.IdSubModulo,
+            Nombre = subModulo.Nombre,
+            Ruta = subModulo.Ruta,
+            Icono = subModulo.Icono,
+            Orden = subModulo.Orden,
+            TieneAcceso = tieneAcceso,
+            TieneDetalles = subModulo.TieneDetalles
+        };
+
+        if (subModulo.TieneDetalles)
+        {
+            // SubMódulo tiene detalles
+            dto.SubModuloDetalles = detalles
+                .Where(d => d.IdSubModulo == subModulo.IdSubModulo && d.Estado == "ACTIVO")
+                .OrderBy(d => d.Orden)
+                .Select(detalle => BuildSubModuloDetallePermiso(idModulo, subModulo.IdSubModulo, detalle, permisos, acciones, permisosAccion))
+                .ToList();
+        }
+        else
+        {
+            // SubMódulo tiene acciones directas
+            if (permisoSubModulo != null)
+            {
+                dto.Acciones = BuildAccionesPermiso(permisoSubModulo.IdPermisoRol, acciones, permisosAccion);
+            }
+        }
+
+        return dto;
+    }
+
+    private SubModuloDetallePermisoDto BuildSubModuloDetallePermiso(
+        int idModulo,
+        int idSubModulo,
+        SubModuloDetalle detalle,
+        List<PermisoRol> permisos,
+        IEnumerable<Accion> acciones,
+        IEnumerable<PermisoRolAccion> permisosAccion)
+    {
+        var tieneAcceso = TieneAccesoDetalle(idModulo, idSubModulo, detalle.IdSubModuloDetalle, permisos);
+        var permisoDetalle = permisos.FirstOrDefault(p => p.IdSubModuloDetalle == detalle.IdSubModuloDetalle);
+
+        var dto = new SubModuloDetallePermisoDto
+        {
+            IdSubModuloDetalle = detalle.IdSubModuloDetalle,
+            Nombre = detalle.Nombre,
+            Ruta = detalle.Ruta,
+            Icono = detalle.Icono,
+            Orden = detalle.Orden,
+            TieneAcceso = tieneAcceso
+        };
+
+        if (permisoDetalle != null)
+        {
+            dto.Acciones = BuildAccionesPermiso(permisoDetalle.IdPermisoRol, acciones, permisosAccion);
+        }
+
+        return dto;
+    }
+
+    private List<AccionPermisoDto> BuildAccionesPermiso(
+        int idPermisoRol,
+        IEnumerable<Accion> acciones,
+        IEnumerable<PermisoRolAccion> permisosAccion)
+    {
+        var accionesDelPermiso = permisosAccion.Where(pa => pa.IdPermisoRol == idPermisoRol).ToList();
+
+        return acciones
+            .Where(a => a.Estado == "ACTIVO")
+            .OrderBy(a => a.Orden)
+            .Select(accion =>
+            {
+                var permisoAccion = accionesDelPermiso.FirstOrDefault(pa => pa.IdAccion == accion.IdAccion);
+                return new AccionPermisoDto
+                {
+                    IdAccion = accion.IdAccion,
+                    Nombre = accion.Nombre,
+                    Codigo = accion.Codigo,
+                    Icono = accion.Icono,
+                    Habilitado = permisoAccion?.Habilitado ?? false
+                };
+            })
+            .ToList();
     }
 
     /// <summary>
