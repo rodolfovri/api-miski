@@ -2,6 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Miski.Application.Features.Permisos.Commands.AsignarPermiso;
+using Miski.Application.Features.Permisos.Commands.AsignarPermisosMultiples;
+using Miski.Application.Features.Permisos.Commands.RevocarPermiso;
 using Miski.Application.Features.Permisos.Commands.CreateAccion;
 using Miski.Application.Features.Permisos.Queries.GetPermisosPorRol;
 using Miski.Application.Features.Permisos.Queries.GetModulos;
@@ -409,6 +411,11 @@ public class PermisosController : ControllerBase
     /// <remarks>
     /// Útil para configurar todos los permisos de un rol en una sola operación.
     /// Cada permiso debe cumplir las mismas validaciones que el endpoint individual.
+    /// 
+    /// **Ventajas:**
+    /// - Operación atómica: Todos los permisos se procesan en una transacción
+    /// - Mejor rendimiento: Evita múltiples llamadas HTTP
+    /// - Validación completa: Valida todos los permisos antes de aplicar cambios
     /// </remarks>
     [HttpPost("asignar-multiples")]
     public async Task<ActionResult<ApiResponse<List<PermisoRolDto>>>> AsignarPermisosMultiples(
@@ -417,27 +424,12 @@ public class PermisosController : ControllerBase
     {
         try
         {
-            var resultados = new List<PermisoRolDto>();
-
-            foreach (var permiso in request.Permisos)
-            {
-                var command = new AsignarPermisoCommand(new AsignarPermisoDto
-                {
-                    IdRol = request.IdRol,
-                    IdModulo = permiso.IdModulo,
-                    IdSubModulo = permiso.IdSubModulo,
-                    IdSubModuloDetalle = permiso.IdSubModuloDetalle,
-                    TieneAcceso = permiso.TieneAcceso,
-                    IdAcciones = permiso.IdAcciones
-                });
-
-                var result = await _mediator.Send(command, cancellationToken);
-                resultados.Add(result);
-            }
+            var command = new AsignarPermisosMultiplesCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
 
             return Ok(ApiResponse<List<PermisoRolDto>>.SuccessResult(
-                resultados,
-                $"{resultados.Count} permisos asignados exitosamente"
+                result,
+                $"{result.Count} permisos asignados exitosamente"
             ));
         }
         catch (Shared.Exceptions.NotFoundException ex)
@@ -446,6 +438,10 @@ public class PermisosController : ControllerBase
                 "Recurso no encontrado",
                 ex.Message
             ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<List<PermisoRolDto>>.ValidationErrorResult(ex.Errors));
         }
         catch (Exception ex)
         {
@@ -459,8 +455,19 @@ public class PermisosController : ControllerBase
     /// <summary>
     /// Revoca un permiso específico de un rol
     /// </summary>
+    /// <remarks>
+    /// **Comportamiento:**
+    /// - Marca el permiso como sin acceso (TieneAcceso = false)
+    /// - Elimina todas las acciones asociadas a ese permiso
+    /// - Si no existe el permiso, retorna false sin error
+    /// 
+    /// **Niveles de revocación:**
+    /// - **Módulo completo**: Enviar solo `idModulo`
+    /// - **SubMódulo específico**: Enviar `idRol`, `idModulo` y `idSubModulo`
+    /// - **Detalle específico**: Enviar todos los IDs
+    /// </remarks>
     [HttpDelete("revocar")]
-    public async Task<ActionResult<ApiResponse>> RevocarPermiso(
+    public async Task<ActionResult<ApiResponse<bool>>> RevocarPermiso(
         [FromQuery] int idRol,
         [FromQuery] int? idModulo = null,
         [FromQuery] int? idSubModulo = null,
@@ -469,30 +476,28 @@ public class PermisosController : ControllerBase
     {
         try
         {
-            // Asignar con TieneAcceso = false equivale a revocar
-            var command = new AsignarPermisoCommand(new AsignarPermisoDto
-            {
-                IdRol = idRol,
-                IdModulo = idModulo,
-                IdSubModulo = idSubModulo,
-                IdSubModuloDetalle = idSubModuloDetalle,
-                TieneAcceso = false
-            });
+            var command = new RevocarPermisoCommand(idRol, idModulo, idSubModulo, idSubModuloDetalle);
+            var result = await _mediator.Send(command, cancellationToken);
 
-            await _mediator.Send(command, cancellationToken);
-
-            return Ok(ApiResponse.SuccessResult("Permiso revocado exitosamente"));
+            return Ok(ApiResponse<bool>.SuccessResult(
+                result,
+                result ? "Permiso revocado exitosamente" : "No se encontró el permiso especificado"
+            ));
         }
         catch (Shared.Exceptions.NotFoundException ex)
         {
-            return NotFound(ApiResponse.ErrorResult(
+            return NotFound(ApiResponse<bool>.ErrorResult(
                 "Recurso no encontrado",
                 ex.Message
             ));
         }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<bool>.ValidationErrorResult(ex.Errors));
+        }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse.ErrorResult(
+            return StatusCode(500, ApiResponse<bool>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
