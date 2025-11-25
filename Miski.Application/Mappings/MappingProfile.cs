@@ -62,6 +62,24 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Icono, opt => opt.MapFrom(src => src.Accion.Icono))
             .ForMember(dest => dest.Habilitado, opt => opt.MapFrom(src => src.Habilitado));
 
+        // Mapeos para SubModuloAccion
+        CreateMap<SubModuloAccion, SubModuloAccionDto>()
+            .ForMember(dest => dest.SubModuloNombre, opt => opt.MapFrom(src => 
+                src.SubModulo != null ? src.SubModulo.Nombre : null))
+            .ForMember(dest => dest.AccionNombre, opt => opt.MapFrom(src => 
+                src.Accion != null ? src.Accion.Nombre : null))
+            .ForMember(dest => dest.AccionCodigo, opt => opt.MapFrom(src => 
+                src.Accion != null ? src.Accion.Codigo : null));
+
+        // Mapeos para SubModuloDetalleAccion
+        CreateMap<SubModuloDetalleAccion, SubModuloDetalleAccionDto>()
+            .ForMember(dest => dest.SubModuloDetalleNombre, opt => opt.MapFrom(src => 
+                src.SubModuloDetalle != null ? src.SubModuloDetalle.Nombre : null))
+            .ForMember(dest => dest.AccionNombre, opt => opt.MapFrom(src => 
+                src.Accion != null ? src.Accion.Nombre : null))
+            .ForMember(dest => dest.AccionCodigo, opt => opt.MapFrom(src => 
+                src.Accion != null ? src.Accion.Codigo : null));
+
         // Mapeos para Personas
         CreateMap<Persona, Miski.Shared.DTOs.Personas.PersonaDto>()
             .ForMember(dest => dest.TipoDocumentoNombre, opt => opt.MapFrom(src =>

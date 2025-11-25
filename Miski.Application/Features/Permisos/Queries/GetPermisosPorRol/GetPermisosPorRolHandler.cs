@@ -29,6 +29,8 @@ public class GetPermisosPorRolHandler : IRequestHandler<GetPermisosPorRolQuery, 
         var permisos = await _unitOfWork.Repository<PermisoRol>().GetAllAsync(cancellationToken);
         var acciones = await _unitOfWork.Repository<Accion>().GetAllAsync(cancellationToken);
         var permisosAccion = await _unitOfWork.Repository<PermisoRolAccion>().GetAllAsync(cancellationToken);
+        var subModuloAcciones = await _unitOfWork.Repository<SubModuloAccion>().GetAllAsync(cancellationToken);
+        var subModuloDetalleAcciones = await _unitOfWork.Repository<SubModuloDetalleAccion>().GetAllAsync(cancellationToken);
 
         // Filtrar permisos del rol
         var permisosRol = permisos.Where(p => p.IdRol == request.IdRol).ToList();
@@ -51,7 +53,15 @@ public class GetPermisosPorRolHandler : IRequestHandler<GetPermisosPorRolQuery, 
                     SubModulos = subModulos
                         .Where(sm => sm.IdModulo == modulo.IdModulo && sm.Estado == "ACTIVO")
                         .OrderBy(sm => sm.Orden)
-                        .Select(subModulo => BuildSubModuloPermiso(modulo.IdModulo, subModulo, permisosRol, detalles, acciones, permisosAccion))
+                        .Select(subModulo => BuildSubModuloPermiso(
+                            modulo.IdModulo, 
+                            subModulo, 
+                            permisosRol, 
+                            detalles, 
+                            acciones, 
+                            permisosAccion,
+                            subModuloAcciones,
+                            subModuloDetalleAcciones))
                         .ToList()
                 })
                 .ToList()
@@ -66,7 +76,9 @@ public class GetPermisosPorRolHandler : IRequestHandler<GetPermisosPorRolQuery, 
         List<PermisoRol> permisos,
         IEnumerable<SubModuloDetalle> detalles,
         IEnumerable<Accion> acciones,
-        IEnumerable<PermisoRolAccion> permisosAccion)
+        IEnumerable<PermisoRolAccion> permisosAccion,
+        IEnumerable<SubModuloAccion> subModuloAcciones,
+        IEnumerable<SubModuloDetalleAccion> subModuloDetalleAcciones)
     {
         var tieneAcceso = TieneAccesoSubModulo(idModulo, subModulo.IdSubModulo, permisos);
         var permisoSubModulo = permisos.FirstOrDefault(p =>
@@ -90,15 +102,53 @@ public class GetPermisosPorRolHandler : IRequestHandler<GetPermisosPorRolQuery, 
             dto.SubModuloDetalles = detalles
                 .Where(d => d.IdSubModulo == subModulo.IdSubModulo && d.Estado == "ACTIVO")
                 .OrderBy(d => d.Orden)
-                .Select(detalle => BuildSubModuloDetallePermiso(idModulo, subModulo.IdSubModulo, detalle, permisos, acciones, permisosAccion))
+                .Select(detalle => BuildSubModuloDetallePermiso(
+                    idModulo, 
+                    subModulo.IdSubModulo, 
+                    detalle, 
+                    permisos, 
+                    acciones, 
+                    permisosAccion,
+                    subModuloDetalleAcciones))
                 .ToList();
         }
         else
         {
-            // SubMódulo tiene acciones directas
+            // SubMódulo tiene acciones directas - solo mostrar las acciones disponibles
             if (permisoSubModulo != null)
             {
-                dto.Acciones = BuildAccionesPermiso(permisoSubModulo.IdPermisoRol, acciones, permisosAccion);
+                // Obtener las acciones disponibles para este SubMódulo
+                var accionesDisponibles = subModuloAcciones
+                    .Where(sma => sma.IdSubModulo == subModulo.IdSubModulo && sma.Habilitado)
+                    .Select(sma => sma.IdAccion)
+                    .ToHashSet();
+
+                dto.Acciones = BuildAccionesPermiso(
+                    permisoSubModulo.IdPermisoRol, 
+                    acciones, 
+                    permisosAccion,
+                    accionesDisponibles);
+            }
+            else
+            {
+                // No hay permiso asignado, pero mostrar las acciones disponibles como deshabilitadas
+                var accionesDisponibles = subModuloAcciones
+                    .Where(sma => sma.IdSubModulo == subModulo.IdSubModulo && sma.Habilitado)
+                    .Select(sma => sma.IdAccion)
+                    .ToHashSet();
+
+                dto.Acciones = acciones
+                    .Where(a => a.Estado == "ACTIVO" && accionesDisponibles.Contains(a.IdAccion))
+                    .OrderBy(a => a.Orden)
+                    .Select(a => new AccionPermisoDto
+                    {
+                        IdAccion = a.IdAccion,
+                        Nombre = a.Nombre,
+                        Codigo = a.Codigo,
+                        Icono = a.Icono,
+                        Habilitado = false
+                    })
+                    .ToList();
             }
         }
 
@@ -111,10 +161,17 @@ public class GetPermisosPorRolHandler : IRequestHandler<GetPermisosPorRolQuery, 
         SubModuloDetalle detalle,
         List<PermisoRol> permisos,
         IEnumerable<Accion> acciones,
-        IEnumerable<PermisoRolAccion> permisosAccion)
+        IEnumerable<PermisoRolAccion> permisosAccion,
+        IEnumerable<SubModuloDetalleAccion> subModuloDetalleAcciones)
     {
         var tieneAcceso = TieneAccesoDetalle(idModulo, idSubModulo, detalle.IdSubModuloDetalle, permisos);
         var permisoDetalle = permisos.FirstOrDefault(p => p.IdSubModuloDetalle == detalle.IdSubModuloDetalle);
+
+        // Obtener las acciones disponibles para este detalle
+        var accionesDisponibles = subModuloDetalleAcciones
+            .Where(smda => smda.IdSubModuloDetalle == detalle.IdSubModuloDetalle && smda.Habilitado)
+            .Select(smda => smda.IdAccion)
+            .ToHashSet();
 
         var dto = new SubModuloDetallePermisoDto
         {
@@ -128,7 +185,27 @@ public class GetPermisosPorRolHandler : IRequestHandler<GetPermisosPorRolQuery, 
 
         if (permisoDetalle != null)
         {
-            dto.Acciones = BuildAccionesPermiso(permisoDetalle.IdPermisoRol, acciones, permisosAccion);
+            dto.Acciones = BuildAccionesPermiso(
+                permisoDetalle.IdPermisoRol, 
+                acciones, 
+                permisosAccion,
+                accionesDisponibles);
+        }
+        else
+        {
+            // No hay permiso asignado, pero mostrar las acciones disponibles como deshabilitadas
+            dto.Acciones = acciones
+                .Where(a => a.Estado == "ACTIVO" && accionesDisponibles.Contains(a.IdAccion))
+                .OrderBy(a => a.Orden)
+                .Select(a => new AccionPermisoDto
+                {
+                    IdAccion = a.IdAccion,
+                    Nombre = a.Nombre,
+                    Codigo = a.Codigo,
+                    Icono = a.Icono,
+                    Habilitado = false
+                })
+                .ToList();
         }
 
         return dto;
@@ -137,12 +214,14 @@ public class GetPermisosPorRolHandler : IRequestHandler<GetPermisosPorRolQuery, 
     private List<AccionPermisoDto> BuildAccionesPermiso(
         int idPermisoRol,
         IEnumerable<Accion> acciones,
-        IEnumerable<PermisoRolAccion> permisosAccion)
+        IEnumerable<PermisoRolAccion> permisosAccion,
+        HashSet<int> accionesDisponibles)
     {
         var accionesDelPermiso = permisosAccion.Where(pa => pa.IdPermisoRol == idPermisoRol).ToList();
 
+        // Solo mostrar las acciones que están disponibles para esta pantalla
         return acciones
-            .Where(a => a.Estado == "ACTIVO")
+            .Where(a => a.Estado == "ACTIVO" && accionesDisponibles.Contains(a.IdAccion))
             .OrderBy(a => a.Orden)
             .Select(accion =>
             {

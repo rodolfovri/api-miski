@@ -11,4 +11,6 @@ public class Accion
 
     // Navigation properties
     public virtual ICollection<PermisoRolAccion> PermisoRolAcciones { get; set; } = new List<PermisoRolAccion>();
+    public virtual ICollection<SubModuloAccion> SubModuloAcciones { get; set; } = new List<SubModuloAccion>();
+    public virtual ICollection<SubModuloDetalleAccion> SubModuloDetalleAcciones { get; set; } = new List<SubModuloDetalleAccion>();
 }

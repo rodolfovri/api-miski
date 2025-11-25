@@ -14,5 +14,6 @@ public class SubModulo
     // Navigation properties
     public virtual Modulo Modulo { get; set; } = null!;
     public virtual ICollection<SubModuloDetalle> SubModuloDetalles { get; set; } = new List<SubModuloDetalle>();
+    public virtual ICollection<SubModuloAccion> SubModuloAcciones { get; set; } = new List<SubModuloAccion>();
     public virtual ICollection<PermisoRol> PermisoRoles { get; set; } = new List<PermisoRol>();
 }

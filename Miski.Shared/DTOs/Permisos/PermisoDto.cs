@@ -20,6 +20,34 @@ public class AccionPermisoDto
     public bool Habilitado { get; set; } // Si el rol tiene este permiso de acción
 }
 
+// ==================== DTOs de SubModuloAccion ====================
+public class SubModuloAccionDto
+{
+    public int IdSubModuloAccion { get; set; }
+    public int IdSubModulo { get; set; }
+    public int IdAccion { get; set; }
+    public bool Habilitado { get; set; }
+    
+    // Información adicional
+    public string? SubModuloNombre { get; set; }
+    public string? AccionNombre { get; set; }
+    public string? AccionCodigo { get; set; }
+}
+
+// ==================== DTOs de SubModuloDetalleAccion ====================
+public class SubModuloDetalleAccionDto
+{
+    public int IdSubModuloDetalleAccion { get; set; }
+    public int IdSubModuloDetalle { get; set; }
+    public int IdAccion { get; set; }
+    public bool Habilitado { get; set; }
+    
+    // Información adicional
+    public string? SubModuloDetalleNombre { get; set; }
+    public string? AccionNombre { get; set; }
+    public string? AccionCodigo { get; set; }
+}
+
 // ==================== DTOs de Módulos (actualizados) ====================
 public class ModuloDto
 {

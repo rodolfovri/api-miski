@@ -32,7 +32,9 @@ public class MiskiDbContext : DbContext
     public DbSet<CompraVehiculo> CompraVehiculos { get; set; }
     public DbSet<Modulo> Modulos { get; set; }
     public DbSet<SubModulo> SubModulos { get; set; }
+    public DbSet<SubModuloAccion> SubModuloAcciones { get; set; }
     public DbSet<SubModuloDetalle> SubModuloDetalles { get; set; }
+    public DbSet<SubModuloDetalleAccion>  SubModuloDetalleAcciones { get; set; }
     public DbSet<Accion> Acciones { get; set; }
     public DbSet<PermisoRol> PermisoRoles { get; set; }
     public DbSet<PermisoRolAccion> PermisoRolAcciones { get; set; }
@@ -699,6 +701,40 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Estado).HasMaxLength(20).IsRequired();
             entity.Property(e => e.Orden).IsRequired();
             entity.ToTable("Accion");
+        });
+
+        // SubModuloAccion configuration
+        modelBuilder.Entity<SubModuloAccion>(entity =>
+        {
+            entity.HasKey(e => e.IdSubModuloAccion);
+            entity.HasOne(d => d.SubModulo)
+                .WithMany(p => p.SubModuloAcciones)
+                .HasForeignKey(d => d.IdSubModulo)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_SubModuloAccion_SubModulo");
+            entity.HasOne(d => d.Accion)
+                .WithMany(p => p.SubModuloAcciones)
+                .HasForeignKey(d => d.IdAccion)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_SubModuloAccion_Accion");
+            entity.ToTable("SubModuloAccion");
+        });
+
+        // SubModuloDetalleAccion configuration
+        modelBuilder.Entity<SubModuloDetalleAccion>(entity =>
+        {
+            entity.HasKey(e => e.IdSubModuloDetalleAccion);
+            entity.HasOne(d => d.SubModuloDetalle)
+                .WithMany(p => p.SubModuloDetalleAcciones)
+                .HasForeignKey(d => d.IdSubModuloDetalle)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_SubModuloDetalleAccion_SubModuloDetalle");
+            entity.HasOne(d => d.Accion)
+                .WithMany(p => p.SubModuloDetalleAcciones)
+                .HasForeignKey(d => d.IdAccion)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_SubModuloDetalleAccion_Accion");
+            entity.ToTable("SubModuloDetalleAccion");
         });
 
         // PermisoRol configuration

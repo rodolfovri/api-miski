@@ -33,10 +33,13 @@ public class AsignarPermisoHandler : IRequestHandler<AsignarPermisoCommand, Perm
                 throw new NotFoundException("Módulo", request.Permiso.IdModulo.Value);
         }
 
+        SubModulo? subModulo = null;
+        SubModuloDetalle? detalle = null;
+
         // Validar que el submódulo existe si se especifica
         if (request.Permiso.IdSubModulo.HasValue)
         {
-            var subModulo = await _unitOfWork.Repository<SubModulo>().GetByIdAsync(request.Permiso.IdSubModulo.Value, cancellationToken);
+            subModulo = await _unitOfWork.Repository<SubModulo>().GetByIdAsync(request.Permiso.IdSubModulo.Value, cancellationToken);
             if (subModulo == null)
                 throw new NotFoundException("SubMódulo", request.Permiso.IdSubModulo.Value);
         }
@@ -44,9 +47,20 @@ public class AsignarPermisoHandler : IRequestHandler<AsignarPermisoCommand, Perm
         // Validar que el detalle existe si se especifica
         if (request.Permiso.IdSubModuloDetalle.HasValue)
         {
-            var detalle = await _unitOfWork.Repository<SubModuloDetalle>().GetByIdAsync(request.Permiso.IdSubModuloDetalle.Value, cancellationToken);
+            detalle = await _unitOfWork.Repository<SubModuloDetalle>().GetByIdAsync(request.Permiso.IdSubModuloDetalle.Value, cancellationToken);
             if (detalle == null)
                 throw new NotFoundException("SubMóduloDetalle", request.Permiso.IdSubModuloDetalle.Value);
+        }
+
+        // Validar acciones si se especificaron
+        if (request.Permiso.IdAcciones != null && request.Permiso.IdAcciones.Any())
+        {
+            await ValidarAccionesDisponiblesAsync(
+                request.Permiso.IdSubModulo,
+                request.Permiso.IdSubModuloDetalle,
+                request.Permiso.IdAcciones,
+                subModulo,
+                cancellationToken);
         }
 
         // Verificar si ya existe el permiso
@@ -92,6 +106,67 @@ public class AsignarPermisoHandler : IRequestHandler<AsignarPermisoCommand, Perm
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<PermisoRolDto>(permiso);
+    }
+
+    /// <summary>
+    /// Valida que las acciones a asignar estén disponibles para el SubMódulo o SubMóduloDetalle
+    /// </summary>
+    private async Task ValidarAccionesDisponiblesAsync(
+        int? idSubModulo,
+        int? idSubModuloDetalle,
+        List<int> idAcciones,
+        SubModulo? subModulo,
+        CancellationToken cancellationToken)
+    {
+        HashSet<int> accionesDisponibles;
+
+        if (idSubModuloDetalle.HasValue)
+        {
+            // Validar acciones disponibles para SubMóduloDetalle
+            var subModuloDetalleAcciones = await _unitOfWork.Repository<SubModuloDetalleAccion>().GetAllAsync(cancellationToken);
+            accionesDisponibles = subModuloDetalleAcciones
+                .Where(smda => smda.IdSubModuloDetalle == idSubModuloDetalle.Value && smda.Habilitado)
+                .Select(smda => smda.IdAccion)
+                .ToHashSet();
+
+            var accionesNoDisponibles = idAcciones.Where(id => !accionesDisponibles.Contains(id)).ToList();
+            if (accionesNoDisponibles.Any())
+            {
+                throw new ValidationException(
+                    $"Las siguientes acciones no están disponibles para este SubMóduloDetalle: {string.Join(", ", accionesNoDisponibles)}");
+            }
+        }
+        else if (idSubModulo.HasValue)
+        {
+            // Validar que el SubMódulo NO tiene detalles (TieneDetalles = false)
+            if (subModulo != null && subModulo.TieneDetalles)
+            {
+                throw new ValidationException(
+                    "No se pueden asignar acciones directamente a un SubMódulo que tiene detalles. " +
+                    "Asigne las acciones a los SubMóduloDetalles individuales.");
+            }
+
+            // Validar acciones disponibles para SubMódulo
+            var subModuloAcciones = await _unitOfWork.Repository<SubModuloAccion>().GetAllAsync(cancellationToken);
+            accionesDisponibles = subModuloAcciones
+                .Where(sma => sma.IdSubModulo == idSubModulo.Value && sma.Habilitado)
+                .Select(sma => sma.IdAccion)
+                .ToHashSet();
+
+            var accionesNoDisponibles = idAcciones.Where(id => !accionesDisponibles.Contains(id)).ToList();
+            if (accionesNoDisponibles.Any())
+            {
+                throw new ValidationException(
+                    $"Las siguientes acciones no están disponibles para este SubMódulo: {string.Join(", ", accionesNoDisponibles)}");
+            }
+        }
+        else
+        {
+            // No se pueden asignar acciones a nivel de Módulo
+            throw new ValidationException(
+                "No se pueden asignar acciones a nivel de Módulo. " +
+                "Las acciones solo se pueden asignar a SubMódulos (sin detalles) o SubMóduloDetalles.");
+        }
     }
 
     private async Task GestionarAccionesAsync(int idPermisoRol, List<int> idAcciones, CancellationToken cancellationToken)
