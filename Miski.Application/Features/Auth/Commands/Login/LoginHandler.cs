@@ -172,6 +172,12 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
         var modulos = await _unitOfWork.Repository<Modulo>().GetAllAsync(cancellationToken);
         var subModulos = await _unitOfWork.Repository<SubModulo>().GetAllAsync(cancellationToken);
         var subModuloDetalles = await _unitOfWork.Repository<SubModuloDetalle>().GetAllAsync(cancellationToken);
+        
+        // Obtener datos de acciones
+        var acciones = await _unitOfWork.Repository<Accion>().GetAllAsync(cancellationToken);
+        var permisoRolAcciones = await _unitOfWork.Repository<PermisoRolAccion>().GetAllAsync(cancellationToken);
+        var subModuloAcciones = await _unitOfWork.Repository<SubModuloAccion>().GetAllAsync(cancellationToken);
+        var subModuloDetalleAcciones = await _unitOfWork.Repository<SubModuloDetalleAccion>().GetAllAsync(cancellationToken);
 
         foreach (var ur in usuarioRoles.Distinct())
         {
@@ -195,19 +201,37 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
                     var modulo = modulos.FirstOrDefault(m => m.IdModulo == permiso.IdModulo.Value);
                     if (modulo != null && modulo.TipoPlataforma == tipoPlataforma)
                     {
+                        var subModulo = permiso.IdSubModulo.HasValue 
+                            ? subModulos.FirstOrDefault(sm => sm.IdSubModulo == permiso.IdSubModulo.Value)
+                            : null;
+
+                        var subModuloDetalle = permiso.IdSubModuloDetalle.HasValue 
+                            ? subModuloDetalles.FirstOrDefault(smd => smd.IdSubModuloDetalle == permiso.IdSubModuloDetalle.Value)
+                            : null;
+
                         var permisoDto = new RolPermisoDto
                         {
                             IdModulo = permiso.IdModulo,
                             ModuloNombre = modulo.Nombre,
+                            ModuloRuta = modulo.Ruta,
+                            ModuloIcono = modulo.Icono,
                             IdSubModulo = permiso.IdSubModulo,
-                            SubModuloNombre = permiso.IdSubModulo.HasValue 
-                                ? subModulos.FirstOrDefault(sm => sm.IdSubModulo == permiso.IdSubModulo.Value)?.Nombre 
-                                : null,
+                            SubModuloNombre = subModulo?.Nombre,
+                            SubModuloRuta = subModulo?.Ruta,
+                            SubModuloIcono = subModulo?.Icono,
+                            SubModuloTieneDetalles = subModulo?.TieneDetalles,
                             IdSubModuloDetalle = permiso.IdSubModuloDetalle,
-                            SubModuloDetalleNombre = permiso.IdSubModuloDetalle.HasValue 
-                                ? subModuloDetalles.FirstOrDefault(smd => smd.IdSubModuloDetalle == permiso.IdSubModuloDetalle.Value)?.Nombre 
-                                : null,
-                            TieneAcceso = permiso.TieneAcceso
+                            SubModuloDetalleNombre = subModuloDetalle?.Nombre,
+                            SubModuloDetalleRuta = subModuloDetalle?.Ruta,
+                            SubModuloDetalleIcono = subModuloDetalle?.Icono,
+                            TieneAcceso = permiso.TieneAcceso,
+                            Acciones = BuildAccionesParaPermiso(
+                                permiso,
+                                subModulo,
+                                acciones,
+                                permisoRolAcciones,
+                                subModuloAcciones,
+                                subModuloDetalleAcciones)
                         };
 
                         rolDto.Permisos.Add(permisoDto);
@@ -219,6 +243,67 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
         }
 
         return resultado.Distinct().ToList();
+    }
+
+    /// <summary>
+    /// Construye la lista de acciones disponibles para un permiso con su estado de habilitación
+    /// </summary>
+    private List<RolAccionDto> BuildAccionesParaPermiso(
+        PermisoRol permiso,
+        SubModulo? subModulo,
+        IEnumerable<Accion> acciones,
+        IEnumerable<PermisoRolAccion> permisoRolAcciones,
+        IEnumerable<SubModuloAccion> subModuloAcciones,
+        IEnumerable<SubModuloDetalleAccion> subModuloDetalleAcciones)
+    {
+        var resultado = new List<RolAccionDto>();
+
+        // Obtener las acciones habilitadas para este permiso
+        var accionesHabilitadas = permisoRolAcciones
+            .Where(pra => pra.IdPermisoRol == permiso.IdPermisoRol && pra.Habilitado)
+            .Select(pra => pra.IdAccion)
+            .ToHashSet();
+
+        HashSet<int> accionesDisponibles;
+
+        if (permiso.IdSubModuloDetalle.HasValue)
+        {
+            // Obtener acciones disponibles para SubMóduloDetalle
+            accionesDisponibles = subModuloDetalleAcciones
+                .Where(smda => smda.IdSubModuloDetalle == permiso.IdSubModuloDetalle.Value && smda.Habilitado)
+                .Select(smda => smda.IdAccion)
+                .ToHashSet();
+        }
+        else if (permiso.IdSubModulo.HasValue && subModulo != null && !subModulo.TieneDetalles)
+        {
+            // Obtener acciones disponibles para SubMódulo (solo si no tiene detalles)
+            accionesDisponibles = subModuloAcciones
+                .Where(sma => sma.IdSubModulo == permiso.IdSubModulo.Value && sma.Habilitado)
+                .Select(sma => sma.IdAccion)
+                .ToHashSet();
+        }
+        else
+        {
+            // Nivel de Módulo o SubMódulo con detalles - no tiene acciones directas
+            return resultado;
+        }
+
+        // Construir la lista de acciones con su estado
+        resultado = acciones
+            .Where(a => a.Estado == "ACTIVO" && accionesDisponibles.Contains(a.IdAccion))
+            .OrderBy(a => a.Orden)
+            .Select(a => new RolAccionDto
+            {
+                IdAccion = a.IdAccion,
+                Nombre = a.Nombre,
+                Codigo = a.Codigo,
+                Icono = a.Icono,
+                Orden = a.Orden,
+                Habilitado = accionesHabilitadas.Contains(a.IdAccion)
+            })
+            .ToList();
+
+        return resultado;
     }
 
     private static bool VerifyPassword(string password, byte[] storedHash)

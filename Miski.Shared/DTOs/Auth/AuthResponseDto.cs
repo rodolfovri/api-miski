@@ -41,11 +41,40 @@ public class RolPermisoDto
 {
     public int? IdModulo { get; set; }
     public string? ModuloNombre { get; set; }
+    public string? ModuloRuta { get; set; }
+    public string? ModuloIcono { get; set; }
     public int? IdSubModulo { get; set; }
     public string? SubModuloNombre { get; set; }
+    public string? SubModuloRuta { get; set; }
+    public string? SubModuloIcono { get; set; }
+    public bool? SubModuloTieneDetalles { get; set; }
     public int? IdSubModuloDetalle { get; set; }
     public string? SubModuloDetalleNombre { get; set; }
+    public string? SubModuloDetalleRuta { get; set; }
+    public string? SubModuloDetalleIcono { get; set; }
     public bool TieneAcceso { get; set; }
+    
+    /// <summary>
+    /// Acciones disponibles para esta pantalla con su estado de habilitación
+    /// </summary>
+    public List<RolAccionDto> Acciones { get; set; } = new List<RolAccionDto>();
+}
+
+/// <summary>
+/// Representa una acción disponible con su estado de habilitación para el rol
+/// </summary>
+public class RolAccionDto
+{
+    public int IdAccion { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string Codigo { get; set; } = string.Empty;
+    public string Icono { get; set; } = string.Empty;
+    public int Orden { get; set; }
+    
+    /// <summary>
+    /// Indica si el rol tiene habilitada esta acción
+    /// </summary>
+    public bool Habilitado { get; set; }
 }
 
 public class AuthPersonaDto
