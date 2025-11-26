@@ -25,9 +25,12 @@ public class AsignarPermisosMultiplesHandler : IRequestHandler<AsignarPermisosMu
         if (rol == null)
             throw new NotFoundException("Rol", request.Data.IdRol);
 
+        // PASO 1: Eliminar TODOS los permisos existentes del rol
+        await EliminarPermisosExistentesAsync(request.Data.IdRol, cancellationToken);
+
         var resultados = new List<PermisoRolDto>();
 
-        // Procesar cada permiso en una transacción
+        // PASO 2: Crear los nuevos permisos que vienen del frontend
         foreach (var permisoItem in request.Data.Permisos)
         {
             var permisoDto = await ProcesarPermisoAsync(
@@ -41,6 +44,43 @@ public class AsignarPermisosMultiplesHandler : IRequestHandler<AsignarPermisosMu
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return resultados;
+    }
+
+    /// <summary>
+    /// Elimina todos los permisos y acciones existentes del rol
+    /// Orden: Primero PermisoRolAccion (hija), luego PermisoRol (padre)
+    /// </summary>
+    private async Task EliminarPermisosExistentesAsync(int idRol, CancellationToken cancellationToken)
+    {
+        // Obtener todos los permisos del rol
+        var permisosExistentes = await _unitOfWork.Repository<PermisoRol>().GetAllAsync(cancellationToken);
+        var permisosDelRol = permisosExistentes.Where(p => p.IdRol == idRol).ToList();
+
+        if (!permisosDelRol.Any())
+            return; // No hay permisos que eliminar
+
+        // Obtener todos los IDs de permisos del rol
+        var idsPermisosRol = permisosDelRol.Select(p => p.IdPermisoRol).ToHashSet();
+
+        // 1. Eliminar TODAS las acciones asociadas (tabla hija PermisoRolAccion)
+        var permisosAccion = await _unitOfWork.Repository<PermisoRolAccion>().GetAllAsync(cancellationToken);
+        var accionesAEliminar = permisosAccion
+            .Where(pa => idsPermisosRol.Contains(pa.IdPermisoRol))
+            .ToList();
+
+        foreach (var accion in accionesAEliminar)
+        {
+            await _unitOfWork.Repository<PermisoRolAccion>().DeleteAsync(accion);
+        }
+
+        // 2. Eliminar TODOS los permisos del rol (tabla padre PermisoRol)
+        foreach (var permiso in permisosDelRol)
+        {
+            await _unitOfWork.Repository<PermisoRol>().DeleteAsync(permiso);
+        }
+
+        // Guardar los cambios de eliminación antes de crear nuevos
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     private async Task<PermisoRolDto> ProcesarPermisoAsync(
@@ -82,45 +122,25 @@ public class AsignarPermisosMultiplesHandler : IRequestHandler<AsignarPermisosMu
                 cancellationToken);
         }
 
-        // Verificar si ya existe el permiso
-        var permisosExistentes = await _unitOfWork.Repository<PermisoRol>().GetAllAsync(cancellationToken);
-        var permisoExistente = permisosExistentes.FirstOrDefault(p =>
-            p.IdRol == idRol &&
-            p.IdModulo == permisoItem.IdModulo &&
-            p.IdSubModulo == permisoItem.IdSubModulo &&
-            p.IdSubModuloDetalle == permisoItem.IdSubModuloDetalle);
-
-        PermisoRol permiso;
-
-        if (permisoExistente != null)
+        // 3. Crear nuevo permiso (ya no existe porque se eliminó todo antes)
+        var permiso = new PermisoRol
         {
-            // Actualizar el permiso existente
-            permisoExistente.TieneAcceso = permisoItem.TieneAcceso;
-            await _unitOfWork.Repository<PermisoRol>().UpdateAsync(permisoExistente);
-            permiso = permisoExistente;
-        }
-        else
-        {
-            // Crear nuevo permiso
-            permiso = new PermisoRol
-            {
-                IdRol = idRol,
-                IdModulo = permisoItem.IdModulo,
-                IdSubModulo = permisoItem.IdSubModulo,
-                IdSubModuloDetalle = permisoItem.IdSubModuloDetalle,
-                TieneAcceso = permisoItem.TieneAcceso
-            };
+            IdRol = idRol,
+            IdModulo = permisoItem.IdModulo,
+            IdSubModulo = permisoItem.IdSubModulo,
+            IdSubModuloDetalle = permisoItem.IdSubModuloDetalle,
+            TieneAcceso = permisoItem.TieneAcceso
+        };
 
-            await _unitOfWork.Repository<PermisoRol>().AddAsync(permiso, cancellationToken);
-            
-            // Necesitamos guardar para obtener el IdPermisoRol
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
+        await _unitOfWork.Repository<PermisoRol>().AddAsync(permiso, cancellationToken);
+        
+        // Guardar para obtener el IdPermisoRol generado
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // Gestionar PermisoRolAccion si se especificaron acciones
+        // 4. Crear las nuevas acciones si se especificaron
         if (permisoItem.IdAcciones != null && permisoItem.IdAcciones.Any())
         {
-            await GestionarAccionesAsync(permiso.IdPermisoRol, permisoItem.IdAcciones, cancellationToken);
+            await CrearAccionesAsync(permiso.IdPermisoRol, permisoItem.IdAcciones, cancellationToken);
         }
 
         return _mapper.Map<PermisoRolDto>(permiso);
@@ -184,42 +204,21 @@ public class AsignarPermisosMultiplesHandler : IRequestHandler<AsignarPermisosMu
         }
     }
 
-    private async Task GestionarAccionesAsync(int idPermisoRol, List<int> idAcciones, CancellationToken cancellationToken)
+    /// <summary>
+    /// Crea las acciones para un permiso (ya no necesita eliminar porque se eliminó todo antes)
+    /// </summary>
+    private async Task CrearAccionesAsync(int idPermisoRol, List<int> idAcciones, CancellationToken cancellationToken)
     {
-        // Obtener permisos de acciones existentes
-        var permisosAccionExistentes = await _unitOfWork.Repository<PermisoRolAccion>().GetAllAsync(cancellationToken);
-        var permisosActuales = permisosAccionExistentes.Where(pra => pra.IdPermisoRol == idPermisoRol).ToList();
-
-        // Eliminar permisos que ya no están en la lista
-        var accionesAEliminar = permisosActuales.Where(pa => !idAcciones.Contains(pa.IdAccion)).ToList();
-        foreach (var accionEliminar in accionesAEliminar)
-        {
-            await _unitOfWork.Repository<PermisoRolAccion>().DeleteAsync(accionEliminar);
-        }
-
-        // Agregar o actualizar permisos
         foreach (var idAccion in idAcciones)
         {
-            var permisoAccionExistente = permisosActuales.FirstOrDefault(pa => pa.IdAccion == idAccion);
-
-            if (permisoAccionExistente != null)
+            var nuevoPermisoAccion = new PermisoRolAccion
             {
-                // Actualizar habilitado
-                permisoAccionExistente.Habilitado = true;
-                await _unitOfWork.Repository<PermisoRolAccion>().UpdateAsync(permisoAccionExistente);
-            }
-            else
-            {
-                // Crear nuevo permiso de acción
-                var nuevoPermisoAccion = new PermisoRolAccion
-                {
-                    IdPermisoRol = idPermisoRol,
-                    IdAccion = idAccion,
-                    Habilitado = true
-                };
+                IdPermisoRol = idPermisoRol,
+                IdAccion = idAccion,
+                Habilitado = true
+            };
 
-                await _unitOfWork.Repository<PermisoRolAccion>().AddAsync(nuevoPermisoAccion, cancellationToken);
-            }
+            await _unitOfWork.Repository<PermisoRolAccion>().AddAsync(nuevoPermisoAccion, cancellationToken);
         }
     }
 }
