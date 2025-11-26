@@ -190,59 +190,315 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
                 Permisos = new List<RolPermisoDto>()
             };
 
-            // Obtener permisos del rol filtrando por módulos de la plataforma
+            // Obtener permisos del rol con acceso habilitado
             var permisosRol = permisos.Where(p => p.IdRol == ur.Rol.IdRol && p.TieneAcceso).ToList();
 
-            foreach (var permiso in permisosRol)
-            {
-                // Verificar que el módulo corresponda a la plataforma
-                if (permiso.IdModulo.HasValue)
-                {
-                    var modulo = modulos.FirstOrDefault(m => m.IdModulo == permiso.IdModulo.Value);
-                    if (modulo != null && modulo.TipoPlataforma == tipoPlataforma)
-                    {
-                        var subModulo = permiso.IdSubModulo.HasValue 
-                            ? subModulos.FirstOrDefault(sm => sm.IdSubModulo == permiso.IdSubModulo.Value)
-                            : null;
+            // Expandir permisos según la herencia
+            var permisosExpandidos = ExpandirPermisos(
+                permisosRol,
+                modulos,
+                subModulos,
+                subModuloDetalles,
+                tipoPlataforma,
+                acciones,
+                permisoRolAcciones,
+                subModuloAcciones,
+                subModuloDetalleAcciones);
 
-                        var subModuloDetalle = permiso.IdSubModuloDetalle.HasValue 
-                            ? subModuloDetalles.FirstOrDefault(smd => smd.IdSubModuloDetalle == permiso.IdSubModuloDetalle.Value)
-                            : null;
-
-                        var permisoDto = new RolPermisoDto
-                        {
-                            IdModulo = permiso.IdModulo,
-                            ModuloNombre = modulo.Nombre,
-                            ModuloRuta = modulo.Ruta,
-                            ModuloIcono = modulo.Icono,
-                            IdSubModulo = permiso.IdSubModulo,
-                            SubModuloNombre = subModulo?.Nombre,
-                            SubModuloRuta = subModulo?.Ruta,
-                            SubModuloIcono = subModulo?.Icono,
-                            SubModuloTieneDetalles = subModulo?.TieneDetalles,
-                            IdSubModuloDetalle = permiso.IdSubModuloDetalle,
-                            SubModuloDetalleNombre = subModuloDetalle?.Nombre,
-                            SubModuloDetalleRuta = subModuloDetalle?.Ruta,
-                            SubModuloDetalleIcono = subModuloDetalle?.Icono,
-                            TieneAcceso = permiso.TieneAcceso,
-                            Acciones = BuildAccionesParaPermiso(
-                                permiso,
-                                subModulo,
-                                acciones,
-                                permisoRolAcciones,
-                                subModuloAcciones,
-                                subModuloDetalleAcciones)
-                        };
-
-                        rolDto.Permisos.Add(permisoDto);
-                    }
-                }
-            }
-
+            rolDto.Permisos = permisosExpandidos;
             resultado.Add(rolDto);
         }
 
         return resultado.Distinct().ToList();
+    }
+
+    /// <summary>
+    /// Expande los permisos según la lógica de herencia
+    /// - Módulo: Expande todos sus submódulos y detalles
+    /// - SubMódulo: Expande todos sus detalles si TieneDetalles=true
+    /// - Detalle: Se mantiene como está
+    /// </summary>
+    private List<RolPermisoDto> ExpandirPermisos(
+        List<PermisoRol> permisosRol,
+        IEnumerable<Modulo> modulos,
+        IEnumerable<SubModulo> subModulos,
+        IEnumerable<SubModuloDetalle> subModuloDetalles,
+        string tipoPlataforma,
+        IEnumerable<Accion> acciones,
+        IEnumerable<PermisoRolAccion> permisoRolAcciones,
+        IEnumerable<SubModuloAccion> subModuloAcciones,
+        IEnumerable<SubModuloDetalleAccion> subModuloDetalleAcciones)
+    {
+        var permisosExpandidos = new List<RolPermisoDto>();
+
+        foreach (var permiso in permisosRol)
+        {
+            // Validar que el módulo existe y es de la plataforma correcta
+            if (!permiso.IdModulo.HasValue)
+                continue;
+
+            var modulo = modulos.FirstOrDefault(m => m.IdModulo == permiso.IdModulo.Value);
+            if (modulo == null || modulo.TipoPlataforma != tipoPlataforma)
+                continue;
+
+            // CASO 1: Permiso a nivel de MÓDULO (solo IdModulo)
+            if (!permiso.IdSubModulo.HasValue && !permiso.IdSubModuloDetalle.HasValue)
+            {
+                var permisosModulo = ExpandirPermisoModulo(
+                    permiso,
+                    modulo,
+                    subModulos,
+                    subModuloDetalles,
+                    acciones,
+                    permisoRolAcciones,
+                    subModuloAcciones,
+                    subModuloDetalleAcciones);
+
+                permisosExpandidos.AddRange(permisosModulo);
+            }
+            // CASO 2: Permiso a nivel de SUBMÓDULO (IdModulo + IdSubModulo)
+            else if (permiso.IdSubModulo.HasValue && !permiso.IdSubModuloDetalle.HasValue)
+            {
+                var subModulo = subModulos.FirstOrDefault(sm => sm.IdSubModulo == permiso.IdSubModulo.Value);
+                if (subModulo != null && subModulo.Estado == "ACTIVO")
+                {
+                    var permisosSubModulo = ExpandirPermisoSubModulo(
+                        permiso,
+                        modulo,
+                        subModulo,
+                        subModuloDetalles,
+                        acciones,
+                        permisoRolAcciones,
+                        subModuloAcciones,
+                        subModuloDetalleAcciones);
+
+                    permisosExpandidos.AddRange(permisosSubModulo);
+                }
+            }
+            // CASO 3: Permiso a nivel de DETALLE (IdModulo + IdSubModulo + IdSubModuloDetalle)
+            else if (permiso.IdSubModuloDetalle.HasValue)
+            {
+                var subModulo = subModulos.FirstOrDefault(sm => sm.IdSubModulo == permiso.IdSubModulo.Value);
+                var detalle = subModuloDetalles.FirstOrDefault(smd => smd.IdSubModuloDetalle == permiso.IdSubModuloDetalle.Value);
+
+                if (subModulo != null && detalle != null && detalle.Estado == "ACTIVO")
+                {
+                    var permisoDetalle = CrearPermisoDetalle(
+                        permiso,
+                        modulo,
+                        subModulo,
+                        detalle,
+                        acciones,
+                        permisoRolAcciones,
+                        subModuloDetalleAcciones);
+
+                    permisosExpandidos.Add(permisoDetalle);
+                }
+            }
+        }
+
+        // Eliminar duplicados usando un HashSet con una clave única
+        var permisosUnicos = permisosExpandidos
+            .GroupBy(p => $"{p.IdModulo}_{p.IdSubModulo}_{p.IdSubModuloDetalle}")
+            .Select(g => g.First())
+            .ToList();
+
+        return permisosUnicos;
+    }
+
+    /// <summary>
+    /// Expande un permiso a nivel de MÓDULO completo
+    /// Incluye TODOS los submódulos y sus detalles (si aplica)
+    /// </summary>
+    private List<RolPermisoDto> ExpandirPermisoModulo(
+        PermisoRol permiso,
+        Modulo modulo,
+        IEnumerable<SubModulo> subModulos,
+        IEnumerable<SubModuloDetalle> subModuloDetalles,
+        IEnumerable<Accion> acciones,
+        IEnumerable<PermisoRolAccion> permisoRolAcciones,
+        IEnumerable<SubModuloAccion> subModuloAcciones,
+        IEnumerable<SubModuloDetalleAccion> subModuloDetalleAcciones)
+    {
+        var permisos = new List<RolPermisoDto>();
+
+        // Obtener todos los submódulos activos del módulo
+        var subModulosDelModulo = subModulos
+            .Where(sm => sm.IdModulo == modulo.IdModulo && sm.Estado == "ACTIVO")
+            .OrderBy(sm => sm.Orden)
+            .ToList();
+
+        foreach (var subModulo in subModulosDelModulo)
+        {
+            // Si el submódulo tiene detalles, expandir cada detalle
+            if (subModulo.TieneDetalles)
+            {
+                var detallesDelSubModulo = subModuloDetalles
+                    .Where(d => d.IdSubModulo == subModulo.IdSubModulo && d.Estado == "ACTIVO")
+                    .OrderBy(d => d.Orden)
+                    .ToList();
+
+                foreach (var detalle in detallesDelSubModulo)
+                {
+                    var permisoDetalle = CrearPermisoDetalle(
+                        permiso,
+                        modulo,
+                        subModulo,
+                        detalle,
+                        acciones,
+                        permisoRolAcciones,
+                        subModuloDetalleAcciones);
+
+                    permisos.Add(permisoDetalle);
+                }
+            }
+            else
+            {
+                // Submódulo sin detalles - incluir directamente
+                var permisoSubModulo = CrearPermisoSubModulo(
+                    permiso,
+                    modulo,
+                    subModulo,
+                    acciones,
+                    permisoRolAcciones,
+                    subModuloAcciones);
+
+                permisos.Add(permisoSubModulo);
+            }
+        }
+
+        return permisos;
+    }
+
+    /// <summary>
+    /// Expande un permiso a nivel de SUBMÓDULO específico
+    /// Si TieneDetalles=true, expande TODOS sus detalles
+    /// Si TieneDetalles=false, retorna el submódulo directamente
+    /// </summary>
+    private List<RolPermisoDto> ExpandirPermisoSubModulo(
+        PermisoRol permiso,
+        Modulo modulo,
+        SubModulo subModulo,
+        IEnumerable<SubModuloDetalle> subModuloDetalles,
+        IEnumerable<Accion> acciones,
+        IEnumerable<PermisoRolAccion> permisoRolAcciones,
+        IEnumerable<SubModuloAccion> subModuloAcciones,
+        IEnumerable<SubModuloDetalleAccion> subModuloDetalleAcciones)
+    {
+        var permisos = new List<RolPermisoDto>();
+
+        if (subModulo.TieneDetalles)
+        {
+            // Expandir todos los detalles del submódulo
+            var detallesDelSubModulo = subModuloDetalles
+                .Where(d => d.IdSubModulo == subModulo.IdSubModulo && d.Estado == "ACTIVO")
+                .OrderBy(d => d.Orden)
+                .ToList();
+
+            foreach (var detalle in detallesDelSubModulo)
+            {
+                var permisoDetalle = CrearPermisoDetalle(
+                    permiso,
+                    modulo,
+                    subModulo,
+                    detalle,
+                    acciones,
+                    permisoRolAcciones,
+                    subModuloDetalleAcciones);
+
+                permisos.Add(permisoDetalle);
+            }
+        }
+        else
+        {
+            // Submódulo sin detalles - incluir directamente
+            var permisoSubModulo = CrearPermisoSubModulo(
+                permiso,
+                modulo,
+                subModulo,
+                acciones,
+                permisoRolAcciones,
+                subModuloAcciones);
+
+            permisos.Add(permisoSubModulo);
+        }
+
+        return permisos;
+    }
+
+    /// <summary>
+    /// Crea un DTO de permiso para un SubMódulo sin detalles
+    /// </summary>
+    private RolPermisoDto CrearPermisoSubModulo(
+        PermisoRol permiso,
+        Modulo modulo,
+        SubModulo subModulo,
+        IEnumerable<Accion> acciones,
+        IEnumerable<PermisoRolAccion> permisoRolAcciones,
+        IEnumerable<SubModuloAccion> subModuloAcciones)
+    {
+        return new RolPermisoDto
+        {
+            IdModulo = modulo.IdModulo,
+            ModuloNombre = modulo.Nombre,
+            ModuloRuta = modulo.Ruta,
+            ModuloIcono = modulo.Icono,
+            IdSubModulo = subModulo.IdSubModulo,
+            SubModuloNombre = subModulo.Nombre,
+            SubModuloRuta = subModulo.Ruta,
+            SubModuloIcono = subModulo.Icono,
+            SubModuloTieneDetalles = subModulo.TieneDetalles,
+            IdSubModuloDetalle = null,
+            SubModuloDetalleNombre = null,
+            SubModuloDetalleRuta = null,
+            SubModuloDetalleIcono = null,
+            TieneAcceso = true,
+            Acciones = BuildAccionesParaPermiso(
+                permiso,
+                subModulo,
+                acciones,
+                permisoRolAcciones,
+                subModuloAcciones,
+                new List<SubModuloDetalleAccion>()) // No aplica para submódulos
+        };
+    }
+
+    /// <summary>
+    /// Crea un DTO de permiso para un SubMóduloDetalle específico
+    /// </summary>
+    private RolPermisoDto CrearPermisoDetalle(
+        PermisoRol permiso,
+        Modulo modulo,
+        SubModulo subModulo,
+        SubModuloDetalle detalle,
+        IEnumerable<Accion> acciones,
+        IEnumerable<PermisoRolAccion> permisoRolAcciones,
+        IEnumerable<SubModuloDetalleAccion> subModuloDetalleAcciones)
+    {
+        return new RolPermisoDto
+        {
+            IdModulo = modulo.IdModulo,
+            ModuloNombre = modulo.Nombre,
+            ModuloRuta = modulo.Ruta,
+            ModuloIcono = modulo.Icono,
+            IdSubModulo = subModulo.IdSubModulo,
+            SubModuloNombre = subModulo.Nombre,
+            SubModuloRuta = subModulo.Ruta,
+            SubModuloIcono = subModulo.Icono,
+            SubModuloTieneDetalles = subModulo.TieneDetalles,
+            IdSubModuloDetalle = detalle.IdSubModuloDetalle,
+            SubModuloDetalleNombre = detalle.Nombre,
+            SubModuloDetalleRuta = detalle.Ruta,
+            SubModuloDetalleIcono = detalle.Icono,
+            TieneAcceso = true,
+            Acciones = BuildAccionesParaPermiso(
+                permiso,
+                subModulo,
+                acciones,
+                permisoRolAcciones,
+                new List<SubModuloAccion>(), // No aplica para detalles
+                subModuloDetalleAcciones)
+        };
     }
 
     /// <summary>
