@@ -1,4 +1,4 @@
-using MediatR;
+Ôªøusing MediatR;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -28,7 +28,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
 
     public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        // Buscar usuario por n˙mero de documento de la persona relacionada
+        // Buscar usuario por n√∫mero de documento de la persona relacionada
         var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
         var persona = personas.FirstOrDefault(p => p.NumeroDocumento == request.LoginData.NumeroDocumento);
 
@@ -48,10 +48,10 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             throw new NotFoundException("Usuario", request.LoginData.NumeroDocumento);
         }
 
-        // Verificar contraseÒa
+        // Verificar contrase√±a
         if (!VerifyPassword(request.LoginData.Password, usuario.PasswordHash))
         {
-            throw new ValidationException("ContraseÒa incorrecta");
+            throw new ValidationException("Contrase√±a incorrecta");
         }
 
         // Registrar dispositivo si es Mobile
@@ -106,7 +106,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
         }
         else
         {
-            // Dispositivo conocido, actualizar actividad y versiÛn
+            // Dispositivo conocido, actualizar actividad y versi√≥n
             dispositivo.FUltimaActividad = DateTime.UtcNow;
             dispositivo.VersionApp = loginData.VersionApp ?? dispositivo.VersionApp;
             dispositivo.Activo = true;
@@ -138,10 +138,10 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             }
         }
 
-        // Limpiar la colecciÛn existente para evitar duplicados
+        // Limpiar la colecci√≥n existente para evitar duplicados
         usuario.UsuarioRoles.Clear();
 
-        // Cargar roles del usuario a travÈs de UsuarioRol, filtrando por TipoPlataforma
+        // Cargar roles del usuario a trav√©s de UsuarioRol, filtrando por TipoPlataforma
         var rolesUsuario = usuarioRoles.Where(ur => ur.IdUsuario == usuarioId).ToList();
         foreach (var ur in rolesUsuario)
         {
@@ -193,7 +193,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             // Obtener permisos del rol con acceso habilitado
             var permisosRol = permisos.Where(p => p.IdRol == ur.Rol.IdRol && p.TieneAcceso).ToList();
 
-            // Expandir permisos seg˙n la herencia
+            // Expandir permisos seg√∫n la herencia
             var permisosExpandidos = ExpandirPermisos(
                 permisosRol,
                 modulos,
@@ -213,10 +213,10 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
     }
 
     /// <summary>
-    /// Expande los permisos seg˙n la lÛgica de herencia
-    /// - MÛdulo: Expande todos sus submÛdulos y detalles
-    /// - SubMÛdulo: Expande todos sus detalles si TieneDetalles=true
-    /// - Detalle: Se mantiene como est·
+    /// Expande los permisos seg√∫n la l√≥gica de herencia
+    /// - M√≥dulo: Expande todos sus subm√≥dulos y detalles
+    /// - SubM√≥dulo: Expande todos sus detalles si TieneDetalles=true
+    /// - Detalle: Se mantiene como est√°
     /// </summary>
     private List<RolPermisoDto> ExpandirPermisos(
         List<PermisoRol> permisosRol,
@@ -233,7 +233,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
 
         foreach (var permiso in permisosRol)
         {
-            // Validar que el mÛdulo existe y es de la plataforma correcta
+            // Validar que el m√≥dulo existe y es de la plataforma correcta
             if (!permiso.IdModulo.HasValue)
                 continue;
 
@@ -241,7 +241,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             if (modulo == null || modulo.TipoPlataforma != tipoPlataforma)
                 continue;
 
-            // CASO 1: Permiso a nivel de M”DULO (solo IdModulo)
+            // CASO 1: Permiso a nivel de M√ìDULO (solo IdModulo)
             if (!permiso.IdSubModulo.HasValue && !permiso.IdSubModuloDetalle.HasValue)
             {
                 var permisosModulo = ExpandirPermisoModulo(
@@ -256,7 +256,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
 
                 permisosExpandidos.AddRange(permisosModulo);
             }
-            // CASO 2: Permiso a nivel de SUBM”DULO (IdModulo + IdSubModulo)
+            // CASO 2: Permiso a nivel de SUBM√ìDULO (IdModulo + IdSubModulo)
             else if (permiso.IdSubModulo.HasValue && !permiso.IdSubModuloDetalle.HasValue)
             {
                 var subModulo = subModulos.FirstOrDefault(sm => sm.IdSubModulo == permiso.IdSubModulo.Value);
@@ -297,7 +297,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             }
         }
 
-        // Eliminar duplicados usando un HashSet con una clave ˙nica
+        // Eliminar duplicados usando un HashSet con una clave √∫nica
         var permisosUnicos = permisosExpandidos
             .GroupBy(p => $"{p.IdModulo}_{p.IdSubModulo}_{p.IdSubModuloDetalle}")
             .Select(g => g.First())
@@ -307,8 +307,8 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
     }
 
     /// <summary>
-    /// Expande un permiso a nivel de M”DULO completo
-    /// Incluye TODOS los submÛdulos y sus detalles (si aplica)
+    /// Expande un permiso a nivel de M√ìDULO completo
+    /// Incluye TODOS los subm√≥dulos y sus detalles (si aplica)
     /// </summary>
     private List<RolPermisoDto> ExpandirPermisoModulo(
         PermisoRol permiso,
@@ -322,7 +322,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
     {
         var permisos = new List<RolPermisoDto>();
 
-        // Obtener todos los submÛdulos activos del mÛdulo
+        // Obtener todos los subm√≥dulos activos del m√≥dulo
         var subModulosDelModulo = subModulos
             .Where(sm => sm.IdModulo == modulo.IdModulo && sm.Estado == "ACTIVO")
             .OrderBy(sm => sm.Orden)
@@ -330,7 +330,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
 
         foreach (var subModulo in subModulosDelModulo)
         {
-            // Si el submÛdulo tiene detalles, expandir cada detalle
+            // Si el subm√≥dulo tiene detalles, expandir cada detalle
             if (subModulo.TieneDetalles)
             {
                 var detallesDelSubModulo = subModuloDetalles
@@ -354,7 +354,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             }
             else
             {
-                // SubmÛdulo sin detalles - incluir directamente
+                // Subm√≥dulo sin detalles - incluir directamente
                 var permisoSubModulo = CrearPermisoSubModulo(
                     permiso,
                     modulo,
@@ -371,9 +371,9 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
     }
 
     /// <summary>
-    /// Expande un permiso a nivel de SUBM”DULO especÌfico
+    /// Expande un permiso a nivel de SUBM√ìDULO espec√≠fico
     /// Si TieneDetalles=true, expande TODOS sus detalles
-    /// Si TieneDetalles=false, retorna el submÛdulo directamente
+    /// Si TieneDetalles=false, retorna el subm√≥dulo directamente
     /// </summary>
     private List<RolPermisoDto> ExpandirPermisoSubModulo(
         PermisoRol permiso,
@@ -389,7 +389,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
 
         if (subModulo.TieneDetalles)
         {
-            // Expandir todos los detalles del submÛdulo
+            // Expandir todos los detalles del subm√≥dulo
             var detallesDelSubModulo = subModuloDetalles
                 .Where(d => d.IdSubModulo == subModulo.IdSubModulo && d.Estado == "ACTIVO")
                 .OrderBy(d => d.Orden)
@@ -411,7 +411,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
         }
         else
         {
-            // SubmÛdulo sin detalles - incluir directamente
+            // Subm√≥dulo sin detalles - incluir directamente
             var permisoSubModulo = CrearPermisoSubModulo(
                 permiso,
                 modulo,
@@ -427,15 +427,15 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
     }
 
     /// <summary>
-    /// Crea un DTO de permiso para un SubMÛdulo sin detalles
+    /// Crea un DTO de permiso para un SubM√≥dulo sin detalles
     /// </summary>
     private RolPermisoDto CrearPermisoSubModulo(
-        PermisoRol permiso,
-        Modulo modulo,
-        SubModulo subModulo,
-        IEnumerable<Accion> acciones,
-        IEnumerable<PermisoRolAccion> permisoRolAcciones,
-        IEnumerable<SubModuloAccion> subModuloAcciones)
+    PermisoRol permiso,
+    Modulo modulo,
+    SubModulo subModulo,
+    IEnumerable<Accion> acciones,
+    IEnumerable<PermisoRolAccion> permisoRolAcciones,
+    IEnumerable<SubModuloAccion> subModuloAcciones)
     {
         return new RolPermisoDto
         {
@@ -455,25 +455,27 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             TieneAcceso = true,
             Acciones = BuildAccionesParaPermiso(
                 permiso,
+                subModulo.IdSubModulo,  // üëà NUEVO: Pasar el ID del subm√≥dulo actual
+                null,                   // üëà NUEVO: No hay detalle
                 subModulo,
                 acciones,
                 permisoRolAcciones,
                 subModuloAcciones,
-                new List<SubModuloDetalleAccion>()) // No aplica para submÛdulos
+                new List<SubModuloDetalleAccion>())
         };
     }
 
     /// <summary>
-    /// Crea un DTO de permiso para un SubMÛduloDetalle especÌfico
+    /// Crea un DTO de permiso para un SubM√≥duloDetalle espec√≠fico
     /// </summary>
     private RolPermisoDto CrearPermisoDetalle(
-        PermisoRol permiso,
-        Modulo modulo,
-        SubModulo subModulo,
-        SubModuloDetalle detalle,
-        IEnumerable<Accion> acciones,
-        IEnumerable<PermisoRolAccion> permisoRolAcciones,
-        IEnumerable<SubModuloDetalleAccion> subModuloDetalleAcciones)
+     PermisoRol permiso,
+     Modulo modulo,
+     SubModulo subModulo,
+     SubModuloDetalle detalle,
+     IEnumerable<Accion> acciones,
+     IEnumerable<PermisoRolAccion> permisoRolAcciones,
+     IEnumerable<SubModuloDetalleAccion> subModuloDetalleAcciones)
     {
         return new RolPermisoDto
         {
@@ -493,19 +495,26 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             TieneAcceso = true,
             Acciones = BuildAccionesParaPermiso(
                 permiso,
+                subModulo.IdSubModulo,        // üëà NUEVO: Pasar el ID del subm√≥dulo actual
+                detalle.IdSubModuloDetalle,   // üëà NUEVO: Pasar el ID del detalle actual
                 subModulo,
                 acciones,
                 permisoRolAcciones,
-                new List<SubModuloAccion>(), // No aplica para detalles
+                new List<SubModuloAccion>(),
                 subModuloDetalleAcciones)
         };
     }
 
     /// <summary>
-    /// Construye la lista de acciones disponibles para un permiso con su estado de habilitaciÛn
+    /// Construye la lista de acciones disponibles para un permiso con su estado de habilitaci√≥n
+    /// L√ìGICA:
+    /// - Herencia (permiso expandido): Todas las acciones disponibles est√°n habilitadas
+    /// - Permiso espec√≠fico: Solo las marcadas en PermisoRolAccion est√°n habilitadas
     /// </summary>
     private List<RolAccionDto> BuildAccionesParaPermiso(
-        PermisoRol permiso,
+        PermisoRol permisoOriginal,
+        int? idSubModuloActual,        // üëà NUEVO: El subm√≥dulo que estamos procesando
+        int? idSubModuloDetalleActual, // üëà NUEVO: El detalle que estamos procesando
         SubModulo? subModulo,
         IEnumerable<Accion> acciones,
         IEnumerable<PermisoRolAccion> permisoRolAcciones,
@@ -514,33 +523,63 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
     {
         var resultado = new List<RolAccionDto>();
 
-        // Obtener las acciones habilitadas para este permiso
-        var accionesHabilitadas = permisoRolAcciones
-            .Where(pra => pra.IdPermisoRol == permiso.IdPermisoRol && pra.Habilitado)
-            .Select(pra => pra.IdAccion)
-            .ToHashSet();
+        // Determinar si es un permiso por HERENCIA o ESPEC√çFICO
+        bool esPermisoHerencia = DeterminarSiEsHerencia(permisoOriginal, subModulo);
 
+        HashSet<int> accionesHabilitadas;
         HashSet<int> accionesDisponibles;
 
-        if (permiso.IdSubModuloDetalle.HasValue)
+        // Caso 1: Permiso a nivel de SubM√≥duloDetalle
+        if (idSubModuloDetalleActual.HasValue) // üëà CAMBIO: Usar el detalle actual
         {
-            // Obtener acciones disponibles para SubMÛduloDetalle
+            // Obtener acciones DISPONIBLES para este detalle
             accionesDisponibles = subModuloDetalleAcciones
-                .Where(smda => smda.IdSubModuloDetalle == permiso.IdSubModuloDetalle.Value && smda.Habilitado)
+                .Where(smda => smda.IdSubModuloDetalle == idSubModuloDetalleActual.Value) // üëà CAMBIO
                 .Select(smda => smda.IdAccion)
                 .ToHashSet();
+
+            // Determinar cu√°les est√°n HABILITADAS
+            if (esPermisoHerencia)
+            {
+                // Herencia: Todas las disponibles est√°n habilitadas
+                accionesHabilitadas = accionesDisponibles;
+            }
+            else
+            {
+                // Espec√≠fico: Solo las marcadas en PermisoRolAccion
+                accionesHabilitadas = permisoRolAcciones
+                    .Where(pra => pra.IdPermisoRol == permisoOriginal.IdPermisoRol && pra.Habilitado)
+                    .Select(pra => pra.IdAccion)
+                    .ToHashSet();
+            }
         }
-        else if (permiso.IdSubModulo.HasValue && subModulo != null && !subModulo.TieneDetalles)
+        // Caso 2: Permiso a nivel de SubM√≥dulo (sin detalles)
+        else if (idSubModuloActual.HasValue && subModulo != null && !subModulo.TieneDetalles) // üëà CAMBIO
         {
-            // Obtener acciones disponibles para SubMÛdulo (solo si no tiene detalles)
+            // Obtener acciones DISPONIBLES para este subm√≥dulo
             accionesDisponibles = subModuloAcciones
-                .Where(sma => sma.IdSubModulo == permiso.IdSubModulo.Value && sma.Habilitado)
+                .Where(sma => sma.IdSubModulo == idSubModuloActual.Value) // üëà CAMBIO
                 .Select(sma => sma.IdAccion)
                 .ToHashSet();
+
+            // Determinar cu√°les est√°n HABILITADAS
+            if (esPermisoHerencia)
+            {
+                // Herencia: Todas las disponibles est√°n habilitadas
+                accionesHabilitadas = accionesDisponibles;
+            }
+            else
+            {
+                // Espec√≠fico: Solo las marcadas en PermisoRolAccion
+                accionesHabilitadas = permisoRolAcciones
+                    .Where(pra => pra.IdPermisoRol == permisoOriginal.IdPermisoRol && pra.Habilitado)
+                    .Select(pra => pra.IdAccion)
+                    .ToHashSet();
+            }
         }
         else
         {
-            // Nivel de MÛdulo o SubMÛdulo con detalles - no tiene acciones directas
+            // Nivel de M√≥dulo o SubM√≥dulo con detalles - no tiene acciones directas
             return resultado;
         }
 
@@ -560,6 +599,32 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             .ToList();
 
         return resultado;
+    }
+
+    /// <summary>
+    /// Determina si un permiso fue generado por HERENCIA o es ESPEC√çFICO
+    /// </summary>
+    private bool DeterminarSiEsHerencia(PermisoRol permisoOriginal, SubModulo? subModulo)
+    {
+        // Es herencia si:
+        // 1. El permiso original es a nivel de M√ìDULO (no tiene IdSubModulo)
+        // 2. El permiso original es a nivel de SUBM√ìDULO completo (no tiene IdSubModuloDetalle)
+        //    Y ese subm√≥dulo tiene detalles (TieneDetalles=true)
+
+        if (!permisoOriginal.IdSubModulo.HasValue)
+        {
+            // Permiso de m√≥dulo completo = HERENCIA
+            return true;
+        }
+
+        if (!permisoOriginal.IdSubModuloDetalle.HasValue && subModulo != null && subModulo.TieneDetalles)
+        {
+            // Permiso de subm√≥dulo con detalles = HERENCIA
+            return true;
+        }
+
+        // En cualquier otro caso, es un permiso ESPEC√çFICO
+        return false;
     }
 
     private static bool VerifyPassword(string password, byte[] storedHash)
@@ -584,7 +649,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             new(ClaimTypes.Name, usuario.Username)
         };
 
-        // Agregar m˙ltiples roles como claims (sin duplicados)
+        // Agregar m√∫ltiples roles como claims (sin duplicados)
         var rolesUnicos = usuario.UsuarioRoles
             .Select(ur => ur.Rol.Nombre)
             .Distinct()
