@@ -696,9 +696,9 @@ public class MiskiDbContext : DbContext
         {
             entity.HasKey(e => e.IdAccion);
             entity.Property(e => e.Nombre).HasMaxLength(50).IsRequired();
-            entity.Property(e => e.Codigo).HasMaxLength(20).IsRequired();
-            entity.Property(e => e.Icono).HasMaxLength(50).IsRequired();
-            entity.Property(e => e.Estado).HasMaxLength(20).IsRequired();
+            entity.Property(e => e.Codigo).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Icono).HasMaxLength(20).IsRequired();
+            entity.Property(e => e.Estado).HasMaxLength(50).IsRequired();
             entity.Property(e => e.Orden).IsRequired();
             entity.ToTable("Accion");
         });
