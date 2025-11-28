@@ -434,6 +434,13 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Negociacion_UsuarioAnulacion");
 
+            entity.HasOne(d => d.PersonaProveedor)
+                .WithMany(p => p.NegociacionesPersonaProveedor)
+                .HasForeignKey(d => d.IdPersonaProveedor)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Negociacion_PersonaProveedor");
+
             entity.ToTable("Negociacion");
         });
 

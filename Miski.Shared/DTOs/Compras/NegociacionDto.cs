@@ -6,6 +6,7 @@ public class NegociacionDto
 {
     public int IdNegociacion { get; set; }
     public int IdComisionista { get; set; }
+    public int? IdPersonaProveedor { get; set; }  // AGREGADO - ID de la persona proveedor
     public int? IdTipoDocumento { get; set; }  // AGREGADO
     public int? IdBanco { get; set; }  // AGREGADO
     public string NroDocumentoProveedor { get; set; } = string.Empty;
@@ -71,6 +72,7 @@ public class CreateNegociacionDto
 public class CompletarNegociacionDto
 {
     public int IdNegociacion { get; set; }
+    public int? IdPersona { get; set; }  // AGREGADO - ID de persona proveedor (opcional)
     public int? IdTipoDocumento { get; set; }  // AGREGADO
     public int? IdBanco { get; set; }  // AGREGADO
     public string NroDocumentoProveedor { get; set; } = string.Empty;

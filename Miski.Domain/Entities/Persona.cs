@@ -22,4 +22,5 @@ public class Persona
     public virtual ICollection<CompraVehiculo> CompraVehiculos { get; set; } = new List<CompraVehiculo>();
     public virtual ICollection<PersonaCargo> PersonaCargos { get; set; } = new List<PersonaCargo>();
     public virtual ICollection<DispositivoPersona> DispositivoPersonas { get; set; } = new List<DispositivoPersona>();
+    public virtual ICollection<Negociacion> NegociacionesPersonaProveedor { get; set; } = new List<Negociacion>();
 }

@@ -4,6 +4,7 @@ public class Negociacion
 {
     public int IdNegociacion { get; set; }
     public int IdComisionista { get; set; }
+    public int? IdPersonaProveedor { get; set; }
     public int? IdTipoDocumento { get; set; }
     public int? IdBanco { get; set; }
     public string NroDocumentoProveedor { get; set; } = string.Empty;
@@ -43,6 +44,7 @@ public class Negociacion
 
     // Navigation properties
     public virtual Persona? Proveedor { get; set; }
+    public virtual Persona? PersonaProveedor { get; set; }
     public virtual Usuario Comisionista { get; set; } = null!;
     public virtual Usuario? AprobadaPorUsuarioIngeniero { get; set; }
     public virtual Usuario? AprobadaPorUsuarioContadora { get; set; }

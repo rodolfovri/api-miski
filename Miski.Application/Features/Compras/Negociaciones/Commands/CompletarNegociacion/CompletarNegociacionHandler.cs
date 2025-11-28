@@ -80,6 +80,59 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
                 throw new NotFoundException("Banco", dto.IdBanco.Value);
         }
 
+        // MANEJO DE PERSONA PROVEEDOR
+        int? idPersonaProveedor = null;
+
+        if (dto.IdPersona.HasValue)
+        {
+            // Si se envía IdPersona, validar que existe
+            var persona = await _unitOfWork.Repository<Persona>()
+                .GetByIdAsync(dto.IdPersona.Value, cancellationToken);
+
+            if (persona == null)
+                throw new NotFoundException("Persona", dto.IdPersona.Value);
+
+            idPersonaProveedor = dto.IdPersona.Value;
+        }
+        else if (!string.IsNullOrEmpty(dto.NroDocumentoProveedor))
+        {
+            // Si no se envía IdPersona pero sí NroDocumentoProveedor
+            // Buscar si ya existe una persona con ese número de documento
+            var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+            var personaExistente = personas.FirstOrDefault(p => p.NumeroDocumento == dto.NroDocumentoProveedor);
+
+            if (personaExistente != null)
+            {
+                // Si existe, usar su IdPersona
+                idPersonaProveedor = personaExistente.IdPersona;
+            }
+            else
+            {
+                // Si no existe, crear una nueva persona con datos pendientes
+                // Validar que se haya proporcionado el tipo de documento
+                if (!dto.IdTipoDocumento.HasValue)
+                {
+                    throw new ValidationException("El tipo de documento es obligatorio al crear un nuevo proveedor");
+                }
+
+                var nuevaPersona = new Persona
+                {
+                    IdTipoDocumento = dto.IdTipoDocumento.Value,
+                    NumeroDocumento = dto.NroDocumentoProveedor,
+                    Nombres = "PENDIENTE",
+                    Apellidos = "PENDIENTE",
+                    Estado = "ACTIVO",
+                    FRegistro = DateTime.UtcNow
+                };
+
+                var personaCreada = await _unitOfWork.Repository<Persona>()
+                    .AddAsync(nuevaPersona, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                idPersonaProveedor = personaCreada.IdPersona;
+            }
+        }
+
         // Actualizar solo las evidencias que se envíen (las que sean nuevas)
         // DNI Frontal
         if (dto.FotoDniFrontal != null)
@@ -161,6 +214,7 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
         }
 
         // Actualizar información del proveedor y banco
+        negociacion.IdPersonaProveedor = idPersonaProveedor;
         negociacion.IdTipoDocumento = dto.IdTipoDocumento;
         negociacion.IdBanco = dto.IdBanco;
         negociacion.NroDocumentoProveedor = dto.NroDocumentoProveedor;
@@ -177,7 +231,14 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
         negociacion.Comisionista = await _unitOfWork.Repository<Usuario>()
             .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Usuario();
 
-        // Buscar proveedor por documento
+        // Cargar PersonaProveedor si existe
+        if (negociacion.IdPersonaProveedor.HasValue)
+        {
+            negociacion.PersonaProveedor = await _unitOfWork.Repository<Persona>()
+                .GetByIdAsync(negociacion.IdPersonaProveedor.Value, cancellationToken);
+        }
+
+        // Buscar proveedor por documento (para mantener compatibilidad con el campo antiguo)
         if (!string.IsNullOrEmpty(negociacion.NroDocumentoProveedor))
         {
             var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
