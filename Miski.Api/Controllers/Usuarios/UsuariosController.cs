@@ -8,6 +8,7 @@ using Miski.Application.Features.Usuarios.Commands.UpdatePassword;
 using Miski.Application.Features.Usuarios.Queries.GetUsuarios;
 using Miski.Application.Features.Usuarios.Queries.GetUsuarioById;
 using Miski.Application.Features.Usuarios.Queries.GetPersonasSinUsuario;
+using Miski.Application.Features.Usuarios.Queries.GetUsuariosByCategoria;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Usuarios;
 using Miski.Shared.DTOs.Personas;
@@ -362,6 +363,55 @@ public class UsuariosController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene usuarios filtrados por categoría de persona
+    /// </summary>
+    /// <remarks>
+    /// Retorna todos los usuarios cuyas personas pertenecen a una categoría específica.
+    /// 
+    /// Parámetros:
+    /// - idCategoria: ID de la categoría de persona para filtrar usuarios (obligatorio)
+    /// - estado: Filtrar por estado del usuario (ACTIVO/INACTIVO) - opcional, por defecto trae todos
+    /// 
+    /// Relación: Usuario -> Persona -> PersonaCategoria -> CategoriaPersona
+    /// 
+    /// Ejemplo de uso:
+    /// - GET /api/usuarios/categoria/1 - Trae todos los usuarios cuyas personas pertenecen a la categoría 1
+    /// - GET /api/usuarios/categoria/1?estado=ACTIVO - Trae solo usuarios activos de la categoría 1
+    /// - GET /api/usuarios/categoria/1?estado=INACTIVO - Trae solo usuarios inactivos de la categoría 1
+    /// </remarks>
+    [HttpGet("categoria/{idCategoria}")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<UsuarioDto>>>> GetUsuariosByCategoria(
+        int idCategoria,
+        [FromQuery] string? estado = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetUsuariosByCategoriaQuery(idCategoria, estado);
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<UsuarioDto>>.SuccessResult(
+                result,
+                "Usuarios de la categoría obtenidos exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<IEnumerable<UsuarioDto>>.ErrorResult(
+                "Categoría no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<UsuarioDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
