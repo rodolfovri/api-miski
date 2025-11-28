@@ -9,6 +9,7 @@ using Miski.Application.Features.Personas.Commands.RemoverCategoria;
 using Miski.Application.Features.Personas.Queries.GetPersonas;
 using Miski.Application.Features.Personas.Queries.GetPersonaById;
 using Miski.Application.Features.Personas.Queries.GetCategoriasByPersona;
+using Miski.Application.Features.Personas.Queries.GetPersonasByCategoria;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Personas;
 
@@ -316,6 +317,45 @@ public class PersonasController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene todas las personas filtrando por categoría
+    ///
+    /// Permite filtrar por:
+    /// - idCategoria: ID de la categoría
+    /// - estado: Filtrar por estado (ACTIVO, INACTIVO)
+    /// </summary>
+    [HttpGet("categoria/{idCategoria}")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<PersonaDto>>>> GetPersonasByCategoria(
+        int idCategoria,
+        [FromQuery] string? estado = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetPersonasByCategoriaQuery(idCategoria, estado);
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<PersonaDto>>.SuccessResult(
+                result,
+                $"Personas de la categoría obtenidas exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<IEnumerable<PersonaDto>>.ErrorResult(
+                "Categoría no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<PersonaDto>>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
