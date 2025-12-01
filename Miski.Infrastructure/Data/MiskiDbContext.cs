@@ -830,5 +830,32 @@ public class MiskiDbContext : DbContext
                 .HasConstraintName("FK_TipoCambio_Usuario");
             entity.ToTable("TipoCambio");
         });
+
+        // FAQ configuration
+        modelBuilder.Entity<FAQ>(entity =>
+        {
+            entity.HasKey(e => e.IdFAQ);
+            entity.Property(e => e.Pregunta).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.Respuesta).HasMaxLength(1000).IsRequired();
+            entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            
+            entity.HasOne(d => d.CategoriaFAQ)
+                .WithMany(p => p.FAQs)
+                .HasForeignKey(d => d.IdCategoriaFAQ)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_FAQ_CategoriaFAQ");
+
+            entity.ToTable("FAQ");
+        });
+
+        // CategoriaFAQ configuration
+        modelBuilder.Entity<CategoriaFAQ>(entity =>
+        {
+            entity.HasKey(e => e.IdCategoriaFAQ);
+            entity.Property(e => e.Nombre).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.ToTable("CategoriaFAQ");
+        });
     }
 }

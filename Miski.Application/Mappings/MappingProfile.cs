@@ -244,6 +244,14 @@ public class MappingProfile : Profile
                         Nombre = ur.Rol.Nombre 
                     })
                     .ToList()));
+
+        // Mapeos para CategoriaFAQ
+        CreateMap<Domain.Entities.CategoriaFAQ, Miski.Shared.DTOs.FAQ.CategoriaFAQDto>();
+
+        // Mapeos para FAQ
+        CreateMap<Domain.Entities.FAQ, Miski.Shared.DTOs.FAQ.FAQDto>()
+            .ForMember(dest => dest.CategoriaNombre, opt => opt.MapFrom(src =>
+                src.CategoriaFAQ != null ? src.CategoriaFAQ.Nombre : string.Empty));
     }
 }
 
