@@ -1,4 +1,4 @@
-using FluentValidation;
+ï»¿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen(c =>
     { 
         Title = "Miski API", 
         Version = "v1",
-        Description = "API para el sistema de gestión agrícola Miski",
+        Description = "API para el sistema de gestiÃ³n agrÃ­cola Miski",
         Contact = new OpenApiContact
         {
             Name = "Equipo Miski",
@@ -37,7 +37,7 @@ builder.Services.AddSwaggerGen(c =>
     
     c.EnableAnnotations();
     
-    // Configuración para agrupar por Tags (módulos)
+    // ConfiguraciÃ³n para agrupar por Tags (mÃ³dulos)
     c.TagActionsBy(api => new[] { api.GroupName ?? api.ActionDescriptor.RouteValues["controller"] });
     c.DocInclusionPredicate((name, api) => true);
 
@@ -80,13 +80,23 @@ builder.Services.AddSwaggerGen(c =>
     //    c.IncludeXmlComments(xmlPath);
     //}
 
-    // Filtro personalizado para autorización
+    // Filtro personalizado para autorizaciÃ³n
     c.OperationFilter<AuthorizeOperationFilter>();
 });
 
 // Database Configuration - PostgreSQL
 builder.Services.AddDbContext<MiskiDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        // Configurar encoding UTF-8
+        npgsqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+    });
+    
+    // Configurar Npgsql para usar UTF-8
+    AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+});
 
 // JWT Configuration
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "MiskiSecretKey2024!@#$%";
@@ -135,7 +145,7 @@ builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 
 // File Storage Service
 builder.Services.AddScoped<Miski.Application.Services.IFileStorageService, Miski.Application.Services.LocalFileStorageService>();
-// TODO: Para producción, cambiar a:
+// TODO: Para producciÃ³n, cambiar a:
 // builder.Services.AddScoped<Miski.Application.Services.IFileStorageService, Miski.Application.Services.CloudFileStorageService>();
 
 // CORS Configuration
@@ -153,7 +163,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 // Habilitar Swagger en todos los entornos (Development y Production)
-// NOTA: En producción real, considera proteger Swagger con autenticación
+// NOTA: En producciÃ³n real, considera proteger Swagger con autenticaciÃ³n
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -163,18 +173,18 @@ app.UseSwaggerUI(c =>
     c.DefaultModelsExpandDepth(-1);
     c.DisplayRequestDuration();
     
-    // Personalización de la interfaz
-    c.DocumentTitle = "Miski API - Documentación";
+    // PersonalizaciÃ³n de la interfaz
+    c.DocumentTitle = "Miski API - DocumentaciÃ³n";
 });
 
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
-// Servir archivos estáticos para Swagger UI
+// Servir archivos estÃ¡ticos para Swagger UI
 app.UseStaticFiles();
 
-// Configurar servicio de archivos estáticos para las imágenes de negociaciones
+// Configurar servicio de archivos estÃ¡ticos para las imÃ¡genes de negociaciones
 var uploadPath = builder.Configuration["FileStorage:BasePath"] ?? 
                  Path.Combine(builder.Environment.ContentRootPath, "uploads");
 
@@ -190,12 +200,12 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/uploads",
     OnPrepareResponse = ctx =>
     {
-        // Configurar CORS headers para las imágenes
+        // Configurar CORS headers para las imÃ¡genes
         ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
         ctx.Context.Response.Headers.Append("Access-Control-Allow-Methods", "GET");
         ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type");
         
-        // Cache control para las imágenes (opcional)
+        // Cache control para las imÃ¡genes (opcional)
         ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=3600");
     }
 });
@@ -279,7 +289,7 @@ public class GlobalExceptionMiddleware
                 })
             ),
             _ => ApiResponse.ErrorResult(
-                "Ocurrió un error interno en el servidor", 
+                "OcurriÃ³ un error interno en el servidor", 
                 exception.Message
             )
         };
