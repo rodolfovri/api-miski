@@ -85,12 +85,48 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
 
         if (dto.IdPersona.HasValue)
         {
-            // Si se envía IdPersona, validar que existe
             var persona = await _unitOfWork.Repository<Persona>()
                 .GetByIdAsync(dto.IdPersona.Value, cancellationToken);
 
             if (persona == null)
                 throw new NotFoundException("Persona", dto.IdPersona.Value);
+
+            bool personaActualizada = false;
+
+            // VALIDACIÓN: Si cambia el documento, verificar que no exista en otra persona
+            if (!string.IsNullOrEmpty(dto.NroDocumentoProveedor) &&
+                persona.NumeroDocumento != dto.NroDocumentoProveedor)
+            {
+                var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+                var personaConMismoDocumento = personas.FirstOrDefault(p =>
+                    p.NumeroDocumento == dto.NroDocumentoProveedor &&
+                    p.IdPersona != dto.IdPersona.Value
+                );
+
+                if (personaConMismoDocumento != null)
+                {
+                    throw new ValidationException(
+                        $"El número de documento {dto.NroDocumentoProveedor} ya está registrado para otra persona. " +
+                        "Si deseas usar esa persona, debes buscarla y seleccionarla nuevamente."
+                    );
+                }
+
+                persona.NumeroDocumento = dto.NroDocumentoProveedor;
+                personaActualizada = true;
+            }
+
+            if (dto.IdTipoDocumento.HasValue &&
+                persona.IdTipoDocumento != dto.IdTipoDocumento.Value)
+            {
+                persona.IdTipoDocumento = dto.IdTipoDocumento.Value;
+                personaActualizada = true;
+            }
+
+            if (personaActualizada)
+            {
+                await _unitOfWork.Repository<Persona>().UpdateAsync(persona, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
 
             idPersonaProveedor = dto.IdPersona.Value;
         }
@@ -249,7 +285,7 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
         {
             negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
                 .GetByIdAsync(negociacion.IdVariedadProducto.Value, cancellationToken);
-            
+
             // ? CARGAR EL PRODUCTO DENTRO DE VARIEDAD PRODUCTO
             if (negociacion.VariedadProducto != null && negociacion.VariedadProducto.IdProducto > 0)
             {
