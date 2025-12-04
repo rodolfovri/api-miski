@@ -10,6 +10,7 @@ using Miski.Application.Features.Personas.Queries.GetPersonas;
 using Miski.Application.Features.Personas.Queries.GetPersonaById;
 using Miski.Application.Features.Personas.Queries.GetCategoriasByPersona;
 using Miski.Application.Features.Personas.Queries.GetPersonasByCategoria;
+using Miski.Application.Features.Personas.Queries.GetPersonasByCategoriaAndTipoDocumento;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Personas;
 
@@ -350,6 +351,46 @@ public class PersonasController : ControllerBase
         {
             return NotFound(ApiResponse<IEnumerable<PersonaDto>>.ErrorResult(
                 "Categoría no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<PersonaDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene todas las personas filtrando por categoría y tipo de documento
+    /// </summary>
+    /// <remarks>
+    /// Ambos parámetros son obligatorios:
+    /// - idCategoriaPersona: ID de la categoría de persona
+    /// - idTipoDocumento: ID del tipo de documento
+    /// </remarks>
+    [HttpGet("filter")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<PersonaDto>>>> GetPersonasByCategoriaAndTipoDocumento(
+        [FromQuery] int idCategoriaPersona,
+        [FromQuery] int idTipoDocumento,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetPersonasByCategoriaAndTipoDocumentoQuery(idCategoriaPersona, idTipoDocumento);
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            return Ok(ApiResponse<IEnumerable<PersonaDto>>.SuccessResult(
+                result,
+                "Personas obtenidas exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<IEnumerable<PersonaDto>>.ErrorResult(
+                "Recurso no encontrado",
                 ex.Message
             ));
         }
