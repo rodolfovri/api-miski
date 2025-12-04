@@ -493,6 +493,8 @@ public class NegociacionesController : ControllerBase
     /// </remarks>
     [HttpPut("{id}/completar")]
     [Consumes("multipart/form-data")]
+    [RequestSizeLimit(100_000_000)] // 100 mb
+    [RequestFormLimits(MultipartBodyLengthLimit = 100_000_000)]
     public async Task<ActionResult<ApiResponse<NegociacionDto>>> CompletarNegociacion(
         int id,
         [FromForm] CompletarNegociacionDto request,

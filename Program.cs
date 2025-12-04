@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Miski.Api.Controllers.Filters;
 using Miski.Application.Features.Auth.Commands.Login;
 using Miski.Application.Features.Compras.Negociaciones.Commands.CreateNegociacion;
@@ -13,10 +15,26 @@ using Miski.Infrastructure.Data;
 using Miski.Infrastructure.Persistence;
 using Miski.Infrastructure.Repositories;
 using Miski.Shared.DTOs.Base;
-using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ✅ CONFIGURAR LÍMITES DE KESTREL PARA ARCHIVOS GRANDES
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 100 * 1024 * 1024; // 100 MB
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5);
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(2);
+});
+
+// ✅ CONFIGURAR LÍMITES DE FORMDATA
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // 100 MB
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartHeadersLengthLimit = int.MaxValue;
+    options.BufferBodyLengthLimit = 100 * 1024 * 1024; // 100 MB
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
