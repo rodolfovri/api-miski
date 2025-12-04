@@ -303,7 +303,7 @@ public class NegociacionesController : ControllerBase
     /// NOTA: Solo se pueden anular negociaciones en los siguientes estados:
     /// 1. Estado EN PROCESO y EstadoAprobacionIngeniero PENDIENTE
     /// 2. Estado APROBADO y EstadoAprobacionIngeniero APROBADO
-    /// 3. Estado EN REVISIÓN y EstadoAprobacionContadora PENDIENTE
+    /// 3. Estado EN REVISION y EstadoAprobacionContadora PENDIENTE
     /// 
     /// Los campos Estado, EstadoAprobacionIngeniero y EstadoAprobacionContadora se cambiarán a ANULADO.
     /// Se debe proporcionar IdUsuarioAnulacion y MotivoAnulacion.
@@ -489,7 +489,7 @@ public class NegociacionesController : ControllerBase
     /// - IdTipoDocumento (tipo de documento del proveedor)
     /// - IdBanco (banco de la cuenta)
     /// 
-    /// Después de completar, el estado cambia a 'EN REVISIÓN'
+    /// Después de completar, el estado cambia a 'EN REVISION'
     /// </remarks>
     [HttpPut("{id}/completar")]
     [Consumes("multipart/form-data")]
@@ -513,7 +513,7 @@ public class NegociacionesController : ControllerBase
 
             return Ok(ApiResponse<NegociacionDto>.SuccessResult(
                 result,
-                "Negociación completada exitosamente. Estado cambiado a 'EN REVISIÓN'"
+                "Negociación completada exitosamente. Estado cambiado a 'EN REVISION'"
             ));
         }
         catch (Shared.Exceptions.NotFoundException ex)
@@ -545,7 +545,7 @@ public class NegociacionesController : ControllerBase
     {
         try
         {
-            var query = new GetNegociacionesQuery(Estado: "EN REVISIÓN");
+            var query = new GetNegociacionesQuery(Estado: "EN REVISION");
             var result = await _mediator.Send(query, cancellationToken);
             
             return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
@@ -567,7 +567,7 @@ public class NegociacionesController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Cambia EstadoAprobacionContadora a 'APROBADO' y Estado a 'FINALIZADO'
-    /// Solo si está en estado 'EN REVISIÓN' y EstadoAprobacionContadora 'PENDIENTE'
+    /// Solo si está en estado 'EN REVISION' y EstadoAprobacionContadora 'PENDIENTE'
     /// </remarks>
     [HttpPut("{id}/aprobar-contadora")]
     public async Task<ActionResult<ApiResponse<NegociacionDto>>> AprobarPorContadora(
@@ -618,7 +618,7 @@ public class NegociacionesController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Cambia EstadoAprobacionContadora a 'RECHAZADO' y Estado a 'ANULADO'
-    /// Solo si está en estado 'EN REVISIÓN' y EstadoAprobacionContadora 'PENDIENTE'
+    /// Solo si está en estado 'EN REVISION' y EstadoAprobacionContadora 'PENDIENTE'
     /// </remarks>
     [HttpPut("{id}/rechazar-contadora")]
     public async Task<ActionResult<ApiResponse<NegociacionDto>>> RechazarPorContadora(

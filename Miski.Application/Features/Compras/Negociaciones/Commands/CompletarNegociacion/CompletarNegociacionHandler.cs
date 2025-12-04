@@ -37,14 +37,14 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
             throw new ValidationException("Solo se pueden completar negociaciones aprobadas por el ingeniero");
         }
 
-        // VALIDACIÓN: El estado debe ser APROBADO o EN REVISIÓN
-        if (negociacion.Estado != "APROBADO" && negociacion.Estado != "EN REVISIÓN")
+        // VALIDACIÓN: El estado debe ser APROBADO o EN REVISION
+        if (negociacion.Estado != "APROBADO" && negociacion.Estado != "EN REVISION")
         {
-            throw new ValidationException("Solo se pueden completar negociaciones en estado APROBADO o EN REVISIÓN");
+            throw new ValidationException("Solo se pueden completar negociaciones en estado APROBADO o EN REVISION");
         }
 
-        // VALIDACIÓN: Si está EN REVISIÓN, solo se puede actualizar si NO ha sido aprobada por la contadora
-        if (negociacion.Estado == "EN REVISIÓN" && negociacion.EstadoAprobacionContadora == "APROBADO")
+        // VALIDACIÓN: Si está EN REVISION, solo se puede actualizar si NO ha sido aprobada por la contadora
+        if (negociacion.Estado == "EN REVISION" && negociacion.EstadoAprobacionContadora == "APROBADO")
         {
             throw new ValidationException("No se pueden actualizar las evidencias de una negociación ya aprobada por la contadora");
         }
@@ -256,8 +256,8 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
         negociacion.NroDocumentoProveedor = dto.NroDocumentoProveedor;
         negociacion.NroCuentaBancaria = dto.NroCuentaBancaria;
 
-        // Cambiar estado a EN REVISIÓN (o mantenerlo si ya estaba)
-        negociacion.Estado = "EN REVISIÓN";
+        // Cambiar estado a EN REVISION (o mantenerlo si ya estaba)
+        negociacion.Estado = "EN REVISION";
         negociacion.EstadoAprobacionContadora = "PENDIENTE";
 
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);

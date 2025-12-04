@@ -28,10 +28,10 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
         if (negociacion == null)
             throw new NotFoundException("Negociacion", dto.IdNegociacion);
 
-        // Validar que la negociación esté en revisión
-        if (negociacion.Estado != "EN REVISIÓN")
+        // Validar que la negociación esté EN REVISION
+        if (negociacion.Estado != "EN REVISION")
         {
-            throw new ValidationException("Solo se pueden aprobar negociaciones en estado 'EN REVISIÓN'");
+            throw new ValidationException("Solo se pueden aprobar negociaciones en estado 'EN REVISION'");
         }
 
         // Validar que esté pendiente de aprobación por contadora

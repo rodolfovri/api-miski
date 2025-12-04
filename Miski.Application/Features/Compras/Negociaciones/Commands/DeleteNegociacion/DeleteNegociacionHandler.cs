@@ -41,15 +41,15 @@ public class DeleteNegociacionHandler : IRequestHandler<DeleteNegociacionCommand
         {
             puedeAnular = true;
         }
-        // Caso 3: Estado EN REVISIÓN y EstadoAprobacionContadora PENDIENTE
-        else if (negociacion.Estado == "EN REVISIÓN" && negociacion.EstadoAprobacionContadora == "PENDIENTE")
+        // Caso 3: Estado EN REVISION y EstadoAprobacionContadora PENDIENTE
+        else if (negociacion.Estado == "EN REVISION" && negociacion.EstadoAprobacionContadora == "PENDIENTE")
         {
             puedeAnular = true;
         }
 
         if (!puedeAnular)
         {
-            throw new ValidationException("No se puede anular la negociación en su estado actual. Solo se pueden anular negociaciones en estados: EN PROCESO (Pendiente de ingeniero), APROBADO (Aprobado por ingeniero) o EN REVISIÓN (Pendiente de contadora)");
+            throw new ValidationException("No se puede anular la negociación en su estado actual. Solo se pueden anular negociaciones en estados: EN PROCESO (Pendiente de ingeniero), APROBADO (Aprobado por ingeniero) o EN REVISION (Pendiente de contadora)");
         }
 
         // Anular la negociación
