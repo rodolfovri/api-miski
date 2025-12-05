@@ -25,6 +25,7 @@ public class MiskiDbContext : DbContext
     public DbSet<Stock> Stocks { get; set; }
     public DbSet<Negociacion> Negociaciones { get; set; }
     public DbSet<Compra> Compras { get; set; }
+    public DbSet<CompraPago> CompraPagos { get; set; }
     public DbSet<Lote> Lotes { get; set; }
     public DbSet<LlegadaPlanta> LlegadasPlanta { get; set; }
     public DbSet<TrackingPersona> TrackingPersonas { get; set; }

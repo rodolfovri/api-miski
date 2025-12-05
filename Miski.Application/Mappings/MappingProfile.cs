@@ -252,6 +252,9 @@ public class MappingProfile : Profile
         CreateMap<Domain.Entities.FAQ, Miski.Shared.DTOs.FAQ.FAQDto>()
             .ForMember(dest => dest.CategoriaNombre, opt => opt.MapFrom(src =>
                 src.CategoriaFAQ != null ? src.CategoriaFAQ.Nombre : string.Empty));
+
+        // Mapeos para CompraPago
+        CreateMap<CompraPago, Miski.Shared.DTOs.Compras.CompraPagoDto>();
     }
 }
 
