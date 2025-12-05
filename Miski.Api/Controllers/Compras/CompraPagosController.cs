@@ -14,9 +14,8 @@ namespace Miski.Api.Controllers.Compras;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "Compras")]
-[SwaggerTag("Gestión de pagos de compras")]
+[Route("api/compras/historial-pago")]
+[SwaggerTag("Gestion de pagos de compras")]
 public class CompraPagosController : ControllerBase
 {
     private readonly IMediator _mediator;
