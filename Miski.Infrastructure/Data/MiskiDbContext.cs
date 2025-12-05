@@ -457,6 +457,7 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.IGV).HasPrecision(18, 2);
             entity.Property(e => e.Observacion).HasMaxLength(200);
             entity.Property(e => e.MotivoAnulacion).HasMaxLength(200);
+            entity.Property(e => e.TipoPago).HasMaxLength(20);
 
             entity.HasOne(d => d.Negociacion)
                 .WithMany(p => p.Compras)
@@ -493,6 +494,38 @@ public class MiskiDbContext : DbContext
                 .HasConstraintName("FK_Compra_Lote");
 
             entity.ToTable("Compra");
+        });
+
+        modelBuilder.Entity<CompraPago>(entity =>
+        {
+            entity.HasKey(e => e.IdCompraPago);
+
+            entity.Property(e => e.TipoPago)
+                .HasMaxLength(20)
+                .IsRequired();
+
+            entity.Property(e => e.MontoAcuenta)
+                .HasPrecision(18, 2);
+
+            entity.Property(e => e.Saldo)
+                .HasPrecision(18, 2);
+
+            entity.Property(e => e.EstadoPago)
+                .HasMaxLength(20);
+
+            entity.Property(e => e.Observacion)
+                .HasMaxLength(200);
+
+            entity.Property(e => e.FRegistro)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.Compra)
+                .WithMany(p => p.CompraPagos)
+                .HasForeignKey(d => d.IdCompra)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_CompraPago_Compra");
+
+            entity.ToTable("CompraPago");
         });
 
         // CompraVehiculo configuration

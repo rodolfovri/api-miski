@@ -19,7 +19,8 @@ public class Compra
     public string? EsParcial { get; set; }
     public int? IdUsuarioAnulacion { get; set; }
     public string? MotivoAnulacion { get; set; }
-    public DateTime? FAnulacion { get; set; } 
+    public DateTime? FAnulacion { get; set; }
+    public string? TipoPago { get; set; }
 
     // Navigation properties
     public virtual Negociacion Negociacion { get; set; } = null!;
@@ -29,5 +30,6 @@ public class Compra
     public virtual Lote? Lote { get; set; }
     public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
     public virtual ICollection<CompraVehiculoDetalle> CompraVehiculoDetalles { get; set; } = new List<CompraVehiculoDetalle>();
+    public virtual ICollection<CompraPago> CompraPagos { get; set; } = new List<CompraPago>();
 
 }

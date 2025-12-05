@@ -22,6 +22,7 @@ public class GetComprasHandler : IRequestHandler<GetComprasQuery, List<CompraDto
         var compras = await _unitOfWork.Repository<Compra>().GetAllAsync(cancellationToken);
         var negociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
         var personas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
+        var usuarios = await _unitOfWork.Repository<Usuario>().GetAllAsync(cancellationToken);
         var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
 
         // Aplicar filtros
@@ -88,11 +89,15 @@ public class GetComprasHandler : IRequestHandler<GetComprasQuery, List<CompraDto
                     }
                 }
 
-                // Cargar comisionista
-                var comisionista = personas.FirstOrDefault(p => p.IdPersona == negociacion.IdComisionista);
-                if (comisionista != null)
+                // Cargar comisionista: IdComisionista es IdUsuario, luego Usuario.IdPersona -> Persona
+                var usuarioComisionista = usuarios.FirstOrDefault(u => u.IdUsuario == negociacion.IdComisionista);
+                if (usuarioComisionista?.IdPersona != null)
                 {
-                    compraDto.ComisionistaNombre = $"{comisionista.Nombres} {comisionista.Apellidos}";
+                    var personaComisionista = personas.FirstOrDefault(p => p.IdPersona == usuarioComisionista.IdPersona);
+                    if (personaComisionista != null)
+                    {
+                        compraDto.ComisionistaNombre = $"{personaComisionista.Nombres} {personaComisionista.Apellidos}";
+                    }
                 }
             }
 
