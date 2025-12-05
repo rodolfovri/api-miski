@@ -11,7 +11,8 @@ public class CompraDto
     public string? Estado { get; set; }
     public string? EstadoRecepcion { get; set; }
     public string? EsParcial { get; set; }
-    
+    public string? TipoPago { get; set; }
+
     // Información de la negociación asociada
     public string? ProveedorNombre { get; set; }
     public string? ComisionistaNombre { get; set; }

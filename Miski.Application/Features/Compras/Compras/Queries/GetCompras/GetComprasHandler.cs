@@ -62,7 +62,8 @@ public class GetComprasHandler : IRequestHandler<GetComprasQuery, List<CompraDto
                 EstadoRecepcion = compra.EstadoRecepcion,
                 EsParcial = compra.EsParcial,
                 MontoTotal = compra.MontoTotal,
-                
+                TipoPago = compra.TipoPago,
+
                 // ? Información del lote (si existe)
                 PesoLote = loteCompra?.Peso,
                 SacosLote = loteCompra?.Sacos,
