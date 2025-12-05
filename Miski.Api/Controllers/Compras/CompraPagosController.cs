@@ -15,6 +15,7 @@ namespace Miski.Api.Controllers.Compras;
 [Authorize]
 [ApiController]
 [Route("api/compras/historial-pago")]
+[Tags("Compras")]
 [SwaggerTag("Gestion de pagos de compras")]
 public class CompraPagosController : ControllerBase
 {
