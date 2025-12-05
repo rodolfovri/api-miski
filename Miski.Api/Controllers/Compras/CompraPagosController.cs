@@ -75,13 +75,34 @@ public class CompraPagosController : ControllerBase
         Summary = "Obtener historial de pagos",
         Description = "Obtiene todos los registros de pago de una compra específica, ordenados cronológicamente."
     )]
-    [SwaggerResponse(200, "Historial de pagos obtenido exitosamente", typeof(List<CompraPagoDto>))]
-    [SwaggerResponse(404, "Compra no encontrada")]
-    public async Task<ActionResult<List<CompraPagoDto>>> GetHistorialPagos(int idCompra)
+    [SwaggerResponse(200, "Historial de pagos obtenido exitosamente", typeof(ApiResponse<IEnumerable<CompraPagoDto>>))]
+    [SwaggerResponse(404, "Compra no encontrada", typeof(ApiResponse))]
+    public async Task<ActionResult<ApiResponse<IEnumerable<CompraPagoDto>>>> GetHistorialPagos(int idCompra)
     {
-        var query = new GetHistorialPagosQuery(idCompra);
-        var result = await _mediator.Send(query);
-        return Ok(result);
+        try
+        {
+            var query = new GetHistorialPagosQuery(idCompra);
+            var result = await _mediator.Send(query);
+            
+            return Ok(ApiResponse<IEnumerable<CompraPagoDto>>.SuccessResult(
+                result,
+                "Historial de pagos obtenido exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<IEnumerable<CompraPagoDto>>.ErrorResult(
+                "Compra no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<CompraPagoDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
     }
 
     /// <summary>
@@ -94,13 +115,34 @@ public class CompraPagosController : ControllerBase
         Summary = "Obtener resumen de pago",
         Description = "Obtiene un resumen detallado del estado de pago de una compra, incluyendo monto total, abonado, saldo pendiente y todos los pagos realizados."
     )]
-    [SwaggerResponse(200, "Resumen obtenido exitosamente", typeof(ResumenPagoDto))]
-    [SwaggerResponse(404, "Compra no encontrada")]
-    public async Task<ActionResult<ResumenPagoDto>> GetResumenPago(int idCompra)
+    [SwaggerResponse(200, "Resumen obtenido exitosamente", typeof(ApiResponse<ResumenPagoDto>))]
+    [SwaggerResponse(404, "Compra no encontrada", typeof(ApiResponse))]
+    public async Task<ActionResult<ApiResponse<ResumenPagoDto>>> GetResumenPago(int idCompra)
     {
-        var query = new GetResumenPagoQuery(idCompra);
-        var result = await _mediator.Send(query);
-        return Ok(result);
+        try
+        {
+            var query = new GetResumenPagoQuery(idCompra);
+            var result = await _mediator.Send(query);
+            
+            return Ok(ApiResponse<ResumenPagoDto>.SuccessResult(
+                result,
+                "Resumen de pago obtenido exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<ResumenPagoDto>.ErrorResult(
+                "Compra no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<ResumenPagoDto>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
     }
 
     /// <summary>
@@ -114,13 +156,27 @@ public class CompraPagosController : ControllerBase
         Summary = "Obtener compras con estado de pago",
         Description = "Obtiene todas las compras con información resumida de su estado de pago. Permite filtrar por estado de pago y tipo de pago."
     )]
-    [SwaggerResponse(200, "Lista obtenida exitosamente", typeof(List<CompraConEstadoPagoDto>))]
-    public async Task<ActionResult<List<CompraConEstadoPagoDto>>> GetComprasConEstadoPago(
+    [SwaggerResponse(200, "Lista obtenida exitosamente", typeof(ApiResponse<IEnumerable<CompraConEstadoPagoDto>>))]
+    public async Task<ActionResult<ApiResponse<IEnumerable<CompraConEstadoPagoDto>>>> GetComprasConEstadoPago(
         [FromQuery] string? estadoPago = null,
         [FromQuery] string? tipoPago = null)
     {
-        var query = new GetComprasConEstadoPagoQuery(estadoPago, tipoPago);
-        var result = await _mediator.Send(query);
-        return Ok(result);
+        try
+        {
+            var query = new GetComprasConEstadoPagoQuery(estadoPago, tipoPago);
+            var result = await _mediator.Send(query);
+            
+            return Ok(ApiResponse<IEnumerable<CompraConEstadoPagoDto>>.SuccessResult(
+                result,
+                "Compras con estado de pago obtenidas exitosamente"
+            ));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<IEnumerable<CompraConEstadoPagoDto>>.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
     }
 }
