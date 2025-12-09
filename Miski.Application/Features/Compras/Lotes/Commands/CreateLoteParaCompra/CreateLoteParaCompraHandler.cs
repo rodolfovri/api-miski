@@ -29,7 +29,7 @@ public class CreateLoteParaCompraHandler : IRequestHandler<CreateLoteParaCompraC
         if (compra == null)
             throw new NotFoundException("Compra", request.IdCompra);
 
-        // 2. Validar que la compra NO tenga un lote ya asignado (relación 1:1)
+        // 2. Validar que la compra NO tenga un lote ya asignado
         if (compra.IdLote.HasValue)
         {
             throw new ValidationException($"La compra ya tiene un lote asignado.");
@@ -51,12 +51,12 @@ public class CreateLoteParaCompraHandler : IRequestHandler<CreateLoteParaCompraC
             }
         }
 
-        // 5. Crear el lote
+        // 5. Crear el lote (sin código todavía)
         var lote = new Lote
         {
             Peso = dto.Peso,
             Sacos = dto.Sacos,
-            Codigo = dto.Codigo,
+            Codigo = null, // Se generará después de obtener el IdLote
             Comision = dto.Comision,
             Observacion = dto.Observacion
         };
@@ -64,14 +64,23 @@ public class CreateLoteParaCompraHandler : IRequestHandler<CreateLoteParaCompraC
         await _unitOfWork.Repository<Lote>().AddAsync(lote, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // 6. Asignar el lote a la compra y actualizar el monto total
+        // 6. Generar el código del lote usando el IdLote generado
+        // Formato: LT-MP-{Año}-{IdLote con 8 dígitos}
+        // Ejemplos: LT-MP-2025-00000001, LT-MP-2025-00000010, LT-MP-2025-00000100
+        var añoActual = DateTime.UtcNow.Year;
+        lote.Codigo = $"LT-MP-{añoActual}-{lote.IdLote:D8}";
+
+        await _unitOfWork.Repository<Lote>().UpdateAsync(lote, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // 7. Asignar el lote a la compra y actualizar el monto total
         compra.IdLote = lote.IdLote;
         compra.MontoTotal = request.MontoTotal;
 
         await _unitOfWork.Repository<Compra>().UpdateAsync(compra, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // 7. Cargar la relación inversa para el DTO
+        // 8. Cargar la relación inversa para el DTO
         lote.Compra = compra;
 
         return _mapper.Map<LoteDto>(lote);

@@ -486,7 +486,6 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Compra_UsuarioAnulacion");
 
-            // RELACIÓN UNO A UNO: Una Compra tiene un Lote
             entity.HasOne(d => d.Lote)
                 .WithOne(p => p.Compra)
                 .HasForeignKey<Compra>(d => d.IdLote)

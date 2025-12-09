@@ -22,28 +22,27 @@ public class CreateLoteHandler : IRequestHandler<CreateLoteCommand, LoteDto>
     {
         var dto = request.Lote;
 
-        // Validar que el código no esté duplicado si se proporciona
-        if (!string.IsNullOrEmpty(dto.Codigo))
-        {
-            var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
-            if (lotes.Any(l => l.Codigo == dto.Codigo))
-            {
-                throw new ValidationException($"Ya existe un lote con el código {dto.Codigo}");
-            }
-        }
-
         // ? Crear el lote SIN asignarlo a una compra (relación 1:1)
         // La asignación se hará posteriormente con AsignarLoteACompra
         var lote = new Lote
         {
             Peso = dto.Peso,
             Sacos = dto.Sacos,
-            Codigo = dto.Codigo,
+            Codigo = null, // Se generará automáticamente después de obtener el IdLote
             Comision = dto.Comision,
             Observacion = dto.Observacion
         };
 
         await _unitOfWork.Repository<Lote>().AddAsync(lote, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Generar el código del lote usando el IdLote generado
+        // Formato: LT-MP-{Año}-{IdLote con 8 dígitos}
+        // Ejemplos: LT-MP-2025-00000001, LT-MP-2025-00000010, LT-MP-2025-00000100
+        var añoActual = DateTime.UtcNow.Year;
+        lote.Codigo = $"LT-MP-{añoActual}-{lote.IdLote:D8}";
+
+        await _unitOfWork.Repository<Lote>().UpdateAsync(lote, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<LoteDto>(lote);
