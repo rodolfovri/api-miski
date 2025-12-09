@@ -37,10 +37,8 @@ public class CreateLoteHandler : IRequestHandler<CreateLoteCommand, LoteDto>
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // Generar el código del lote usando el IdLote generado
-        // Formato: LT-MP-{Año}-{IdLote con 8 dígitos}
-        // Ejemplos: LT-MP-2025-00000001, LT-MP-2025-00000010, LT-MP-2025-00000100
-        var añoActual = DateTime.UtcNow.Year;
-        lote.Codigo = $"LT-MP-{añoActual}-{lote.IdLote:D8}";
+        var anioActual = DateTime.UtcNow.Year;
+        lote.Codigo = $"LOTE-MP-{anioActual}-{lote.IdLote:D8}";
 
         await _unitOfWork.Repository<Lote>().UpdateAsync(lote, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
