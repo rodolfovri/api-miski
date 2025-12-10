@@ -31,19 +31,19 @@ public class GetNegociacionesHandler : IRequestHandler<GetNegociacionesQuery, Li
             negociaciones = negociaciones.Where(n => n.IdComisionista == request.IdComisionista.Value).ToList();
         }
 
-        if (request.IdVariedadProducto.HasValue)
+        // ? Filtrar por rango de fechas si se proporcionan
+        if (request.FechaDesde.HasValue)
         {
-            negociaciones = negociaciones.Where(n => n.IdVariedadProducto == request.IdVariedadProducto.Value).ToList();
+            // Considerar desde las 00:00:00 del día especificado
+            var fechaDesde = request.FechaDesde.Value.Date;
+            negociaciones = negociaciones.Where(n => n.FRegistro >= fechaDesde).ToList();
         }
 
-        if (!string.IsNullOrEmpty(request.EstadoAprobacionIngeniero))
+        if (request.FechaHasta.HasValue)
         {
-            negociaciones = negociaciones.Where(n => n.EstadoAprobacionIngeniero == request.EstadoAprobacionIngeniero).ToList();
-        }
-
-        if (!string.IsNullOrEmpty(request.Estado))
-        {
-            negociaciones = negociaciones.Where(n => n.Estado == request.Estado).ToList();
+            // Considerar hasta las 23:59:59 del día especificado
+            var fechaHasta = request.FechaHasta.Value.Date.AddDays(1).AddTicks(-1);
+            negociaciones = negociaciones.Where(n => n.FRegistro <= fechaHasta).ToList();
         }
 
         // Cargar relaciones

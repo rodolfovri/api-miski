@@ -36,23 +36,27 @@ public class NegociacionesController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Permite filtrar por:
-    /// - idProveedor: Filtrar por proveedor
     /// - idComisionista: Filtrar por comisionista
-    /// - idProducto: Filtrar por producto
-    /// - estadoAprobado: Filtrar por estado de aprobación (PENDIENTE/APROBADO/RECHAZADO)
-    /// - estado: Filtrar por estado general (ACTIVO/INACTIVO)
+    /// - fechaDesde: Fecha desde (inclusive). Filtra por FRegistro >= fechaDesde
+    /// - fechaHasta: Fecha hasta (inclusive). Filtra por FRegistro <= fechaHasta (hasta las 23:59:59 del día)
+    /// 
+    /// **Ejemplos:**
+    /// - `/api/compras/negociaciones` - Todas las negociaciones
+    /// - `/api/compras/negociaciones?idComisionista=5` - Negociaciones de un comisionista específico
+    /// - `/api/compras/negociaciones?fechaDesde=2024-01-01` - Desde enero 2024
+    /// - `/api/compras/negociaciones?fechaHasta=2024-12-31` - Hasta diciembre 2024
+    /// - `/api/compras/negociaciones?fechaDesde=2024-01-01&fechaHasta=2024-12-31` - Todo el año 2024
     /// </remarks>
     [HttpGet]
     public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetNegociaciones(
         [FromQuery] int? idComisionista = null,
-        [FromQuery] int? idVariedadProducto = null,  // CAMBIADO de idProducto
-        [FromQuery] string? estado = null,
-        [FromQuery] string? estadoAprobacionIngeniero = null,
+        [FromQuery] DateTime? fechaDesde = null,
+        [FromQuery] DateTime? fechaHasta = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetNegociacionesQuery(idComisionista, idVariedadProducto, estado, estadoAprobacionIngeniero);
+            var query = new GetNegociacionesQuery(idComisionista, fechaDesde, fechaHasta);
             var result = await _mediator.Send(query, cancellationToken);
             
             return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
@@ -344,17 +348,24 @@ public class NegociacionesController : ControllerBase
     /// <summary>
     /// Obtiene negociaciones pendientes de aprobación por ingeniero
     /// </summary>
+    /// <remarks>
+    /// Este endpoint está deprecado. Ahora se recomienda usar el endpoint principal con filtros.
+    /// Para obtener negociaciones pendientes, filtrar manualmente en el frontend por EstadoAprobacionIngeniero = "PENDIENTE".
+    /// </remarks>
     [HttpGet("pendientes-ingeniero")]
     public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetPendientesIngeniero(
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetNegociacionesQuery(EstadoAprobacionIngeniero: "PENDIENTE");
+            // Obtener todas las negociaciones y filtrar en memoria
+            var query = new GetNegociacionesQuery();
             var result = await _mediator.Send(query, cancellationToken);
+            var pendientes = result.Where(n => n.EstadoAprobacionIngeniero == "PENDIENTE").ToList();
+            
             
             return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
-                result, 
+                pendientes, 
                 "Negociaciones pendientes obtenidas exitosamente"
             ));
         }
@@ -541,17 +552,24 @@ public class NegociacionesController : ControllerBase
     /// <summary>
     /// Obtiene negociaciones pendientes de aprobación por contadora
     /// </summary>
+    /// <remarks>
+    /// Este endpoint está deprecado. Ahora se recomienda usar el endpoint principal con filtros.
+    /// Para obtener negociaciones en revisión, filtrar manualmente en el frontend por Estado = "EN REVISION".
+    /// </remarks>
     [HttpGet("pendientes-contadora")]
     public async Task<ActionResult<ApiResponse<IEnumerable<NegociacionDto>>>> GetPendientesContadora(
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetNegociacionesQuery(Estado: "EN REVISION");
+            // Obtener todas las negociaciones y filtrar en memoria
+            var query = new GetNegociacionesQuery();
             var result = await _mediator.Send(query, cancellationToken);
+            var enRevision = result.Where(n => n.Estado == "EN REVISION").ToList();
+            
             
             return Ok(ApiResponse<IEnumerable<NegociacionDto>>.SuccessResult(
-                result, 
+                enRevision, 
                 "Negociaciones pendientes de contadora obtenidas exitosamente"
             ));
         }

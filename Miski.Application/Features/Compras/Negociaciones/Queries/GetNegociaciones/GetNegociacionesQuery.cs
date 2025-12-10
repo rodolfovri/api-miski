@@ -5,7 +5,6 @@ namespace Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociacio
 
 public record GetNegociacionesQuery(
     int? IdComisionista = null,
-    int? IdVariedadProducto = null,  // CAMBIADO de IdProducto
-    string? Estado = null,
-    string? EstadoAprobacionIngeniero = null
+    DateTime? FechaDesde = null,
+    DateTime? FechaHasta = null
 ) : IRequest<List<NegociacionDto>>;
