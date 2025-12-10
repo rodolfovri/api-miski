@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.ObjectModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -148,11 +149,10 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             }
         }
 
-        // Limpiar la colección existente para evitar duplicados
-        usuario.UsuarioRoles.Clear();
-
-        // Cargar roles del usuario a través de UsuarioRol, filtrando por TipoPlataforma
+        // Crear una nueva colección con los roles filtrados por plataforma
+        var rolesUsuarioFiltrados = new Collection<UsuarioRol>();
         var rolesUsuario = usuarioRoles.Where(ur => ur.IdUsuario == usuarioId).ToList();
+        
         foreach (var ur in rolesUsuario)
         {
             var rol = roles.FirstOrDefault(r => r.IdRol == ur.IdRol);
@@ -162,10 +162,13 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
                 if (string.IsNullOrEmpty(rol.TipoPlataforma) || rol.TipoPlataforma == tipoPlataforma)
                 {
                     ur.Rol = rol;
-                    usuario.UsuarioRoles.Add(ur);
+                    rolesUsuarioFiltrados.Add(ur);
                 }
             }
         }
+
+        // Reemplazar la colección completa en lugar de hacer Clear() y Add()
+        usuario.UsuarioRoles = rolesUsuarioFiltrados;
 
         return usuario;
     }
