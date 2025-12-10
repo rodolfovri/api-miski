@@ -135,17 +135,44 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
         var roles = await _unitOfWork.Repository<Rol>().GetAllAsync(cancellationToken);
         var tiposDocumento = await _unitOfWork.Repository<TipoDocumento>().GetAllAsync(cancellationToken);
 
-        var usuario = usuarios.FirstOrDefault(u => u.IdUsuario == usuarioId);
-        if (usuario == null) 
+        var usuarioOriginal = usuarios.FirstOrDefault(u => u.IdUsuario == usuarioId);
+        if (usuarioOriginal == null) 
             throw new NotFoundException("Usuario", usuarioId);
 
-        // Cargar relaciones manualmente
+        // Crear un nuevo objeto Usuario desconectado del contexto de EF
+        // Esto evita problemas de tracking cuando se llama SaveChangesAsync después
+        var usuario = new Usuario
+        {
+            IdUsuario = usuarioOriginal.IdUsuario,
+            Username = usuarioOriginal.Username,
+            PasswordHash = usuarioOriginal.PasswordHash,
+            IdPersona = usuarioOriginal.IdPersona,
+            Estado = usuarioOriginal.Estado,
+            FRegistro = usuarioOriginal.FRegistro
+        };
+
+        // Cargar relaciones manualmente en el nuevo objeto
         if (usuario.IdPersona.HasValue)
         {
-            usuario.Persona = personas.FirstOrDefault(p => p.IdPersona == usuario.IdPersona.Value);
-            if (usuario.Persona != null)
+            var personaOriginal = personas.FirstOrDefault(p => p.IdPersona == usuario.IdPersona.Value);
+            if (personaOriginal != null)
             {
-                usuario.Persona.TipoDocumento = tiposDocumento.FirstOrDefault(td => td.IdTipoDocumento == usuario.Persona.IdTipoDocumento);
+                // Crear una copia de Persona también
+                usuario.Persona = new Persona
+                {
+                    IdPersona = personaOriginal.IdPersona,
+                    NumeroDocumento = personaOriginal.NumeroDocumento,
+                    Nombres = personaOriginal.Nombres,
+                    Apellidos = personaOriginal.Apellidos,
+                    Telefono = personaOriginal.Telefono,
+                    Email = personaOriginal.Email,
+                    Direccion = personaOriginal.Direccion,
+                    Estado = personaOriginal.Estado,
+                    FRegistro = personaOriginal.FRegistro,
+                    IdTipoDocumento = personaOriginal.IdTipoDocumento
+                };
+
+                usuario.Persona.TipoDocumento = tiposDocumento.FirstOrDefault(td => td.IdTipoDocumento == personaOriginal.IdTipoDocumento);
             }
         }
 
@@ -167,7 +194,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             }
         }
 
-        // Reemplazar la colección completa en lugar de hacer Clear() y Add()
+        // Asignar los roles filtrados al nuevo objeto (no rastreado por EF)
         usuario.UsuarioRoles = rolesUsuarioFiltrados;
 
         return usuario;
