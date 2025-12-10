@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Miski.Application.Services;
 using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Auth;
@@ -19,12 +20,18 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IConfiguration _configuration;
+    private readonly IDateTimeService _dateTimeService;
 
-    public LoginHandler(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
+    public LoginHandler(
+        IUnitOfWork unitOfWork, 
+        IMapper mapper, 
+        IConfiguration configuration,
+        IDateTimeService dateTimeService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _configuration = configuration;
+        _dateTimeService = dateTimeService;
     }
 
     public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -85,7 +92,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             IdUsuario = usuarioCompleto.IdUsuario,
             Username = usuarioCompleto.Username,
             Token = token,
-            Expiration = DateTime.UtcNow.AddHours(8),
+            Expiration = _dateTimeService.ConvertToLocalTime(DateTime.UtcNow.AddHours(8)),
             Persona = usuarioCompleto.Persona != null ? _mapper.Map<AuthPersonaDto>(usuarioCompleto.Persona) : null,
             Roles = rolesConPermisos
         };

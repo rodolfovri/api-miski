@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
@@ -145,11 +146,22 @@ builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(LoginHandler).Assembly);
 });
 
-// AutoMapper Configuration
-builder.Services.AddAutoMapper(cfg =>
+// AutoMapper Configuration con conversión automática de fechas UTC a local
+builder.Services.AddAutoMapper((Action<IServiceProvider, IMapperConfigurationExpression>)((serviceProvider, cfg) =>
 {
-    cfg.AddProfile<MappingProfile>();
-});
+    // Obtener el servicio de fecha/hora del contenedor de DI
+    var dateTimeService = serviceProvider.GetRequiredService<Miski.Application.Services.IDateTimeService>();
+    
+    // Aplicar conversión automática a TODAS las propiedades DateTime y DateTime?
+    cfg.CreateMap<DateTime, DateTime>().ConvertUsing((src, dest, context) => 
+        dateTimeService.ConvertToLocalTime(src));
+    
+    cfg.CreateMap<DateTime?, DateTime?>().ConvertUsing((src, dest, context) => 
+        dateTimeService.ConvertToLocalTime(src));
+    
+    // Agregar el perfil de mapeos
+    cfg.AddProfile<Miski.Application.Mappings.MappingProfile>();
+}), typeof(MappingProfile).Assembly);
 
 // FluentValidation Configuration
 builder.Services.AddValidatorsFromAssemblyContaining<CreateNegociacionValidator>();
@@ -165,6 +177,9 @@ builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 builder.Services.AddScoped<Miski.Application.Services.IFileStorageService, Miski.Application.Services.LocalFileStorageService>();
 // TODO: Para producción, cambiar a:
 // builder.Services.AddScoped<Miski.Application.Services.IFileStorageService, Miski.Application.Services.CloudFileStorageService>();
+
+// DateTime Service - Conversión de zona horaria
+builder.Services.AddSingleton<Miski.Application.Services.IDateTimeService, Miski.Application.Services.DateTimeService>();
 
 // CORS Configuration
 builder.Services.AddCors(options =>
