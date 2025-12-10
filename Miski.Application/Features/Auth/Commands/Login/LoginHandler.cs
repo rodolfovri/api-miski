@@ -54,14 +54,24 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponseDto>
             throw new ValidationException("Contraseña incorrecta");
         }
 
+        // Cargar datos relacionados incluyendo roles y permisos
+        var usuarioCompleto = await GetUsuarioCompletoAsync(usuario.IdUsuario, request.LoginData.TipoPlataforma, cancellationToken);
+
+        // Validar que el usuario tenga al menos un rol asociado a la plataforma
+        if (usuarioCompleto.UsuarioRoles == null || !usuarioCompleto.UsuarioRoles.Any())
+        {
+            var plataformaAmigable = request.LoginData.TipoPlataforma.Equals("Mobile", StringComparison.OrdinalIgnoreCase)
+                ? "aplicativo móvil"
+                : "sistema web";
+
+            throw new ValidationException($"No tienes un rol asignado para acceder al {plataformaAmigable}. Contacta al administrador del sistema.");
+        }
+
         // Registrar dispositivo si es Mobile
         if (request.LoginData.TipoPlataforma.Equals("Mobile", StringComparison.OrdinalIgnoreCase))
         {
             await RegisterOrUpdateDispositivoAsync(persona.IdPersona, request.LoginData, cancellationToken);
         }
-
-        // Cargar datos relacionados incluyendo roles y permisos
-        var usuarioCompleto = await GetUsuarioCompletoAsync(usuario.IdUsuario, request.LoginData.TipoPlataforma, cancellationToken);
 
         // Generar token JWT
         var token = GenerateJwtToken(usuarioCompleto);
