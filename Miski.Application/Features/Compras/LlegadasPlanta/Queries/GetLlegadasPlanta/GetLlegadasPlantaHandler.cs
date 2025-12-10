@@ -21,24 +21,19 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
             .GetAllAsync(cancellationToken);
 
         // Aplicar filtros opcionales
-        if (request.IdCompra.HasValue)
-        {
-            llegadasPlanta = llegadasPlanta.Where(lp => lp.IdCompra == request.IdCompra.Value).ToList();
-        }
-
         if (!string.IsNullOrEmpty(request.Estado))
         {
             llegadasPlanta = llegadasPlanta.Where(lp => lp.Estado == request.Estado).ToList();
         }
 
-        if (request.FechaInicio.HasValue)
+        if (request.FechaDesde.HasValue)
         {
-            llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada >= request.FechaInicio.Value).ToList();
+            llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada >= request.FechaDesde.Value).ToList();
         }
 
-        if (request.FechaFin.HasValue)
+        if (request.FechaHasta.HasValue)
         {
-            llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada <= request.FechaFin.Value).ToList();
+            llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada <= request.FechaHasta.Value).ToList();
         }
 
         // Obtener todas las entidades necesarias

@@ -380,15 +380,14 @@ public class LlegadaPlantaController : ControllerBase
     /// </remarks>
     [HttpGet("todas")]
     public async Task<ActionResult<ApiResponse<List<LlegadaPlantaDto>>>> GetTodasLasLlegadasPlanta(
-        [FromQuery] int? idCompra = null,
         [FromQuery] string? estado = null,
-        [FromQuery] DateTime? fechaInicio = null,
-        [FromQuery] DateTime? fechaFin = null,
+        [FromQuery] DateTime? fechaDesde = null,
+        [FromQuery] DateTime? fechaHasta = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetLlegadasPlantaQuery(idCompra, estado, fechaInicio, fechaFin);
+            var query = new GetLlegadasPlantaQuery(estado, fechaDesde, fechaHasta);
             var result = await _mediator.Send(query, cancellationToken);
 
             return Ok(ApiResponse<List<LlegadaPlantaDto>>.SuccessResult(
