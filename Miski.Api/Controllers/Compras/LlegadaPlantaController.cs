@@ -249,13 +249,14 @@ public class LlegadaPlantaController : ControllerBase
     /// </remarks>
     [HttpGet("vehiculos-con-recepciones")]
     public async Task<ActionResult<ApiResponse<IEnumerable<VehiculoConComprasYRecepcionesDto>>>> GetVehiculosConComprasYRecepciones(
-        [FromQuery] int? idCompraVehiculo = null,
+        [FromQuery] DateTime? fechaDesde = null,
+        [FromQuery] DateTime? fechaHasta = null,
         [FromQuery] int? idVehiculo = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetVehiculosConComprasYRecepcionesQuery(idCompraVehiculo, idVehiculo);
+            var query = new GetVehiculosConComprasYRecepcionesQuery(fechaDesde, fechaHasta, idVehiculo);
             var result = await _mediator.Send(query, cancellationToken);
 
             return Ok(ApiResponse<IEnumerable<VehiculoConComprasYRecepcionesDto>>.SuccessResult(

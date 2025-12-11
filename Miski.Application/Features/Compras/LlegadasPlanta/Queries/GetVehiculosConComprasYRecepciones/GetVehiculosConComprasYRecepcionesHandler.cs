@@ -21,10 +21,17 @@ public class GetVehiculosConComprasYRecepcionesHandler : IRequestHandler<GetVehi
             .GetAllAsync(cancellationToken);
 
         // Aplicar filtros si se proporcionan
-        if (request.IdCompraVehiculo.HasValue)
+        if (request.FechaDesde.HasValue)
         {
             todosLosCompraVehiculos = todosLosCompraVehiculos
-                .Where(cv => cv.IdCompraVehiculo == request.IdCompraVehiculo.Value)
+                .Where(cv => cv.FRegistro >= request.FechaDesde.Value)
+                .ToList();
+        }
+
+        if (request.FechaHasta.HasValue)
+        {
+            todosLosCompraVehiculos = todosLosCompraVehiculos
+                .Where(cv => cv.FRegistro <= request.FechaHasta.Value)
                 .ToList();
         }
 
