@@ -28,15 +28,17 @@ public class GetComprasHandler : IRequestHandler<GetComprasQuery, List<CompraDto
         // Aplicar filtros
         if (request.FechaDesde.HasValue)
         {
+            var fechaDesde = request.FechaDesde.Value.Date;
             compras = compras
-                .Where(c => c.FRegistro >= request.FechaDesde.Value)
+                .Where(c => c.FRegistro >= fechaDesde)
                 .ToList();
         }
 
         if (request.FechaHasta.HasValue)
         {
+            var fechaHasta = request.FechaHasta.Value.Date.AddDays(1).AddTicks(-1);
             compras = compras
-                .Where(c => c.FRegistro <= request.FechaHasta.Value)
+                .Where(c => c.FRegistro <= fechaHasta)
                 .ToList();
         }
 
