@@ -23,15 +23,17 @@ public class GetVehiculosConComprasYRecepcionesHandler : IRequestHandler<GetVehi
         // Aplicar filtros si se proporcionan
         if (request.FechaDesde.HasValue)
         {
+            var fechaDesde = request.FechaDesde.Value;
             todosLosCompraVehiculos = todosLosCompraVehiculos
-                .Where(cv => cv.FRegistro >= request.FechaDesde.Value)
+                .Where(cv => cv.FRegistro >= fechaDesde)
                 .ToList();
         }
 
         if (request.FechaHasta.HasValue)
         {
+            var fechaHasta = request.FechaHasta.Value;
             todosLosCompraVehiculos = todosLosCompraVehiculos
-                .Where(cv => cv.FRegistro <= request.FechaHasta.Value)
+                .Where(cv => cv.FRegistro <= fechaHasta)
                 .ToList();
         }
 

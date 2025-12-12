@@ -28,12 +28,14 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
 
         if (request.FechaDesde.HasValue)
         {
-            llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada >= request.FechaDesde.Value).ToList();
+            var fechaDesde = request.FechaDesde.Value;
+            llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada >= fechaDesde).ToList();
         }
 
         if (request.FechaHasta.HasValue)
         {
-            llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada <= request.FechaHasta.Value).ToList();
+            var fechaHasta = request.FechaHasta.Value;
+            llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada <= fechaHasta).ToList();
         }
 
         // Obtener todas las entidades necesarias
