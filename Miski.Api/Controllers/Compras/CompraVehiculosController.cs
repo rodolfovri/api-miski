@@ -35,13 +35,13 @@ public class CompraVehiculosController : ControllerBase
     /// </remarks>
     [HttpGet]
     public async Task<ActionResult<ApiResponse<IEnumerable<CompraVehiculoDto>>>> GetCompraVehiculos(
-        [FromQuery] int? idVehiculo = null,
-        [FromQuery] string? guiaRemision = null,
+        [FromQuery] DateTime? fechaDesde = null,
+        [FromQuery] DateTime? fechaHasta = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetCompraVehiculosQuery(idVehiculo, guiaRemision);
+            var query = new GetCompraVehiculosQuery(fechaDesde, fechaHasta);
             var result = await _mediator.Send(query, cancellationToken);
             
             return Ok(ApiResponse<IEnumerable<CompraVehiculoDto>>.SuccessResult(

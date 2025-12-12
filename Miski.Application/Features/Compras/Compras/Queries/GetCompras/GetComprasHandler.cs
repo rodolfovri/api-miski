@@ -26,14 +26,18 @@ public class GetComprasHandler : IRequestHandler<GetComprasQuery, List<CompraDto
         var lotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
 
         // Aplicar filtros
-        if (!string.IsNullOrEmpty(request.Estado))
+        if (request.FechaDesde.HasValue)
         {
-            compras = compras.Where(c => c.Estado == request.Estado).ToList();
+            compras = compras
+                .Where(c => c.FRegistro >= request.FechaDesde.Value)
+                .ToList();
         }
 
-        if (request.IdNegociacion.HasValue)
+        if (request.FechaHasta.HasValue)
         {
-            compras = compras.Where(c => c.IdNegociacion == request.IdNegociacion.Value).ToList();
+            compras = compras
+                .Where(c => c.FRegistro <= request.FechaHasta.Value)
+                .ToList();
         }
 
         var comprasDto = new List<CompraDto>();
@@ -43,7 +47,7 @@ public class GetComprasHandler : IRequestHandler<GetComprasQuery, List<CompraDto
             // Cargar negociación
             var negociacion = negociaciones.FirstOrDefault(n => n.IdNegociacion == compra.IdNegociacion);
             
-            // ? Cargar lote asociado a esta compra (relación 1:1)
+            // Cargar lote asociado a esta compra
             Lote? loteCompra = null;
             if (compra.IdLote.HasValue)
             {
@@ -54,7 +58,7 @@ public class GetComprasHandler : IRequestHandler<GetComprasQuery, List<CompraDto
             {
                 IdCompra = compra.IdCompra,
                 IdNegociacion = compra.IdNegociacion,
-                IdLote = compra.IdLote,  // ? FK al lote (puede ser null)
+                IdLote = compra.IdLote,
                 Serie = compra.Serie,
                 FRegistro = compra.FRegistro,
                 FEmision = compra.FEmision,

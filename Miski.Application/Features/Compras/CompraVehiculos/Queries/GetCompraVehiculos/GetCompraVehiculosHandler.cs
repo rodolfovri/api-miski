@@ -23,15 +23,18 @@ public class GetCompraVehiculosHandler : IRequestHandler<GetCompraVehiculosQuery
             .GetAllAsync(cancellationToken);
 
         // Aplicar filtros
-        if (request.IdVehiculo.HasValue)
+        if (request.FechaDesde.HasValue)
         {
-            comprasVehiculos = comprasVehiculos.Where(cv => cv.IdVehiculo == request.IdVehiculo.Value);
+            comprasVehiculos = comprasVehiculos
+                .Where(cv => cv.FRegistro >= request.FechaDesde.Value)
+                .ToList();
         }
 
-        if (!string.IsNullOrEmpty(request.GuiaRemision))
+        if (request.FechaHasta.HasValue)
         {
-            comprasVehiculos = comprasVehiculos.Where(cv => 
-                cv.GuiaRemision.Contains(request.GuiaRemision, StringComparison.OrdinalIgnoreCase));
+            comprasVehiculos = comprasVehiculos
+                .Where(cv => cv.FRegistro <= request.FechaHasta.Value)
+                .ToList();
         }
 
         // Cargar relaciones
