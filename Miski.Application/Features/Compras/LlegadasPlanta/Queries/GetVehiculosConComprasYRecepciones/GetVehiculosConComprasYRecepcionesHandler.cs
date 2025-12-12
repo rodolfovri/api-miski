@@ -31,7 +31,7 @@ public class GetVehiculosConComprasYRecepcionesHandler : IRequestHandler<GetVehi
 
         if (request.FechaHasta.HasValue)
         {
-            var fechaHasta = request.FechaHasta.Value;
+            var fechaHasta = request.FechaHasta.Value.Date.AddDays(1).AddTicks(-1);
             todosLosCompraVehiculos = todosLosCompraVehiculos
                 .Where(cv => cv.FRegistro <= fechaHasta)
                 .ToList();

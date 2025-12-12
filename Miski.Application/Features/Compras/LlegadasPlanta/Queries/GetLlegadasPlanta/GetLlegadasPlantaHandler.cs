@@ -34,7 +34,7 @@ public class GetLlegadasPlantaHandler : IRequestHandler<GetLlegadasPlantaQuery, 
 
         if (request.FechaHasta.HasValue)
         {
-            var fechaHasta = request.FechaHasta.Value;
+            var fechaHasta = request.FechaHasta.Value.Date.AddDays(1).AddTicks(-1);
             llegadasPlanta = llegadasPlanta.Where(lp => lp.FLlegada <= fechaHasta).ToList();
         }
 
