@@ -20,8 +20,8 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
-                .ThenInclude(v => v.Producto)   // Incluir el producto base
+            .Include(n => n.VariedadProducto)  
+                .ThenInclude(v => v.Producto)   
             .Where(n => n.NroDocumentoProveedor == proveedor.NumeroDocumento)
             .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
@@ -32,8 +32,8 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
-                .ThenInclude(v => v.Producto)   // Incluir el producto base
+            .Include(n => n.VariedadProducto) 
+                .ThenInclude(v => v.Producto)  
             .Where(n => n.IdComisionista == comisionistaId)
             .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
@@ -44,8 +44,8 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
-                .ThenInclude(v => v.Producto)   // Incluir el producto base
+            .Include(n => n.VariedadProducto) 
+                .ThenInclude(v => v.Producto)
             .Where(n => n.Estado == estado)
             .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
@@ -56,8 +56,8 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
-                .ThenInclude(v => v.Producto)   // Incluir el producto base
+            .Include(n => n.VariedadProducto)
+                .ThenInclude(v => v.Producto) 
             .Where(n => n.EstadoAprobacionIngeniero == "PENDIENTE")
             .OrderBy(n => n.FRegistro)
             .ToListAsync(cancellationToken);
@@ -68,8 +68,8 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
-                .ThenInclude(v => v.Producto)   // Incluir el producto base
+            .Include(n => n.VariedadProducto)
+                .ThenInclude(v => v.Producto)
             .Include(n => n.AprobadaPorUsuarioIngeniero)
                 .ThenInclude(u => u.Persona)
             .Include(n => n.AprobadaPorUsuarioContadora)
@@ -86,8 +86,8 @@ public class NegociacionRepository : Repository<Negociacion>, INegociacionReposi
         return await _dbSet
             .Include(n => n.Proveedor)
             .Include(n => n.Comisionista)
-            .Include(n => n.VariedadProducto)  // CAMBIADO de Producto
-                .ThenInclude(v => v.Producto)   // Incluir el producto base
+            .Include(n => n.VariedadProducto)
+                .ThenInclude(v => v.Producto)
             .OrderByDescending(n => n.FRegistro)
             .ToListAsync(cancellationToken);
     }

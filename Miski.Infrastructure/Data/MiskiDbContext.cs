@@ -42,6 +42,8 @@ public class MiskiDbContext : DbContext
     public DbSet<UnidadMedida> UnidadMedidas { get; set; }
     public DbSet<CategoriaProducto> CategoriaProductos { get; set; }
     public DbSet<CompraVehiculoDetalle> CompraVehiculoDetalles { get; set; }
+    public DbSet<ConfiguracionGlobal> ConfiguracionesGlobales { get; set; }
+    public DbSet<TipoMovimiento> TipoMovimientos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -889,6 +891,29 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Nombre).HasMaxLength(100).IsRequired();
             entity.Property(e => e.Estado).HasMaxLength(20);
             entity.ToTable("CategoriaFAQ");
+        });
+
+        // ConfiguracionGlobal configuration
+        modelBuilder.Entity<ConfiguracionGlobal>(entity =>
+        {
+            entity.HasKey(e => e.IdConfiguracionGlobal);
+            entity.Property(e => e.Clave).HasMaxLength(100).IsRequired();
+            entity.HasIndex(e => e.Clave).IsUnique();
+            entity.Property(e => e.Valor).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.Descripcion).HasMaxLength(500);
+            entity.Property(e => e.TipoDato).HasMaxLength(20);
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.ToTable("ConfiguracionGlobal");
+        });
+
+        // TipoMovimiento configuration
+        modelBuilder.Entity<TipoMovimiento>(entity =>
+        {
+            entity.HasKey(e => e.IdTipoMovimiento);
+            entity.Property(e => e.TipoOperacion).HasMaxLength(20).IsRequired();
+            entity.Property(e => e.Descripcion).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.ToTable("TipoMovimiento");
         });
     }
 }

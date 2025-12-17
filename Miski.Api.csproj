@@ -24,8 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Miski.Application\Features\Compras\CompraVehiculos\Queries\GetComprasPorCompraVehiculo\" />
-    <Folder Include="Miski.Application\Features\Compras\CompraVehiculos\Queries\GetComprasPorVehiculo\" />
     <Folder Include="Miski.Application\Features\Maestros\TipoCalidadProducto\Queries\GetTipoCalidadProductosByProducto\" />
     <Folder Include="wwwroot\swagger\" />
   </ItemGroup>

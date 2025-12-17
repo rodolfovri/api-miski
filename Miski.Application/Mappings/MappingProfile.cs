@@ -255,6 +255,12 @@ public class MappingProfile : Profile
 
         // Mapeos para CompraPago
         CreateMap<CompraPago, Miski.Shared.DTOs.Compras.CompraPagoDto>();
+
+        // Mapeos para ConfiguracionGlobal
+        CreateMap<Domain.Entities.ConfiguracionGlobal, Miski.Shared.DTOs.Maestros.ConfiguracionGlobalDto>();
+
+        // Mapeos para TipoMovimiento
+        CreateMap<Domain.Entities.TipoMovimiento, Miski.Shared.DTOs.Maestros.TipoMovimientoDto>();
     }
 }
 
