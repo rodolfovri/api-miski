@@ -23,7 +23,8 @@ public class DeleteTipoMovimientoHandler : IRequestHandler<DeleteTipoMovimientoC
             throw new NotFoundException("TipoMovimiento", request.IdTipoMovimiento);
         }
 
-        await _unitOfWork.Repository<Domain.Entities.TipoMovimiento>().DeleteAsync(tipoMovimiento);
+        tipoMovimiento.Estado = "INACTIVO";
+        await _unitOfWork.Repository<Domain.Entities.TipoMovimiento>().UpdateAsync(tipoMovimiento, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return true;
