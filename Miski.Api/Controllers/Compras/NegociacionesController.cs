@@ -7,6 +7,8 @@ using Miski.Application.Features.Compras.Negociaciones.Commands.DeleteNegociacio
 using Miski.Application.Features.Compras.Negociaciones.Commands.CompletarNegociacion;
 using Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociacionIngeniero;
 using Miski.Application.Features.Compras.Negociaciones.Commands.RechazarNegociacionIngeniero;
+using Miski.Application.Features.Compras.Negociaciones.Commands.AprobarEvidenciasIngeniero;
+using Miski.Application.Features.Compras.Negociaciones.Commands.RechazarEvidenciasIngeniero;
 using Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociacionContadora;
 using Miski.Application.Features.Compras.Negociaciones.Commands.RechazarNegociacionContadora;
 using Miski.Application.Features.Compras.Negociaciones.Queries.GetNegociaciones;
@@ -679,6 +681,110 @@ public class NegociacionesController : ControllerBase
         {
             return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
                 "Error al rechazar la negociación", 
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Aprueba las evidencias de una negociación por parte del ingeniero
+    /// </summary>
+    /// <remarks>
+    /// Cambia EstadoAprobacionIngenieroEvidencias a 'APROBADO'
+    /// Solo si está en estado 'EN REVISION' y EstadoAprobacionIngenieroEvidencias 'PENDIENTE'
+    /// Si AMBOS (ingeniero y contadora) han aprobado, se crea la compra automáticamente
+    /// </remarks>
+    [HttpPut("{id}/aprobar-evidencias-ingeniero")]
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> AprobarEvidenciasPorIngeniero(
+        int id,
+        [FromBody] AprobarEvidenciasIngenieroDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (id != request.IdNegociacion)
+            {
+                return BadRequest(ApiResponse<NegociacionDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new AprobarEvidenciasIngenieroCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionDto>.SuccessResult(
+                result,
+                "Evidencias aprobadas por ingeniero exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error al aprobar las evidencias", 
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Rechaza las evidencias de una negociación por parte del ingeniero
+    /// </summary>
+    /// <remarks>
+    /// Cambia EstadoAprobacionIngenieroEvidencias a 'RECHAZADO' y Estado a 'APROBADO'
+    /// Solo si está en estado 'EN REVISION' y EstadoAprobacionIngenieroEvidencias 'PENDIENTE'
+    /// El comisionista deberá reenviar las evidencias
+    /// </remarks>
+    [HttpPut("{id}/rechazar-evidencias-ingeniero")]
+    public async Task<ActionResult<ApiResponse<NegociacionDto>>> RechazarEvidenciasPorIngeniero(
+        int id,
+        [FromBody] RechazarEvidenciasIngenieroDto request,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (id != request.IdNegociacion)
+            {
+                return BadRequest(ApiResponse<NegociacionDto>.ErrorResult(
+                    "ID inválido",
+                    "El ID de la URL no coincide con el ID del cuerpo de la petición"
+                ));
+            }
+
+            var command = new RechazarEvidenciasIngenieroCommand(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(ApiResponse<NegociacionDto>.SuccessResult(
+                result,
+                "Evidencias rechazadas por ingeniero exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<NegociacionDto>.ErrorResult(
+                "Negociación no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<NegociacionDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<NegociacionDto>.ErrorResult(
+                "Error al rechazar las evidencias", 
                 ex.Message
             ));
         }

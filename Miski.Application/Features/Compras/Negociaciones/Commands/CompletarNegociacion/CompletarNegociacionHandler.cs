@@ -259,6 +259,7 @@ public class CompletarNegociacionHandler : IRequestHandler<CompletarNegociacionC
         // Cambiar estado a EN REVISION (o mantenerlo si ya estaba)
         negociacion.Estado = "EN REVISION";
         negociacion.EstadoAprobacionContadora = "PENDIENTE";
+        negociacion.EstadoAprobacionIngenieroEvidencias = "PENDIENTE"; // Inicializar estado de evidencias por ingeniero
 
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

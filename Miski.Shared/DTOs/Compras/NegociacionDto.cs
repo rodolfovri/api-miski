@@ -29,14 +29,19 @@ public class NegociacionDto
     public string EvidenciaVideo { get; set; } = string.Empty;
     public string? Estado { get; set; }
     public string? EstadoAprobacionIngeniero { get; set; }
+    public string? EstadoAprobacionIngenieroEvidencias { get; set; }
     public string? EstadoAprobacionContadora { get; set; }
     public int? AprobadaPorIngeniero { get; set; }
+    public int? AprobadaEvidenciasPorIngeniero { get; set; }
     public int? AprobadaPorContadora { get; set; }
     public int? RechazadoPorIngeniero { get; set; }
+    public int? RechazadaEvidenciasPorIngeniero { get; set; }
     public int? RechazadoPorContadora { get; set; }
     public DateTime? FAprobacionIngeniero { get; set; }
+    public DateTime? FAprobacionIngenieroEvidencias { get; set; }
     public DateTime? FAprobacionContadora { get; set; }
     public DateTime? FRechazoIngeniero { get; set; }
+    public DateTime? FRechazoIngenieroEvidencias { get; set; }
     public DateTime? FRechazoContadora { get; set; }
     public DateTime FRegistro { get; set; }
     public string? Observacion { get; set; }
@@ -50,6 +55,7 @@ public class NegociacionDto
     public string? TipoDocumentoNombre { get; set; }  // AGREGADO
     public string? BancoNombre { get; set; }  // AGREGADO
     public string? AprobadaPorIngenieroNombre { get; set; }
+    public string? AprobadaEvidenciasPorIngenieroNombre { get; set; }
     public string? AprobadaPorContadoraNombre { get; set; }
     
     // ? Información de la Compra asociada (si existe)
@@ -122,6 +128,34 @@ public class AprobarNegociacionContadoraDto
 
 // DTO para rechazar negociación por Contadora - SEGUNDA ETAPA
 public class RechazarNegociacionContadoraDto
+{
+    public int IdNegociacion { get; set; }
+    public int RechazadoPorContadora { get; set; }
+}
+
+// DTO para aprobar evidencias por Ingeniero
+public class AprobarEvidenciasIngenieroDto
+{
+    public int IdNegociacion { get; set; }
+    public int AprobadaEvidenciasPorIngeniero { get; set; }
+}
+
+// DTO para rechazar evidencias por Ingeniero
+public class RechazarEvidenciasIngenieroDto
+{
+    public int IdNegociacion { get; set; }
+    public int RechazadaEvidenciasPorIngeniero { get; set; }
+}
+
+// DTO para aprobar evidencias por Contadora
+public class AprobarEvidenciasContadoraDto
+{
+    public int IdNegociacion { get; set; }
+    public int AprobadaPorContadora { get; set; }
+}
+
+// DTO para rechazar evidencias por Contadora
+public class RechazarEvidenciasContadoraDto
 {
     public int IdNegociacion { get; set; }
     public int RechazadoPorContadora { get; set; }

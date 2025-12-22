@@ -26,19 +26,29 @@ public class Negociacion
     public string TerceraEvidenciaFoto { get; set; } = string.Empty;
     public string EvidenciaVideo { get; set; } = string.Empty;
     public string? Estado { get; set; }
+
     public string? EstadoAprobacionIngeniero { get; set; }
-    public string? EstadoAprobacionContadora { get; set; }
     public int? AprobadaPorIngeniero { get; set; }
-    public int? AprobadaPorContadora { get; set; }
     public int? RechazadoPorIngeniero { get; set; }
+    public DateTime? FAprobacionIngeniero { get; set; }
+    public DateTime? FRechazoIngeniero { get; set; }
+
+    public string? EstadoAprobacionIngenieroEvidencias { get; set; }
+    public int? AprobadaEvidenciasPorIngeniero { get; set; }
+    public int? RechazadaEvidenciasPorIngeniero { get; set; }
+    public DateTime? FAprobacionIngenieroEvidencias { get; set; }
+    public DateTime? FRechazoIngenieroEvidencias { get; set; }
+
+    public string? EstadoAprobacionContadora { get; set; }
+    public int? AprobadaPorContadora { get; set; }
     public int? RechazadoPorContadora { get; set; }
+    public DateTime? FAprobacionContadora { get; set; }
+    public DateTime? FRechazoContadora { get; set; }
+
     public int? IdUsuarioAnulacion { get; set; }
     public string? MotivoAnulacion { get; set; }
     public DateTime? FAnulacion { get; set; }
-    public DateTime? FAprobacionIngeniero { get; set; }
-    public DateTime? FAprobacionContadora { get; set; }
-    public DateTime? FRechazoIngeniero { get; set; }
-    public DateTime? FRechazoContadora { get; set; }
+
     public DateTime FRegistro { get; set; }
     public string? Observacion { get; set; }
 
@@ -46,10 +56,16 @@ public class Negociacion
     public virtual Persona? Proveedor { get; set; }
     public virtual Persona? PersonaProveedor { get; set; }
     public virtual Usuario Comisionista { get; set; } = null!;
+
     public virtual Usuario? AprobadaPorUsuarioIngeniero { get; set; }
-    public virtual Usuario? AprobadaPorUsuarioContadora { get; set; }
     public virtual Usuario? RechazadoPorUsuarioIngeniero { get; set; }
+
+    public virtual Usuario? AprobadaEvidenciasPorUsuarioIngeniero { get; set; }
+    public virtual Usuario? RechazadaEvidenciasPorUsuarioIngeniero { get; set; }
+
+    public virtual Usuario? AprobadaPorUsuarioContadora { get; set; }
     public virtual Usuario? RechazadoPorUsuarioContadora { get; set; }
+
     public virtual VariedadProducto? VariedadProducto { get; set; }
     public virtual TipoDocumento? TipoDocumento { get; set; }
     public virtual Banco? Banco { get; set; }

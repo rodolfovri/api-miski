@@ -375,6 +375,7 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.FotoDniFrontal).HasMaxLength(255);
             entity.Property(e => e.FotoDniPosterior).HasMaxLength(255);
             entity.Property(e => e.EstadoAprobacionIngeniero).HasMaxLength(20);
+            entity.Property(e => e.EstadoAprobacionIngenieroEvidencias).HasMaxLength(20);
             entity.Property(e => e.EstadoAprobacionContadora).HasMaxLength(20);
             entity.Property(e => e.Observacion).HasMaxLength(255);
             entity.Property(e => e.Estado).HasMaxLength(20);
@@ -392,6 +393,12 @@ public class MiskiDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Negociacion_AprobadaPorIngeniero");
 
+            entity.HasOne(d => d.AprobadaEvidenciasPorUsuarioIngeniero)
+                .WithMany()
+                .HasForeignKey(d => d.AprobadaEvidenciasPorIngeniero)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Negociacion_AprobadaEvidenciasPorIngeniero");
+
             entity.HasOne(d => d.AprobadaPorUsuarioContadora)
                 .WithMany()
                 .HasForeignKey(d => d.AprobadaPorContadora)
@@ -403,6 +410,12 @@ public class MiskiDbContext : DbContext
                 .HasForeignKey(d => d.RechazadoPorIngeniero)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Negociacion_RechazadoPorIngeniero");
+
+            entity.HasOne(d => d.RechazadaEvidenciasPorUsuarioIngeniero)
+                .WithMany()
+                .HasForeignKey(d => d.RechazadaEvidenciasPorIngeniero)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Negociacion_RechazadaEvidenciasPorIngeniero");
 
             entity.HasOne(d => d.RechazadoPorUsuarioContadora)
                 .WithMany()

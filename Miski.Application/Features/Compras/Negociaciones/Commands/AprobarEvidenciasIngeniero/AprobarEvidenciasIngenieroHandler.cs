@@ -5,20 +5,20 @@ using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Compras;
 using Miski.Shared.Exceptions;
 
-namespace Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociacionContadora;
+namespace Miski.Application.Features.Compras.Negociaciones.Commands.AprobarEvidenciasIngeniero;
 
-public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegociacionContadoraCommand, NegociacionDto>
+public class AprobarEvidenciasIngenieroHandler : IRequestHandler<AprobarEvidenciasIngenieroCommand, NegociacionDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public AprobarNegociacionContadoraHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public AprobarEvidenciasIngenieroHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
-    public async Task<NegociacionDto> Handle(AprobarNegociacionContadoraCommand request, CancellationToken cancellationToken)
+    public async Task<NegociacionDto> Handle(AprobarEvidenciasIngenieroCommand request, CancellationToken cancellationToken)
     {
         var dto = request.Aprobacion;
 
@@ -28,29 +28,25 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
         if (negociacion == null)
             throw new NotFoundException("Negociacion", dto.IdNegociacion);
 
-        // Validar que la negociación esté EN REVISION
         if (negociacion.Estado != "EN REVISION")
         {
-            throw new ValidationException("Solo se pueden aprobar negociaciones en estado 'EN REVISION'");
+            throw new ValidationException("Solo se pueden aprobar evidencias de negociaciones en estado 'EN REVISION'");
         }
 
-        // Validar que esté pendiente de aprobación por contadora
-        if (negociacion.EstadoAprobacionContadora != "PENDIENTE")
+        if (negociacion.EstadoAprobacionIngenieroEvidencias != "PENDIENTE")
         {
-            throw new ValidationException("La negociación ya ha sido procesada por la contadora");
+            throw new ValidationException("Las evidencias ya han sido procesadas por el ingeniero");
         }
 
-        // Validar que el usuario aprobador existe
         var aprobador = await _unitOfWork.Repository<Usuario>()
-            .GetByIdAsync(dto.AprobadaPorContadora, cancellationToken);
+            .GetByIdAsync(dto.AprobadaEvidenciasPorIngeniero, cancellationToken);
         
         if (aprobador == null)
-            throw new NotFoundException("Usuario aprobador", dto.AprobadaPorContadora);
+            throw new NotFoundException("Usuario aprobador", dto.AprobadaEvidenciasPorIngeniero);
 
-        // Aprobar la negociación
-        negociacion.EstadoAprobacionContadora = "APROBADO";
-        negociacion.AprobadaPorContadora = dto.AprobadaPorContadora;
-        negociacion.FAprobacionContadora = DateTime.UtcNow;
+        negociacion.EstadoAprobacionIngenieroEvidencias = "APROBADO";
+        negociacion.AprobadaEvidenciasPorIngeniero = dto.AprobadaEvidenciasPorIngeniero;
+        negociacion.FAprobacionIngenieroEvidencias = DateTime.UtcNow;
 
         // Verificar si AMBOS (ingeniero y contadora) han aprobado las evidencias
         if (negociacion.EstadoAprobacionIngenieroEvidencias == "APROBADO" && 
@@ -81,7 +77,7 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // Cargar relaciones para el DTO
-        negociacion.AprobadaPorUsuarioContadora = aprobador;
+        negociacion.AprobadaEvidenciasPorUsuarioIngeniero = aprobador;
         negociacion.Comisionista = await _unitOfWork.Repository<Usuario>()
             .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Usuario();
         
@@ -96,7 +92,6 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
             negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
                 .GetByIdAsync(negociacion.IdVariedadProducto.Value, cancellationToken);
             
-            // ? CARGAR EL PRODUCTO DENTRO DE VARIEDAD PRODUCTO
             if (negociacion.VariedadProducto != null && negociacion.VariedadProducto.IdProducto > 0)
             {
                 negociacion.VariedadProducto.Producto = await _unitOfWork.Repository<Producto>()
@@ -110,10 +105,10 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
                 .GetByIdAsync(negociacion.AprobadaPorIngeniero.Value, cancellationToken);
         }
 
-        if (negociacion.AprobadaEvidenciasPorIngeniero.HasValue)
+        if (negociacion.AprobadaPorContadora.HasValue)
         {
-            negociacion.AprobadaEvidenciasPorUsuarioIngeniero = await _unitOfWork.Repository<Usuario>()
-                .GetByIdAsync(negociacion.AprobadaEvidenciasPorIngeniero.Value, cancellationToken);
+            negociacion.AprobadaPorUsuarioContadora = await _unitOfWork.Repository<Usuario>()
+                .GetByIdAsync(negociacion.AprobadaPorContadora.Value, cancellationToken);
         }
 
         if (negociacion.IdTipoDocumento.HasValue)

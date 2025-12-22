@@ -5,22 +5,22 @@ using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Compras;
 using Miski.Shared.Exceptions;
 
-namespace Miski.Application.Features.Compras.Negociaciones.Commands.AprobarNegociacionContadora;
+namespace Miski.Application.Features.Compras.Negociaciones.Commands.RechazarEvidenciasIngeniero;
 
-public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegociacionContadoraCommand, NegociacionDto>
+public class RechazarEvidenciasIngenieroHandler : IRequestHandler<RechazarEvidenciasIngenieroCommand, NegociacionDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public AprobarNegociacionContadoraHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public RechazarEvidenciasIngenieroHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
-    public async Task<NegociacionDto> Handle(AprobarNegociacionContadoraCommand request, CancellationToken cancellationToken)
+    public async Task<NegociacionDto> Handle(RechazarEvidenciasIngenieroCommand request, CancellationToken cancellationToken)
     {
-        var dto = request.Aprobacion;
+        var dto = request.Rechazo;
 
         var negociacion = await _unitOfWork.Repository<Negociacion>()
             .GetByIdAsync(dto.IdNegociacion, cancellationToken);
@@ -28,60 +28,32 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
         if (negociacion == null)
             throw new NotFoundException("Negociacion", dto.IdNegociacion);
 
-        // Validar que la negociación esté EN REVISION
         if (negociacion.Estado != "EN REVISION")
         {
-            throw new ValidationException("Solo se pueden aprobar negociaciones en estado 'EN REVISION'");
+            throw new ValidationException("Solo se pueden rechazar evidencias de negociaciones en estado 'EN REVISION'");
         }
 
-        // Validar que esté pendiente de aprobación por contadora
-        if (negociacion.EstadoAprobacionContadora != "PENDIENTE")
+        if (negociacion.EstadoAprobacionIngenieroEvidencias != "PENDIENTE")
         {
-            throw new ValidationException("La negociación ya ha sido procesada por la contadora");
+            throw new ValidationException("Las evidencias ya han sido procesadas por el ingeniero");
         }
 
-        // Validar que el usuario aprobador existe
-        var aprobador = await _unitOfWork.Repository<Usuario>()
-            .GetByIdAsync(dto.AprobadaPorContadora, cancellationToken);
+        var rechazador = await _unitOfWork.Repository<Usuario>()
+            .GetByIdAsync(dto.RechazadaEvidenciasPorIngeniero, cancellationToken);
         
-        if (aprobador == null)
-            throw new NotFoundException("Usuario aprobador", dto.AprobadaPorContadora);
+        if (rechazador == null)
+            throw new NotFoundException("Usuario rechazador", dto.RechazadaEvidenciasPorIngeniero);
 
-        // Aprobar la negociación
-        negociacion.EstadoAprobacionContadora = "APROBADO";
-        negociacion.AprobadaPorContadora = dto.AprobadaPorContadora;
-        negociacion.FAprobacionContadora = DateTime.UtcNow;
-
-        // Verificar si AMBOS (ingeniero y contadora) han aprobado las evidencias
-        if (negociacion.EstadoAprobacionIngenieroEvidencias == "APROBADO" && 
-            negociacion.EstadoAprobacionContadora == "APROBADO")
-        {
-            // Ambos aprobaron, crear la compra automáticamente
-            negociacion.Estado = "FINALIZADO";
-
-            var compra = new Compra
-            {
-                IdNegociacion = negociacion.IdNegociacion,
-                IdMoneda = 1,
-                IdTipoCambio = null,
-                Serie = null,
-                FRegistro = DateTime.UtcNow,
-                FEmision = DateTime.UtcNow,
-                Estado = "ACTIVO",
-                EsParcial = "NO",
-                MontoTotal = null,
-                IGV = null,
-                Observacion = null
-            };
-
-            await _unitOfWork.Repository<Compra>().AddAsync(compra, cancellationToken);
-        }
+        negociacion.EstadoAprobacionIngenieroEvidencias = "RECHAZADO";
+        negociacion.RechazadaEvidenciasPorIngeniero = dto.RechazadaEvidenciasPorIngeniero;
+        negociacion.FRechazoIngenieroEvidencias = DateTime.UtcNow;
+        negociacion.Estado = "APROBADO"; // Vuelve a estado APROBADO para que el comisionista reenvíe las evidencias
 
         await _unitOfWork.Repository<Negociacion>().UpdateAsync(negociacion, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         // Cargar relaciones para el DTO
-        negociacion.AprobadaPorUsuarioContadora = aprobador;
+        negociacion.RechazadaEvidenciasPorUsuarioIngeniero = rechazador;
         negociacion.Comisionista = await _unitOfWork.Repository<Usuario>()
             .GetByIdAsync(negociacion.IdComisionista, cancellationToken) ?? new Usuario();
         
@@ -96,7 +68,6 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
             negociacion.VariedadProducto = await _unitOfWork.Repository<VariedadProducto>()
                 .GetByIdAsync(negociacion.IdVariedadProducto.Value, cancellationToken);
             
-            // ? CARGAR EL PRODUCTO DENTRO DE VARIEDAD PRODUCTO
             if (negociacion.VariedadProducto != null && negociacion.VariedadProducto.IdProducto > 0)
             {
                 negociacion.VariedadProducto.Producto = await _unitOfWork.Repository<Producto>()
@@ -108,12 +79,6 @@ public class AprobarNegociacionContadoraHandler : IRequestHandler<AprobarNegocia
         {
             negociacion.AprobadaPorUsuarioIngeniero = await _unitOfWork.Repository<Usuario>()
                 .GetByIdAsync(negociacion.AprobadaPorIngeniero.Value, cancellationToken);
-        }
-
-        if (negociacion.AprobadaEvidenciasPorIngeniero.HasValue)
-        {
-            negociacion.AprobadaEvidenciasPorUsuarioIngeniero = await _unitOfWork.Repository<Usuario>()
-                .GetByIdAsync(negociacion.AprobadaEvidenciasPorIngeniero.Value, cancellationToken);
         }
 
         if (negociacion.IdTipoDocumento.HasValue)
