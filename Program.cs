@@ -181,6 +181,9 @@ builder.Services.AddScoped<Miski.Application.Services.IFileStorageService, Miski
 // DateTime Service - Conversión de zona horaria
 builder.Services.AddSingleton<Miski.Application.Services.IDateTimeService, Miski.Application.Services.DateTimeService>();
 
+// Configuracion Service - Obtener configuraciones globales
+builder.Services.AddScoped<Miski.Application.Services.IConfiguracionService, Miski.Application.Services.ConfiguracionService>();
+
 // CORS Configuration
 builder.Services.AddCors(options =>
 {

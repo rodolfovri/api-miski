@@ -4,6 +4,7 @@ using Miski.Domain.Contracts;
 using Miski.Domain.Entities;
 using Miski.Shared.DTOs.Compras;
 using Miski.Shared.Exceptions;
+using Miski.Application.Services;
 
 namespace Miski.Application.Features.Compras.Negociaciones.Commands.CreateNegociacion;
 
@@ -11,12 +12,16 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private const decimal PESO_POR_SACO_DEFAULT = 50m; // Peso por defecto en kg
+    private readonly IConfiguracionService _configuracionService;
 
-    public CreateNegociacionHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateNegociacionHandler(
+        IUnitOfWork unitOfWork, 
+        IMapper mapper,
+        IConfiguracionService configuracionService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _configuracionService = configuracionService;
     }
 
     public async Task<NegociacionDto> Handle(CreateNegociacionCommand request, CancellationToken cancellationToken)
@@ -40,18 +45,30 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
                 throw new NotFoundException("VariedadProducto", dto.IdVariedadProducto.Value);
         }
 
-        // Calcular PesoTotal: SacosTotales * PesoPorSaco (50 kg)
+        // Obtener PESO_POR_SACO desde la configuración global
+        decimal pesoPorSaco;
+        try
+        {
+            pesoPorSaco = await _configuracionService.ObtenerDecimalAsync("PESO_POR_SACO", cancellationToken);
+        }
+        catch (NotFoundException)
+        {
+            // Si no existe la configuración, usar valor por defecto de 50 kg
+            pesoPorSaco = 50m;
+        }
+
+        // Calcular PesoTotal: SacosTotales * PesoPorSaco
         decimal? pesoTotal = null;
         if (dto.SacosTotales.HasValue)
         {
-            pesoTotal = dto.SacosTotales.Value * PESO_POR_SACO_DEFAULT;
+            pesoTotal = dto.SacosTotales.Value * pesoPorSaco;
         }
 
-        // Calcular MontoTotalPago: SacosTotales * PrecioUnitario * PesoPorSaco (50 kg)
+        // Calcular MontoTotalPago: SacosTotales * PrecioUnitario * PesoPorSaco
         decimal? montoTotalPago = null;
         if (dto.SacosTotales.HasValue && dto.PrecioUnitario.HasValue)
         {
-            montoTotalPago = dto.SacosTotales.Value * dto.PrecioUnitario.Value * PESO_POR_SACO_DEFAULT;
+            montoTotalPago = dto.SacosTotales.Value * dto.PrecioUnitario.Value * pesoPorSaco;
         }
 
         // Crear la negociación - PRIMERA ETAPA
@@ -62,7 +79,7 @@ public class CreateNegociacionHandler : IRequestHandler<CreateNegociacionCommand
             SacosTotales = dto.SacosTotales,
             TipoCalidad = dto.TipoCalidad,
             PrecioUnitario = dto.PrecioUnitario,
-            PesoPorSaco = PESO_POR_SACO_DEFAULT, // Asignar peso por saco por defecto (50 kg)
+            PesoPorSaco = pesoPorSaco, // Asignar peso por saco obtenido desde configuración
             PesoTotal = pesoTotal, // Asignar peso total calculado
             MontoTotalPago = montoTotalPago, // Asignar monto total calculado
             Estado = "EN PROCESO",  // Estado inicial automático
