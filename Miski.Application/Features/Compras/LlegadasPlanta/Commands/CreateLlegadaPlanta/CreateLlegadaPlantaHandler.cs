@@ -95,9 +95,9 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
         var llegadasRegistradas = new List<LlegadaPlantaDto>();
         var comprasActualizadas = new HashSet<int>(); // Para rastrear qué compras debemos actualizar
 
-        // Diccionario para acumular peso por compra Y ubicación (para actualizar Stock)
-        // Clave: (IdCompra, IdUbicacion), Valor: PesoTotal
-        var pesoTotalPorCompraYUbicacion = new Dictionary<(int, int), decimal>();
+        // Diccionario para acumular peso y sacos por compra Y ubicación (para actualizar Stock)
+        // Clave: (IdCompra, IdUbicacion), Valor: (PesoTotal, SacosTotales)
+        var pesoYSacosPorCompraYUbicacion = new Dictionary<(int, int), (decimal peso, int sacos)>();
 
         // Crear las llegadas a planta para cada detalle
         foreach (var detalleDto in request.Data.Detalles)
@@ -112,7 +112,7 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
                 IdCompra = detalleDto.IdCompra,
                 IdUsuario = request.Data.IdUsuario,
                 IdLote = detalleDto.IdLote,
-                IdUbicacion = detalleDto.IdUbicacion,  // ✨ Del detalle
+                IdUbicacion = detalleDto.IdUbicacion,
                 SacosRecibidos = (double)detalleDto.SacosRecibidos,
                 PesoRecibido = (double)detalleDto.PesoRecibido,
                 FLlegada = fechaLlegada,
@@ -126,13 +126,14 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
             // Agregar compra a la lista de compras a actualizar
             comprasActualizadas.Add(detalleDto.IdCompra);
 
-            // Acumular peso total por compra Y ubicación para actualizar Stock
+            // Acumular peso y sacos por compra Y ubicación para actualizar Stock
             var key = (detalleDto.IdCompra, detalleDto.IdUbicacion);
-            if (!pesoTotalPorCompraYUbicacion.ContainsKey(key))
+            if (!pesoYSacosPorCompraYUbicacion.ContainsKey(key))
             {
-                pesoTotalPorCompraYUbicacion[key] = 0;
+                pesoYSacosPorCompraYUbicacion[key] = (0, 0);
             }
-            pesoTotalPorCompraYUbicacion[key] += detalleDto.PesoRecibido;
+            var valorActual = pesoYSacosPorCompraYUbicacion[key];
+            pesoYSacosPorCompraYUbicacion[key] = (valorActual.peso + detalleDto.PesoRecibido, valorActual.sacos + (int)detalleDto.SacosRecibidos);
 
             // Calcular diferencias
             int diferenciaSacos = lote.Sacos - (int)llegadaPlanta.SacosRecibidos;
@@ -175,10 +176,10 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
         var todasLasNegociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
         var todosLosStocks = await _unitOfWork.Repository<Stock>().GetAllAsync(cancellationToken);
 
-        foreach (var kvp in pesoTotalPorCompraYUbicacion)
+        foreach (var kvp in pesoYSacosPorCompraYUbicacion)
         {
             var (idCompra, idUbicacion) = kvp.Key;
-            var pesoTotal = kvp.Value;
+            var (pesoTotal, sacosTotal) = kvp.Value;
 
             var compra = todasLasCompras.First(c => c.IdCompra == idCompra);
             var negociacion = todasLasNegociaciones.FirstOrDefault(n => n.IdNegociacion == compra.IdNegociacion);
@@ -198,8 +199,9 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
 
             if (stockExistente != null)
             {
-                // Actualizar stock existente (sumar el peso recibido)
+                // Actualizar stock existente (sumar el peso y sacos recibidos)
                 stockExistente.CantidadKg = (stockExistente.CantidadKg ?? 0) + pesoTotal;
+                stockExistente.CantidadSacos = (stockExistente.CantidadSacos ?? 0) + sacosTotal;
                 await _unitOfWork.Repository<Stock>().UpdateAsync(stockExistente, cancellationToken);
             }
             else
@@ -209,7 +211,9 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
                 {
                     IdVariedadProducto = idVariedadProducto,
                     IdPlanta = idUbicacion,
-                    CantidadKg = pesoTotal
+                    CantidadKg = pesoTotal,
+                    CantidadSacos = sacosTotal,
+                    TipoStock = "MATERIA_PRIMA"
                 };
                 await _unitOfWork.Repository<Stock>().AddAsync(nuevoStock, cancellationToken);
             }

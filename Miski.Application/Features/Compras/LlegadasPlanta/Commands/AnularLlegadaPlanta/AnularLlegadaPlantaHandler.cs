@@ -58,6 +58,7 @@ public class AnularLlegadaPlantaHandler : IRequestHandler<AnularLlegadaPlantaCom
 
         var idVariedadProducto = negociacion.IdVariedadProducto.Value;
         var pesoRecibido = (decimal)llegadaPlanta.PesoRecibido;
+        var sacosRecibidos = (int)llegadaPlanta.SacosRecibidos;
 
         // 7. Buscar el Stock correspondiente (Ubicacion + VariedadProducto)
         var todosLosStocks = await _unitOfWork.Repository<Stock>().GetAllAsync(cancellationToken);
@@ -70,15 +71,23 @@ public class AnularLlegadaPlantaHandler : IRequestHandler<AnularLlegadaPlantaCom
             throw new Shared.Exceptions.ValidationException($"No se encontró stock para la ubicación {llegadaPlanta.IdUbicacion} y producto {idVariedadProducto}. No se puede revertir el stock");
         }
 
-        // 8. Validar que hay stock suficiente para revertir
-        var stockActual = stock.CantidadKg ?? 0;
-        if (stockActual < pesoRecibido)
+        // 8. Validar que hay stock suficiente para revertir (tanto peso como sacos)
+        var stockActualKg = stock.CantidadKg ?? 0;
+        var stockActualSacos = stock.CantidadSacos ?? 0;
+        
+        if (stockActualKg < pesoRecibido)
         {
-            throw new Shared.Exceptions.ValidationException($"Stock insuficiente para revertir. Stock actual: {stockActual} kg, se requiere revertir: {pesoRecibido} kg. El stock resultante sería negativo");
+            throw new Shared.Exceptions.ValidationException($"Stock de kilogramos insuficiente para revertir. Stock actual: {stockActualKg} kg, se requiere revertir: {pesoRecibido} kg. El stock resultante sería negativo");
+        }
+        
+        if (stockActualSacos < sacosRecibidos)
+        {
+            throw new Shared.Exceptions.ValidationException($"Stock de sacos insuficiente para revertir. Stock actual: {stockActualSacos} sacos, se requiere revertir: {sacosRecibidos} sacos. El stock resultante sería negativo");
         }
 
-        // 9. Revertir el stock (restar el peso recibido)
-        stock.CantidadKg = stockActual - pesoRecibido;
+        // 9. Revertir el stock (restar el peso y sacos recibidos)
+        stock.CantidadKg = stockActualKg - pesoRecibido;
+        stock.CantidadSacos = stockActualSacos - sacosRecibidos;
         await _unitOfWork.Repository<Stock>().UpdateAsync(stock, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

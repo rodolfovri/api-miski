@@ -340,6 +340,7 @@ public class MiskiDbContext : DbContext
         {
             entity.HasKey(e => e.IdStock);
             entity.Property(e => e.CantidadKg).HasPrecision(18, 2);
+            entity.Property(e => e.TipoStock).HasMaxLength(30).IsRequired();
 
             entity.HasOne(d => d.VariedadProducto)
                 .WithMany(p => p.Stocks)
