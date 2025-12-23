@@ -17,9 +17,14 @@ public class VariedadProductoDto
     // Información adicional
     public string? ProductoNombre { get; set; }
     public string? UnidadMedidaNombre { get; set; }
-    
-    // Stock por ubicación (0 si no existe stock en esa ubicación)
-    public decimal StockKg { get; set; }  // ? NUEVO
+
+    // Materia Prima
+    public decimal StockMateriaPrimaKg { get; set; }
+    public int StockMateriaPrimaSacos { get; set; }
+
+    // Producto Terminado
+    public decimal StockProductoTerminadoKg { get; set; }
+    public int StockProductoTerminadoSacos { get; set; }
 }
 
 public class CreateVariedadProductoDto

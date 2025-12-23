@@ -71,12 +71,28 @@ public class GetVariedadesProductoHandler : IRequestHandler<GetVariedadesProduct
             // Buscar el stock para esta variedad en la ubicación especificada
             if (request.IdUbicacion.HasValue)
             {
-                var stock = todosLosStocks.FirstOrDefault(s => s.IdVariedadProducto == variedad.IdVariedadProducto);
-                dto.StockKg = stock?.CantidadKg ?? 0;  // Si no hay stock, retorna 0
+                var stocksVariedad = todosLosStocks
+                   .Where(s => s.IdVariedadProducto == variedad.IdVariedadProducto)
+                   .ToList();
+
+                var stockMP = stocksVariedad
+                    .FirstOrDefault(s => s.TipoStock == "MATERIA_PRIMA");
+
+                var stockPT = stocksVariedad
+                    .FirstOrDefault(s => s.TipoStock == "PRODUCTO_TERMINADO");
+
+                dto.StockMateriaPrimaKg = stockMP?.CantidadKg ?? 0;
+                dto.StockMateriaPrimaSacos = stockMP?.CantidadSacos ?? 0;
+
+                dto.StockProductoTerminadoKg = stockPT?.CantidadKg ?? 0;
+                dto.StockProductoTerminadoSacos = stockPT?.CantidadSacos ?? 0;
             }
             else
             {
-                dto.StockKg = 0;  // Si no se proporciona ubicación, stock es 0
+                dto.StockMateriaPrimaKg = 0;
+                dto.StockMateriaPrimaSacos = 0;
+                dto.StockProductoTerminadoKg = 0;
+                dto.StockProductoTerminadoSacos = 0;
             }
 
             resultado.Add(dto);
