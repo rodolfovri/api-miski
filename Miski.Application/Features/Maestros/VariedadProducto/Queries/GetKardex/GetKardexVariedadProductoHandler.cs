@@ -37,10 +37,14 @@ public class GetKardexVariedadProductoHandler : IRequestHandler<GetKardexVarieda
         var todasLasPersonas = await _unitOfWork.Repository<Persona>().GetAllAsync(cancellationToken);
         var todosLosLotes = await _unitOfWork.Repository<Lote>().GetAllAsync(cancellationToken);
 
+        // Ajustar las fechas para incluir todo el día
+        var fechaDesde = request.FechaDesde.Date; // 00:00:00
+        var fechaHasta = request.FechaHasta.Date.AddDays(1).AddTicks(-1); // 23:59:59
+
         // 4. Filtrar movimientos que afectan esta variedad de producto en el rango de fechas
         var movimientosRelevantes = todosLosMovimientos
-            .Where(m => m.FRegistro >= request.FechaDesde && m.FRegistro <= request.FechaHasta)
-            .Where(m => m.Estado == "ACTIVO") // Solo movimientos activos
+            .Where(m => m.FRegistro >= fechaDesde && m.FRegistro <= fechaHasta)
+            .Where(m => m.Estado == "ACTIVO")
             .ToList();
 
         // 5. Obtener los detalles de movimientos que corresponden a esta variedad
@@ -51,7 +55,7 @@ public class GetKardexVariedadProductoHandler : IRequestHandler<GetKardexVarieda
 
         // 6. Calcular stock inicial (movimientos antes de FechaDesde)
         var movimientosAnteriores = todosLosMovimientos
-            .Where(m => m.FRegistro < request.FechaDesde)
+            .Where(m => m.FRegistro < fechaDesde)
             .Where(m => m.Estado == "ACTIVO")
             .ToList();
 
