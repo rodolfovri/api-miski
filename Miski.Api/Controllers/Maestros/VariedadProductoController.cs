@@ -6,6 +6,7 @@ using Miski.Application.Features.Maestros.VariedadProducto.Commands.UpdateVaried
 using Miski.Application.Features.Maestros.VariedadProducto.Commands.DeleteVariedad;
 using Miski.Application.Features.Maestros.VariedadProducto.Queries.GetVariedades;
 using Miski.Application.Features.Maestros.VariedadProducto.Queries.GetVariedadById;
+using Miski.Application.Features.Maestros.VariedadProducto.Queries.GetKardex;
 using Miski.Shared.DTOs.Base;
 using Miski.Shared.DTOs.Maestros;
 
@@ -232,6 +233,68 @@ public class VariedadProductoController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse.ErrorResult(
+                "Error interno del servidor",
+                ex.Message
+            ));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene el Kardex de una variedad de producto
+    /// </summary>
+    /// <remarks>
+    /// Retorna el detalle de todos los movimientos de almacén (ingresos y salidas) 
+    /// de una variedad de producto específica en un rango de fechas.
+    /// 
+    /// **Información incluida:**
+    /// - Stock inicial (antes del rango de fechas)
+    /// - Movimientos detallados con tipo de operación (INGRESO/SALIDA)
+    /// - Cantidades en kg y número de sacos por movimiento
+    /// - Saldo acumulado después de cada movimiento
+    /// - Stock final (al final del rango de fechas)
+    /// - Usuario que realizó cada movimiento
+    /// - Ubicación de cada movimiento
+    /// - Código de lote asociado (si aplica)
+    /// 
+    /// **Parámetros:**
+    /// - idVariedadProducto: ID de la variedad de producto (requerido)
+    /// - fechaDesde: Fecha inicial del rango (requerido, formato: yyyy-MM-dd)
+    /// - fechaHasta: Fecha final del rango (requerido, formato: yyyy-MM-dd)
+    /// 
+    /// **Ejemplo de uso:**
+    /// GET /api/maestros/variedad-producto/5/kardex?fechaDesde=2024-01-01&amp;fechaHasta=2024-12-31
+    /// </remarks>
+    [HttpGet("{id}/kardex")]
+    public async Task<ActionResult<ApiResponse<KardexVariedadProductoDto>>> GetKardex(
+        int id,
+        [FromQuery] DateTime fechaDesde,
+        [FromQuery] DateTime fechaHasta,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var query = new GetKardexVariedadProductoQuery(id, fechaDesde, fechaHasta);
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(ApiResponse<KardexVariedadProductoDto>.SuccessResult(
+                result,
+                "Kardex obtenido exitosamente"
+            ));
+        }
+        catch (Shared.Exceptions.NotFoundException ex)
+        {
+            return NotFound(ApiResponse<KardexVariedadProductoDto>.ErrorResult(
+                "Variedad no encontrada",
+                ex.Message
+            ));
+        }
+        catch (Shared.Exceptions.ValidationException ex)
+        {
+            return BadRequest(ApiResponse<KardexVariedadProductoDto>.ValidationErrorResult(ex.Errors));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<KardexVariedadProductoDto>.ErrorResult(
                 "Error interno del servidor",
                 ex.Message
             ));
