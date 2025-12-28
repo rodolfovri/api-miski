@@ -94,6 +94,7 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
 
         var llegadasRegistradas = new List<LlegadaPlantaDto>();
         var comprasActualizadas = new HashSet<int>(); // Para rastrear qué compras debemos actualizar
+        var llegadasPlantaCreadas = new List<LlegadaPlanta>(); // Para crear MovimientoAlmacen después
 
         // Diccionario para acumular peso y sacos por compra Y ubicación (para actualizar Stock)
         // Clave: (IdCompra, IdUbicacion), Valor: (PesoTotal, SacosTotales)
@@ -122,6 +123,9 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
 
             await _unitOfWork.Repository<LlegadaPlanta>().AddAsync(llegadaPlanta, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Guardar la llegada para crear MovimientoAlmacen después
+            llegadasPlantaCreadas.Add(llegadaPlanta);
 
             // Agregar compra a la lista de compras a actualizar
             comprasActualizadas.Add(detalleDto.IdCompra);
@@ -172,8 +176,65 @@ public class CreateLlegadaPlantaHandler : IRequestHandler<CreateLlegadaPlantaCom
         }
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // Actualizar o crear Stock por cada compra Y ubicación procesada
+        // Cargar negociaciones para MovimientoAlmacen y Stock
         var todasLasNegociaciones = await _unitOfWork.Repository<Negociacion>().GetAllAsync(cancellationToken);
+
+        // ✅ CREAR MovimientoAlmacen por cada ubicación procesada
+        // Agrupar las llegadas por ubicación para crear un MovimientoAlmacen por ubicación
+        var llegadasPorUbicacion = llegadasPlantaCreadas
+            .GroupBy(lp => lp.IdUbicacion)
+            .ToList();
+
+        foreach (var grupo in llegadasPorUbicacion)
+        {
+            var idUbicacion = grupo.Key;
+            var llegadasDeEstaUbicacion = grupo.ToList();
+
+            // Crear el MovimientoAlmacen
+            var movimientoAlmacen = new MovimientoAlmacen
+            {
+                IdTipoMovimiento = 1, // ID 1 = INGRESO (según instrucciones)
+                IdUbicacion = idUbicacion,
+                TipoStock = "MATERIA_PRIMA",
+                IdLlegadaPlanta = llegadasDeEstaUbicacion.First().IdLlegadaPlanta, // Asociar con la primera llegada del grupo
+                IdUsuario = request.Data.IdUsuario,
+                FRegistro = DateTime.UtcNow,
+                Observaciones = $"Ingreso automático por recepción de {llegadasDeEstaUbicacion.Count} lote(s)",
+                Estado = "ACTIVO"
+            };
+
+            await _unitOfWork.Repository<MovimientoAlmacen>().AddAsync(movimientoAlmacen, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Crear los DetalleMovimientoAlmacen para cada llegada
+            foreach (var llegada in llegadasDeEstaUbicacion)
+            {
+                // Obtener la compra para acceder a la negociación y obtener IdVariedadProducto
+                var compra = todasLasCompras.First(c => c.IdCompra == llegada.IdCompra);
+                var negociacion = todasLasNegociaciones.FirstOrDefault(n => n.IdNegociacion == compra.IdNegociacion);
+
+                if (negociacion == null || !negociacion.IdVariedadProducto.HasValue)
+                {
+                    // Si no hay negociación o no tiene variedad de producto, saltar
+                    continue;
+                }
+
+                var detalleMovimiento = new DetalleMovimientoAlmacen
+                {
+                    IdMovimientoAlmacen = movimientoAlmacen.IdMovimientoAlmacen,
+                    IdVariedadProducto = negociacion.IdVariedadProducto.Value,
+                    IdLote = llegada.IdLote,
+                    Cantidad = (decimal)llegada.PesoRecibido,
+                    NumeroSacos = (int)llegada.SacosRecibidos
+                };
+
+                await _unitOfWork.Repository<DetalleMovimientoAlmacen>().AddAsync(detalleMovimiento, cancellationToken);
+            }
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
+
+        // Actualizar o crear Stock por cada compra Y ubicación procesada
         var todosLosStocks = await _unitOfWork.Repository<Stock>().GetAllAsync(cancellationToken);
 
         foreach (var kvp in pesoYSacosPorCompraYUbicacion)

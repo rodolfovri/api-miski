@@ -929,5 +929,69 @@ public class MiskiDbContext : DbContext
             entity.Property(e => e.Estado).HasMaxLength(20);
             entity.ToTable("TipoMovimiento");
         });
+
+        // MovimientoAlmacen configuration
+        modelBuilder.Entity<MovimientoAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.IdMovimientoAlmacen);
+            entity.Property(e => e.TipoStock).HasMaxLength(30).IsRequired();
+            entity.Property(e => e.FRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.Observaciones).HasMaxLength(255);
+            entity.Property(e => e.Estado).HasMaxLength(20);
+            entity.Property(e => e.MotivoAnulacion).HasMaxLength(255);
+            entity.HasOne(d => d.TipoMovimiento)
+                .WithMany(p => p.MovimientosAlmacen)
+                .HasForeignKey(d => d.IdTipoMovimiento)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_MovimientoAlmacen_TipoMovimiento");
+            entity.HasOne(d => d.Ubicacion)
+                .WithMany(p => p.MovimientosAlmacen)
+                .HasForeignKey(d => d.IdUbicacion)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_MovimientoAlmacen_Ubicacion");
+            entity.HasOne(d => d.Usuario)
+                .WithMany(p => p.MovimientosAlmacen)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_MovimientoAlmacen_Usuario");
+            entity.HasOne(d => d.UsuarioAnulacion)
+                .WithMany()
+                .HasForeignKey(d => d.IdUsuarioAnulacion)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_MovimientoAlmacen_UsuarioAnulacion");
+            entity.HasOne(d => d.LlegadaPlanta)
+                .WithMany(p => p.MovimientosAlmacen)
+                .HasForeignKey(d => d.IdLlegadaPlanta)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_MovimientoAlmacen_LlegadaPlanta");
+            entity.ToTable("MovimientoAlmacen");
+        });
+
+        // DetalleMovimientoAlmacen configuration
+        modelBuilder.Entity<DetalleMovimientoAlmacen>(entity =>
+        {
+            entity.HasKey(e => e.IdDetalleMovimientoAlmacen);
+            entity.Property(e => e.Cantidad).HasPrecision(18, 2).IsRequired();
+            entity.Property(e => e.NumeroSacos).IsRequired();
+            entity.HasOne(d => d.MovimientoAlmacen)
+                .WithMany(p => p.DetallesMovimientoAlmacen)
+                .HasForeignKey(d => d.IdMovimientoAlmacen)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_DetalleMovimientoAlmacen_MovimientoAlmacen");
+            entity.HasOne(d => d.VariedadProducto)
+                .WithMany(p => p.DetallesMovimientoAlmacen)
+                .HasForeignKey(d => d.IdVariedadProducto)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_DetalleMovimientoAlmacen_VariedadProducto");
+            entity.HasOne(d => d.Lote)
+                .WithMany(p => p.DetallesMovimientoAlmacen)
+                .HasForeignKey(d => d.IdLote)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_DetalleMovimientoAlmacen_Lote");
+            entity.ToTable("DetalleMovimientoAlmacen");
+        });
     }
 }

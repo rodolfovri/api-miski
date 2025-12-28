@@ -21,4 +21,5 @@ public class Ubicacion
     public virtual ICollection<PersonaUbicacion> PersonaUbicaciones { get; set; } = new List<PersonaUbicacion>();
     public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
     public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
+    public virtual ICollection<MovimientoAlmacen> MovimientosAlmacen { get; set; } = new List<MovimientoAlmacen>();
 }

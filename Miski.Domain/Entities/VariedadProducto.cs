@@ -16,5 +16,6 @@ public class VariedadProducto
     public virtual UnidadMedida UnidadMedida { get; set; } = null!;
     public virtual ICollection<Negociacion> Negociaciones { get; set; } = new List<Negociacion>();
     public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
+    public virtual ICollection<DetalleMovimientoAlmacen> DetallesMovimientoAlmacen { get; set; } = new List<DetalleMovimientoAlmacen>();
 
 }

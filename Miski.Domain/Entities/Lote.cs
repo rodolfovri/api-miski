@@ -11,7 +11,6 @@ public class Lote
     
     // Navigation properties
     public virtual ICollection<LlegadaPlanta> LlegadasPlanta { get; set; } = new List<LlegadaPlanta>();
-    
-    // ? RELACIÓN UNO A UNO: Un Lote puede estar asociado a una Compra
+    public virtual ICollection<DetalleMovimientoAlmacen> DetallesMovimientoAlmacen { get; set; } = new List<DetalleMovimientoAlmacen>();
     public virtual Compra? Compra { get; set; }
 }

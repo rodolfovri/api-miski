@@ -18,4 +18,5 @@ public class LlegadaPlanta
     public virtual Usuario Usuario { get; set; } = null!;
     public virtual Lote Lote { get; set; } = null!;
     public virtual Ubicacion Ubicacion { get; set; } = null!;
+    public virtual ICollection<MovimientoAlmacen> MovimientosAlmacen { get; set; } = new List<MovimientoAlmacen>();
 }

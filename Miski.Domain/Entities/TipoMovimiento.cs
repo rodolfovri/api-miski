@@ -6,4 +6,6 @@ public class TipoMovimiento
     public string TipoOperacion { get; set; } = string.Empty; // "INGRESO" o "SALIDA"
     public string Descripcion { get; set; } = string.Empty;
     public string Estado { get; set; } = string.Empty;
+    // Navegation properties
+    public virtual ICollection<MovimientoAlmacen> MovimientosAlmacen { get; set; } = new List<MovimientoAlmacen>();
 }
