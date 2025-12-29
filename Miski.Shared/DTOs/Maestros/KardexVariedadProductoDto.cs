@@ -8,6 +8,7 @@ public class KardexVariedadProductoDto
     public string NombreProducto { get; set; } = string.Empty;
     public DateTime FechaDesde { get; set; }
     public DateTime FechaHasta { get; set; }
+    public string? TipoStock { get; set; } // Filtro aplicado (MATERIA_PRIMA, PRODUCTO_TERMINADO o null = todos)
     public decimal StockInicial { get; set; }
     public int SacosInicial { get; set; }
     public List<MovimientoKardexDto> Movimientos { get; set; } = new();
@@ -20,6 +21,7 @@ public class MovimientoKardexDto
     public int IdMovimientoAlmacen { get; set; }
     public DateTime Fecha { get; set; }
     public string TipoOperacion { get; set; } = string.Empty; // "INGRESO" o "SALIDA"
+    public string TipoStock { get; set; } = string.Empty; // "MATERIA_PRIMA" o "PRODUCTO_TERMINADO"
     public string Descripcion { get; set; } = string.Empty;
     public string? Observaciones { get; set; }
     public int? IdLlegadaPlanta { get; set; }

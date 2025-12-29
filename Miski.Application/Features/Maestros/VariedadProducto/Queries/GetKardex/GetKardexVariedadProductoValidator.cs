@@ -19,5 +19,11 @@ public class GetKardexVariedadProductoValidator : AbstractValidator<GetKardexVar
             .WithMessage("La fecha hasta es requerida")
             .GreaterThanOrEqualTo(x => x.FechaDesde)
             .WithMessage("La fecha hasta debe ser mayor o igual a la fecha desde");
+
+        RuleFor(x => x.TipoStock)
+            .Must(ts => string.IsNullOrWhiteSpace(ts) || 
+                        ts.Equals("MATERIA_PRIMA", StringComparison.OrdinalIgnoreCase) || 
+                        ts.Equals("PRODUCTO_TERMINADO", StringComparison.OrdinalIgnoreCase))
+            .WithMessage("El tipo de stock debe ser 'MATERIA_PRIMA' o 'PRODUCTO_TERMINADO'");
     }
 }

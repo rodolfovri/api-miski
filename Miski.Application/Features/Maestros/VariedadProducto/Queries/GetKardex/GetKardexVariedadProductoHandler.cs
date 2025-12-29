@@ -47,6 +47,14 @@ public class GetKardexVariedadProductoHandler : IRequestHandler<GetKardexVarieda
             .Where(m => m.Estado == "ACTIVO")
             .ToList();
 
+        // Aplicar filtro de TipoStock si se proporciona
+        if (!string.IsNullOrWhiteSpace(request.TipoStock))
+        {
+            movimientosRelevantes = movimientosRelevantes
+                .Where(m => m.TipoStock.Equals(request.TipoStock, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
         // 5. Obtener los detalles de movimientos que corresponden a esta variedad
         var detallesRelevantes = todosLosDetalles
             .Where(d => movimientosRelevantes.Any(m => m.IdMovimientoAlmacen == d.IdMovimientoAlmacen))
@@ -58,6 +66,14 @@ public class GetKardexVariedadProductoHandler : IRequestHandler<GetKardexVarieda
             .Where(m => m.FRegistro < fechaDesde)
             .Where(m => m.Estado == "ACTIVO")
             .ToList();
+
+        // Aplicar filtro de TipoStock también a movimientos anteriores
+        if (!string.IsNullOrWhiteSpace(request.TipoStock))
+        {
+            movimientosAnteriores = movimientosAnteriores
+                .Where(m => m.TipoStock.Equals(request.TipoStock, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
 
         var detallesAnteriores = todosLosDetalles
             .Where(d => movimientosAnteriores.Any(m => m.IdMovimientoAlmacen == d.IdMovimientoAlmacen))
@@ -146,6 +162,7 @@ public class GetKardexVariedadProductoHandler : IRequestHandler<GetKardexVarieda
                 IdMovimientoAlmacen = movimiento.IdMovimientoAlmacen,
                 Fecha = movimiento.FRegistro,
                 TipoOperacion = tipoMovimiento?.TipoOperacion ?? "DESCONOCIDO",
+                TipoStock = movimiento.TipoStock,
                 Descripcion = tipoMovimiento?.Descripcion ?? "Sin descripción",
                 Observaciones = movimiento.Observaciones,
                 IdLlegadaPlanta = movimiento.IdLlegadaPlanta,
@@ -170,6 +187,7 @@ public class GetKardexVariedadProductoHandler : IRequestHandler<GetKardexVarieda
             NombreProducto = producto?.Nombre ?? "Sin producto",
             FechaDesde = request.FechaDesde,
             FechaHasta = request.FechaHasta,
+            TipoStock = request.TipoStock,
             StockInicial = stockInicial,
             SacosInicial = sacosInicial,
             Movimientos = movimientosKardex,

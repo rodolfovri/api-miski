@@ -249,6 +249,7 @@ public class VariedadProductoController : ControllerBase
     /// **Información incluida:**
     /// - Stock inicial (antes del rango de fechas)
     /// - Movimientos detallados con tipo de operación (INGRESO/SALIDA)
+    /// - Tipo de stock de cada movimiento (MATERIA_PRIMA/PRODUCTO_TERMINADO)
     /// - Cantidades en kg y número de sacos por movimiento
     /// - Saldo acumulado después de cada movimiento
     /// - Stock final (al final del rango de fechas)
@@ -260,20 +261,27 @@ public class VariedadProductoController : ControllerBase
     /// - idVariedadProducto: ID de la variedad de producto (requerido)
     /// - fechaDesde: Fecha inicial del rango (requerido, formato: yyyy-MM-dd)
     /// - fechaHasta: Fecha final del rango (requerido, formato: yyyy-MM-dd)
+    /// - tipoStock: Filtrar por tipo de stock (opcional: MATERIA_PRIMA o PRODUCTO_TERMINADO)
+    ///   * Si no se envía, retorna todos los movimientos sin filtrar por tipo
+    ///   * Si se envía "MATERIA_PRIMA", solo movimientos de materia prima
+    ///   * Si se envía "PRODUCTO_TERMINADO", solo movimientos de producto terminado
     /// 
-    /// **Ejemplo de uso:**
-    /// GET /api/maestros/variedad-producto/5/kardex?fechaDesde=2024-01-01&amp;fechaHasta=2024-12-31
+    /// **Ejemplos de uso:**
+    /// - Todos los movimientos: GET /api/maestros/variedad-producto/5/kardex?fechaDesde=2024-01-01&amp;fechaHasta=2024-12-31
+    /// - Solo materia prima: GET /api/maestros/variedad-producto/5/kardex?fechaDesde=2024-01-01&amp;fechaHasta=2024-12-31&amp;tipoStock=MATERIA_PRIMA
+    /// - Solo producto terminado: GET /api/maestros/variedad-producto/5/kardex?fechaDesde=2024-01-01&amp;fechaHasta=2024-12-31&amp;tipoStock=PRODUCTO_TERMINADO
     /// </remarks>
     [HttpGet("{id}/kardex")]
     public async Task<ActionResult<ApiResponse<KardexVariedadProductoDto>>> GetKardex(
         int id,
         [FromQuery] DateTime fechaDesde,
         [FromQuery] DateTime fechaHasta,
+        [FromQuery] string? tipoStock = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var query = new GetKardexVariedadProductoQuery(id, fechaDesde, fechaHasta);
+            var query = new GetKardexVariedadProductoQuery(id, fechaDesde, fechaHasta, tipoStock);
             var result = await _mediator.Send(query, cancellationToken);
 
             return Ok(ApiResponse<KardexVariedadProductoDto>.SuccessResult(
